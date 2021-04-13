@@ -1,0 +1,36 @@
+#This Playbook is designed to be ran on a schedule (end user's choice) in AWX/Tower
+- name: Pause Oracle DB for Snapshot
+  hosts: oracle
+  connection: local
+  gather_facts: True
+  vars_files:
+    - roles/oracle_pause_db/defaults/main.yml    
+    - vars/vars.ym
+  roles:
+    - role: oracle_pause_db
+  tags:
+    - oracle_pause_db
+
+- name: ONTAP Setup and Storage Config for Oracle
+  collections:
+    - netapp.ontap
+  hosts: "{{ hosts_group | default ('ontap') }}"
+  connection: local
+  gather_facts: False
+  vars_files:
+    - roles/ontap/defaults/main.yml    
+    - vars/vars.yml
+  roles:
+    - role: ontap_replication
+
+- name: Resume Oracle DB
+  hosts: oracle
+  connection: local
+  gather_facts: True
+  vars_files:
+    - roles/oracle_resume_db/defaults/main.yml
+    - vars/vars.ym
+  roles:
+    - role: oracle_resume_db
+  tags:
+    - oracle_resume_db    
