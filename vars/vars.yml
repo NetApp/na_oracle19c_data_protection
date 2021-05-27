@@ -1,0 +1,147 @@
+##################################################
+###### Disaster Recovery Ansible Role 
+###### na_ontap_snapmirror-dr
+##################################################
+
+####################################################################################################
+# Operation List
+####################################################################################################
+##
+#OPERATION-1:
+#:CLUSTER- This operation will establish a cluster-peer and vserver peer 
+cluster_vserver_peer: ""
+##
+#OPERATION-2:
+#PROTECT DATABASE VOLUMES:- This operation will create a SnapMirror Destination, SnapMirror Relation and Initialize
+protect_volumes: ""
+##
+#OPERATION-3:
+#SNAPSHOT DATABASE VOLUMES:- This operation will create a Consistency Group Snapshot and Update the Snapmirror
+cg_snapshot_volumes: ""
+##
+#OPERATION-4:
+#SERVE DATA NFS VOLUMES FROM DESTINATION DR CLUSTER: This operation will break, restore snapshot,create export policy create volume mount, update dr destination fstab and mount volume.
+failover_to_destination_nfs: ""
+nfs: ""
+##
+#OPERATION-5:
+#SERVE DATA ISCSI LUNS FROM DESTINATION DR CLUSTER: This operation will break, restore snapshot,create export policy #create volume mount, update dr destination fstab and mount volume.
+#failover_to_destination_iscsi: ""
+#iscsi: ""
+##
+#OPERATION-6:
+#RESYNC BACK MIRROR RELATION AFTER IT WAS BROKEN:- This operation will resync the relationship from the Source to Destination as long as the relationship is not deleted and is in broken state.
+resync_snapmirror: ""
+##
+#OPERATION-7:
+#REVERSE-RESYNC MIRROR RELATION FROM DESTINATION TO SOURCE:- This operation will reverse-resync the relationship from the Destination to Source as long as the relationship is not deleted and is in broken state.
+reverse_resync_snapmirror: ""
+
+####################################################################################################
+# Peer
+####################################################################################################
+peer: []
+src_name: ""
+src_lif: []
+dst_name: ""
+dst_lif: []
+passphrase: IamAp483p45a83
+####################################################################################################
+# Database
+####################################################################################################
+workload: []
+name:
+run_only: []
+#------------------------------------------------------------------------------
+# Source & Destination Credential List [Please use Vault to encrypt credentials]
+#------------------------------------------------------------------------------
+
+#Please Enter Destination Cluster
+dst_cluster_ip: "" 
+
+#Please Enter Destination Username
+dst_cluster_username: "" 
+
+#Please Enter Destination Password
+dst_cluster_password: ""
+
+#Please Enter Destination SVM to create mirror relationship
+dst_vserver: ""
+
+#Please Enter Source Cluster
+src_cluster_ip: ""
+
+#Please Enter Source Username
+src_cluster_username: ""
+
+#Please Enter Source Password
+src_cluster_password: ""
+
+#Please Enter Source SVM
+src_vserver: ""
+
+
+#------------------------------------------------------------------------------
+# SnapMirror Details
+#------------------------------------------------------------------------------
+#Please Enter Source Volume Name to be protected
+src_vol_name_list: []
+
+#Please Enter Destination Volume Name
+dst_vol_name_list: []
+
+#Please Enter Source Volume Name to be protected
+src_lun_name_list: []
+#Please Enter Source Volume Name to be protected
+dst_lun_name_list: []
+
+
+# Please Enter Destination Aggregate to create mirror relationship
+dst_aggr: ""
+
+#Please Enter Destination Snapmirror Schedule
+schedule: hourly
+
+#Please Enter Destination Snapmirror Policy
+policy: MirrorAllSnapshots
+
+#Please Enter Destination max Transfer
+max_transfer_rate: 900000
+
+#------------------------------------------------------------------------------
+# Restore Details
+#------------------------------------------------------------------------------
+
+# Restore Snapshot Name
+restore_snapshot_name: ""
+
+#------------------------------------------------------------------------------
+# NFS
+#------------------------------------------------------------------------------
+
+#Use this to failover NFS volumes 
+nfs: ""
+
+#------------------------------------------------------------------------------
+# Export Policy Details
+#------------------------------------------------------------------------------
+
+#Please Enter Destination Export Policy Name
+export_policy_name: 10.195.62.203
+
+#Please Enter Destination  Export Policy Client
+client_match: 0.0.0.0/0
+
+#Please Enter Destination  Export Policy RO Rule
+ro_rule: any
+
+#Please Enter Destination  Export Policy RW Rule
+rw_rule: any
+
+#------------------------------------------------------------------------------
+# Oracle Host
+#------------------------------------------------------------------------------
+
+mount_points: []
+client_name: []
+nfs_data_lif: ""
