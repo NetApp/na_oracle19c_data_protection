@@ -1,70 +1,52 @@
-# tasks file for na_ontap_snapmirror_create
-- name: Create Cluster peer and Vserver peer. 
-  block:
-    - name: Set Name
-      set_fact:
-        name_inloop: "{{ item.0.name }}"          
-    - name: Set source cluster ip
-      set_fact:
-        src_cluster_ip_inloop: "{{ item.0.src_cluster_ip }}"
-    - name: Set source cluster username
-      set_fact:
-        src_cluster_username_inloop: "{{ item.0.src_cluster_username }}"
-    - name: Set source password
-      set_fact:
-        src_cluster_password_inloop: "{{ item.0.src_cluster_password }}"
-    - name: Set destination  cluster ip
-      set_fact:
-        dst_cluster_ip_inloop: "{{ item.0.dst_cluster_ip }}"
-    - name: Set destination  cluster username
-      set_fact:
-        dst_cluster_username_inloop: "{{ item.0.dst_cluster_username }}"
-    - name: Set destination  cluster password
-      set_fact:
-        dst_cluster_password_inloop: "{{ item.0.dst_cluster_password }}"
-    - name: Set source vserver
-      set_fact:
-        src_vserver_inloop: "{{ item.0.src_vserver }}"
-    - name: Set destination vserver
-      set_fact:
-        dst_vserver_inloop: "{{ item.0.dst_vserver }}"
-    - name: Set src_lif
-      set_fact:
-        src_lif_inloop: "{{ item.0.src_lif }}"
-    - name: Set dst_lif
-      set_fact:
-        dst_lif_inloop: "{{ item.0.dst_lif }}" 
-    - name: Set dst cluster name
-      set_fact:
-        dst_cluster_name_inloop: "{{ item.0.dst_cluster_name }}"
-
+# Tasl for creating cluster peer
+- block:
     - name: Create cluster peer
       na_ontap_cluster_peer:
         state: present
-        source_intercluster_lifs: "{{ src_lif_inloop }}"
-        dest_intercluster_lifs: "{{ dst_lif_inloop }}"
+        source_intercluster_lifs: "{{ src_lif }}"
+        dest_intercluster_lifs: "{{ dst_lif }}"
         passphrase: "{{ passphrase }}"
-        hostname: "{{ src_cluster_ip_inloop }}"
-        username: "{{ src_cluster_username_inloop }}"
-        password: "{{ src_cluster_password_inloop }}"
-        dest_hostname: "{{ dst_cluster_ip_inloop }}"
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        dest_hostname: "{{ dst_cluster_ip }}"
         https: true
         validate_certs: false
-      register: ontap  
-    
-    - name: Source vserver peer create
+      register: cluster_peer  
+  rescue:
+    - name: Failure
+      fail:
+        mgs:
+	- Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
+	- Possible troubleshooting steps:
+	- 1. Check if ONTAP API is reachable
+	- 2. Check credentials
+	- 3. Check source cluster IP
+	- 4. Check destination cluster IP
+
+# Tasks for create vserver peer
+- block:
+    - name: Create vserver peer
       na_ontap_vserver_peer:
         state: present
-        peer_vserver: "{{ dst_vserver_inloop }}"
-        peer_cluster: "{{ dst_cluster_name_inloop}}"
-        vserver: "{{ src_vserver_inloop }}"
+        peer_vserver: "{{ dst_vserver }}"
+        peer_cluster: "{{ dst_cluster_name }}"
+        vserver: "{{ src_vserver }}"
         applications: snapmirror
-        hostname: "{{ src_cluster_ip_inloop }}"
-        username: "{{ src_cluster_username_inloop }}"
-        password: "{{ src_cluster_password_inloop }}"
-        dest_hostname: "{{ dst_cluster_ip_inloop }}"
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        dest_hostname: "{{ dst_cluster_ip }}"
         https: true
         validate_certs: false
-      register: ontap
-
-      
+      register: vserver_peer
+  rescue:
+    - name: Failure
+      fail:
+        mgs:
+        - Create cluster peer failed with error - "{{ vserver_peer.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check credentials
+        - 3. Check source cluster IP
+        - 4. Check destination cluster IP
