@@ -3,6 +3,67 @@
 ###### na_ontap_snapmirror-dr
 ##################################################
 
+#####################################################
+# Inter-cluster LIF details
+#####################################################
+nodes:
+  - Ansible_1
+  - Ansible_2
+
+#Define whether or not to create intercluster lifs on source cluster
+create_source_intercluster_lifs: [yes|no]
+
+source_intercluster_network_port_details:
+  using_dedicated_ports: [yes|no]  #shared or dedicated ports can be used
+  using_ifgrp: [yes|no]  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
+  using_vlans: [yes|no]  #VLANs can be defined if ports are trunked
+  failover_for_shared_individual_ports: [yes|no]  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
+  ifgrp_name: [ifgrp_name]  #Provide the ifgrp name is using ifgrps
+  vlan_id: [vlan_id]  #Provide the VLAN ID is using VLANs
+  ports: [ports] #List of ports per node
+  broadcast_domain: [broadcast_domain]  #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
+  ipspace: [ipspace] #IPspace to be used in creating broadcast domain, when using dedicated ports
+  failover_group_name: [failover_group_name]  #Creates a failover group when using shared ports
+
+source_intercluster_lif_details:
+  - name: [name-1]
+    ip_address: [ip_address-node-1]
+    netmask: [netmask-node-1]
+    home_port: [home_port-node-2]  #If using ifgrp and VLAN, provide ifgrp_name.vlan_id
+    node: [node-1]
+  - name: [name-2]
+    ip_address: [ip_address-node-2]
+    netmask: [netmask-node-2]
+    home_port: [home_port-node-2]
+    node: [node-2]
+
+#Define whether or not to create intercluster lifs on destination cluster
+create_destination_intercluster_lifs: [yes|no]
+
+destination_intercluster_network_port_details:
+  using_dedicated_ports: [yes|no]  #shared or dedicated ports can be used
+  using_ifgrp: [yes|no]  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
+  using_vlans: [yes|no]  #VLANs can be defined if ports are trunked
+  failover_for_shared_individual_ports: [yes|no]  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
+  ifgrp_name: [ifgrp_name]  #Provide the ifgrp name is using ifgrps
+  vlan_id: [vlan_id]  #Provide the VLAN ID is using VLANs
+  ports: [ports] #List of ports per node
+  broadcast_domain: [broadcast_domain]  #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
+  ipspace: [ipspace] #IPspace to be used in creating broadcast domain, when using dedicated ports
+  failover_group_name: [failover_group_name]  #Creates a failover group when using shared ports
+
+destination_intercluster_lif_details:
+  - name: [name-1]
+    ip_address: [ip_address-node-1]
+    netmask: [netmask-node-1]
+    home_port: [home_port-node-2]  #If using ifgrp and VLAN, provide ifgrp_name.vlan_id
+    node: [node-1]
+  - name: [name-2]
+    ip_address: [ip_address-node-2]
+    netmask: [netmask-node-2]
+    home_port: [home_port-node-2]
+    node: [node-2]
+
 ####################################################################################################
 # Operation List
 ####################################################################################################
