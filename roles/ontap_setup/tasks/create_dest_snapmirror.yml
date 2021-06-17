@@ -61,11 +61,11 @@
     - name: Failure
       fail:
         msg:
-	- Create destination volume for SnapMirror failed with error - "{{ destination_volume.stderr }}"
-	- Possible troubleshooting steps:
-	- 1. Check if ONTAP API is reachable
-	- 2. Check debug messages for source volume(s) and size list
-	- 3. Check if variables defined adhere to the guidelines
+        - Create destination volume for SnapMirror failed with error - "{{ destination_volume.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check debug messages for source volume(s) and size list
+        - 3. Check if variables defined adhere to the guidelines
 ########################################################
 - block:   
     - pause:
