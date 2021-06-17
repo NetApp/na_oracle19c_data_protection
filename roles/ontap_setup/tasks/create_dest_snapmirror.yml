@@ -1,55 +1,12 @@
-#########################################################
-- name:
-  block:
-    - name: Set source vserver
-      set_fact: 
-        size_list: []
-
-    - name: Set source cluster ip 
-      set_fact:
-        src_cluster_ip_inloop: "{{ item.src_cluster_ip }}"
-    - name: Set source cluster username
-      set_fact:
-        src_cluster_username_inloop: "{{ item.src_cluster_username }}"
-    - name: Set source password
-      set_fact:
-        src_cluster_password_inloop: "{{ item.src_cluster_password }}"
-    - name: Set destination  cluster ip
-      set_fact:
-        dst_cluster_ip_inloop: "{{ item.dst_cluster_ip }}"
-    - name: Set destination  cluster username
-      set_fact:
-        dst_cluster_username_inloop: "{{ item.dst_cluster_username }}"
-    - name: Set destination  cluster password
-      set_fact:
-        dst_cluster_password_inloop: "{{ item.dst_cluster_password }}"
-    
-    - name: Set source vserver
-      set_fact:
-        src_vserver_inloop: "{{ item.src_vserver }}"
-    - name: Set destination vserver
-      set_fact:
-        dst_vserver_inloop: "{{ item.dst_vserver }}"
-    - name: Set destination aggregate
-      set_fact:
-        dst_aggr_inloop: "{{ item.dst_aggr }}"
-    - name: Set schedule
-      set_fact:
-        schedule_inloop: "{{ item.schedule }}"
-    - name: Set policy
-      set_fact:
-        policy_inloop: "{{ item.policy }}"
-    - name: Set max transfer rate.
-      set_fact:
-        max_transfer_rate_inloop: "{{ item.max_transfer_rate }}"
-    
-########################################
-
-- name: Get ONTAP Volume Info
+#################################################################
+#################################################################
+# Getting source volume(s) and sizes
+- block:
+    - name: Get ONTAP Volume Info
       na_ontap_info:
-        hostname: "{{ src_cluster_ip_inloop }}"
-        username: "{{ src_cluster_username_inloop }}"
-        password: "{{ src_cluster_password_inloop }}"
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
         https: true
         validate_certs: false
         gather_subset:
@@ -57,84 +14,94 @@
       register: netapp
 
     - name: Get Volume Details for Volume List
+      vars:
+        size_list: []
       set_fact:
-        size_list: "{{ size_list }} + [ '{{ item[1].value.volume_space_attributes.size }}' ]"
-      when: (( item[1].value.volume_id_attributes.name is match (item[0])) and ( item[1].value.volume_id_attributes.owning_vserver_name  ==  src_vserver_inloop ))
+        size_list: "{{ size_list + [item[1].value.volume_space_attributes.size] }}"
+      when: (( item[1].value.volume_id_attributes.name is match (item[0])) and ( item[1].value.volume_id_attributes.owning_vserver_name  ==  src_vserver ))
       with_nested:
-        - "{{ item.src_vol_name_list }}"
+        - "{{ src_vol_name_list }}"
         - "{{ lookup('dict', netapp.ontap_info.volume_info) }}"
     - debug:
         msg: "The source volumes are {{ item }}"
       with_items:
-        - "{{ item.src_vol_name_list }}"
-    - lineinfile:
-        dest: "{{ file_name }}"
-        line: "The source volumes are {{ item.src_vol_name_list }} - {{ item.name }}"
-      ignore_errors: yes
+        - "{{ src_vol_name_list }}"
     - debug:
         msg: "The size of source volumes are  {{ item }}"
       with_items:
         - "{{ size_list }}"
-    - lineinfile:
-        dest: "{{ file_name }}"
-        line: "The size of source volumes are {{ size_list }} - {{ item.name }}"
-      ignore_errors: yes
     - debug:
         msg: "The destination volumes that will be created are {{ item }}"
       with_items:
         - "{{ item.dst_vol_name_list }}"
       ignore_errors: yes
-     
+
+# Create Destination volume(s)
+- block:
     - name: Creating Destination Volume
       na_ontap_volume:
-        hostname: "{{ dst_cluster_ip_inloop }}"
-        username: "{{ dst_cluster_username_inloop }}"
-        password: "{{ dst_cluster_password_inloop }}"      
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"      
         state: present
         name: "{{ item.0 }}"
-        vserver: "{{ dst_vserver_inloop }}"
-        aggregate_name: "{{ dst_aggr_inloop }}"
+        vserver: "{{ dst_vserver }}"
+        aggregate_name: "{{ dst_aggr }}"
         size: "{{ item.1 }}"
         size_unit: bytes
         policy: default
         type: DP
         https: true
         validate_certs: false
-      register: ontap
+      register: destination_volume
       with_together:
-        - "{{ item.dst_vol_name_list }}"
+        - "{{ dst_vol_name_list }}"
         - "{{ size_list }}"
-
+  rescue:
+    - name: Failure
+      fail:
+        msg:
+	- Create destination volume for SnapMirror failed with error - "{{ destination_volume.stderr }}"
+	- Possible troubleshooting steps:
+	- 1. Check if ONTAP API is reachable
+	- 2. Check debug messages for source volume(s) and size list
+	- 3. Check if variables defined adhere to the guidelines
 ########################################################
-   
+- block:   
     - pause:
         seconds: "{{ delay }}"
 
 #########################################################
-
+- block:
     - name: Create ONTAP/ONTAP SnapMirror
       na_ontap_snapmirror:
-        hostname: "{{ dst_cluster_ip_inloop }}"
-        username: "{{ dst_cluster_username_inloop }}"
-        password: "{{ dst_cluster_password_inloop }}"
-        source_hostname: "{{ src_cluster_ip_inloop }}"
-        source_username: "{{ src_cluster_username_inloop }}"
-        source_password: "{{ src_cluster_password_inloop }}"
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        source_hostname: "{{ src_cluster_ip }}"
+        source_username: "{{ src_cluster_username }}"
+        source_password: "{{ src_cluster_password }}"
         state: present
         initialize: true
         source_volume: "{{ item.0 }}"
         destination_volume: "{{ item.1 }}"
-        source_vserver: "{{ src_vserver_inloop }}"
-        destination_vserver: "{{ dst_vserver_inloop }}"
-        schedule: "{{ schedule_inloop }}"
-        policy: "{{ policy_inloop }}"
-        max_transfer_rate: "{{ max_transfer_rate_inloop }}"
+        source_vserver: "{{ src_vserver }}"
+        destination_vserver: "{{ dst_vserver }}"
+        schedule: "{{ schedule }}"
+        policy: "{{ policy }}"
+        max_transfer_rate: "{{ max_transfer_rate }}"
         relationship_type: data_protection
         https: true
         validate_certs: false
-      register: ontap
+      register: snapmirror_create
       with_together:
-        - "{{ item.src_vol_name_list }}"
-        - "{{ item.dst_vol_name_list }}"
-    - debug:
-        msg: "The Snapmirror Relationships have been created. {{ item.name }}"
+        - "{{ src_vol_name_list }}"
+        - "{{ dst_vol_name_list }}"
+  rescue:
+    - name: Failure
+      fail:
+        msg:
+        - Create destination volume for SnapMirror failed with error - "{{ snapmirror_create.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check if variables defined adhere to the guidelines
