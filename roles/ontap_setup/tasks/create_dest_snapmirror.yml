@@ -67,7 +67,7 @@
 	- 2. Check debug messages for source volume(s) and size list
 	- 3. Check if variables defined adhere to the guidelines
 ########################################################
-   
+- block:   
     - pause:
         seconds: "{{ delay }}"
 
