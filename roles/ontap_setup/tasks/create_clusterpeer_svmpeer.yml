@@ -17,12 +17,12 @@
     - name: Failure
       fail:
         msg:
-	    - Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
-	    - Possible troubleshooting steps:
-	    - 1. Check if ONTAP API is reachable
-	    - 2. Check credentials
-	    - 3. Check source cluster IP
-	    - 4. Check destination cluster IP
+        - Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check credentials
+        - 3. Check source cluster IP
+        - 4. Check destination cluster IP
 
 # Tasks for create vserver peer
 - block:
