@@ -1,0 +1,29 @@
+---
+#Credentials
+username: "{{ ansible_user }}"
+password: "{{ ansible_password }}"
+
+# Root volume for infrastructure svm
+#svm_root_volume: "{{ svm_name }}_root"
+
+# Create root mirror volumes for oracle SVM
+#root_mirror_volumes:
+#  - {root_mirror_volume: '{{ svm_name }}_m01'}
+#  - {root_mirror_volume: '{{ svm_name }}_m02'}
+
+# SVM Management LIF Details
+svm_mgmt_defaults:
+  - {lif_name: '{{ svm_name }}_mgmt'}
+
+nfs_lifs_defaults:
+  - {name: '{{ svm_name }}_nfs_lif01', home_node: '{{ nodes[0] }}'}
+  - {name: '{{ svm_name }}_nfs_lif02', home_node: '{{ nodes[1] }}'}
+
+#Data Protocol to be used for export policy rules
+data_protocol: nfs
+
+#nfs_exp_policy: "{{ svm_name }}_client"
+
+#Job Schedule
+job_schedule:
+  - {job_name: 15min,job_minutes: 15}
