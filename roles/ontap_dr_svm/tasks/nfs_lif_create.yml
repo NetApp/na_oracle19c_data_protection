@@ -1,0 +1,37 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+# Create LIFs for NFS volume client access
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Create lifs for Oracle NFS volumes client access
+      na_ontap_interface:
+        hostname: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        vserver: "{{ svm_name }}"
+        role: data
+        protocols: nfs
+        home_node: "{{ item.1.home_node }}"
+        home_port: a0a-{{item.0.vlan_id}}
+        address: "{{ item.1.address }}"
+        netmask: "{{ item.1.netmask }}"
+        interface_name: "{{ item.1.name }}"
+        admin_status: up
+        failover_policy: broadcast-domain-wide
+        firewall_policy: data
+        is_auto_revert: true
+        https: true
+        validate_certs: false
+      with_nested:
+        - "{{ storage_vlans }}"
+        - "{{ nfs_lifs }}"
+      when:
+        - item.0.protocol == "NFS"
+      tags:
+        - ontap_nfs_lif
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
