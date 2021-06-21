@@ -1,0 +1,7 @@
+---
+- name: Get all available subsets
+  netapp.cloudmanager.na_cloudmanager_info:
+    client_id: "{{ client_id }}"
+    refresh_token: "{{ refresh_token }}"
+    gather_subsets:
+      - all

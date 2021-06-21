@@ -1,0 +1,19 @@
+- name: Create NetApp Cloud Manager connector for AWS
+  netapp.cloudmanager.na_cloudmanager_connector_aws:
+    state: present
+    refresh_token: "{{ xxxxxxxxxxxxxxx }}"
+    name: bsuhas_ansible_occm
+    region: us-west-1
+    key_name: dev_automation
+    subnet_id: subnet-xxxxx
+    ami: "{{ ami-xxxxxxxxxxxxxxxxx }}"
+    security_group_ids: [sg-xxxxxxxxxxx]
+    iam_instance_profile_name: OCCM_AUTOMATION
+    account_id: "{{ account-xxxxxxx }}"
+    company: NetApp
+    proxy_url: abc.com
+    proxy_user_name: xyz
+    proxy_password: abcxyz
+    aws_tag: [
+        {tag_key: abc,
+        tag_value: a123}]

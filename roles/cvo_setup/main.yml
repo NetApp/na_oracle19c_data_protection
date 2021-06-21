@@ -1,0 +1,11 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Intercluster Configuration and Snapmirror Setup
+      include_tasks:
+        - create_clusterpeer_svmpeer.yml
+        - create_dest_snapmirror.yml 
+      tags:
+        - ontap_config_svm
+        - ontap_ls_mirror_volumes
