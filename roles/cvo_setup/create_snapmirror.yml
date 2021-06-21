@@ -1,19 +1,12 @@
-- name: Create NetApp Cloud Manager connector for AWS
-  netapp.cloudmanager.na_cloudmanager_connector_aws:
+- name: Create snapmirror with working_environment_name
+  netapp.cloudmanager.na_cloudmanager_snapmirror:
     state: present
-    refresh_token: "{{ xxxxxxxxxxxxxxx }}"
-    name: bsuhas_ansible_occm
-    region: us-west-1
-    key_name: dev_automation
-    subnet_id: subnet-xxxxx
-    ami: "{{ ami-xxxxxxxxxxxxxxxxx }}"
-    security_group_ids: [sg-xxxxxxxxxxx]
-    iam_instance_profile_name: OCCM_AUTOMATION
-    account_id: "{{ account-xxxxxxx }}"
-    company: NetApp
-    proxy_url: abc.com
-    proxy_user_name: xyz
-    proxy_password: abcxyz
-    aws_tag: [
-        {tag_key: abc,
-        tag_value: a123}]
+    source_working_environment_name: source
+    destination_working_environment_name: dest
+    source_volume_name: source
+    destination_volume_name: source_copy
+    policy: MirrorAllSnapshots
+    schedule: 5min
+    max_transfer_rate: 102400
+    client_id: client_id
+    refresh_token: refresh_token
