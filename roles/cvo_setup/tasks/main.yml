@@ -2,10 +2,8 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-    - name: Intercluster Configuration and Snapmirror Setup
-      include_tasks:
-        - create_clusterpeer_svmpeer.yml
-        - create_dest_snapmirror.yml 
+    - name: create aws connector
+      include_tasks: create_connector.yml
       tags:
-        - ontap_config_svm
-        - ontap_ls_mirror_volumes
+        - aws_connector
+      

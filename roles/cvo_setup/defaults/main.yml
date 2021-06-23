@@ -1,0 +1,24 @@
+---
+####### Acess Keys Variables ######
+
+access_key: 
+
+secret_key: 
+
+
+
+####### Connector Deployment and CVO deployment Variables #######
+
+token: 
+
+region_deploy:
+
+key_pair:
+
+subnet: subnet-xxxxxxx
+
+security_group: [sg-xxxxxxxxxx]
+
+account: account-xxxxxxx
+
+role_name:

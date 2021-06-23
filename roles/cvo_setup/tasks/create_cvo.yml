@@ -10,9 +10,9 @@
     svm_password: P@assword!
     client_id: "{{ xxxxxxxxxxxxxxx }}"
     writing_speed_state: NORMAL
-    aws_tag: [
-        {tag_key: abc,
-        tag_value: a123}]
+  tags: aws_single
+
+
 - name: Create NetApp Cloud Manager CVO for AWS HA
   netapp.cloudmanager.na_cloudmanager_cvo_aws:
     state: present
