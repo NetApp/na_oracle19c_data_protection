@@ -1,0 +1,14 @@
+- name: CVO Setup
+  hosts: localhost
+  collections:
+    - netapp.ontap
+    - netapp.cloudmanager
+    - community.aws
+
+  gather_facts: False
+#  vars_files:
+#    - roles/cvo_setup/defaults/main.yml
+  roles:
+    - role: cvo_setup
+  tags:
+    - cvo_config
