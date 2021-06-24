@@ -6,8 +6,8 @@
   connection: local
   gather_facts: False
   vars_files:
-#    - roles/ontap/defaults/main.yml    
-#    - ontap_vars.yml
+    - roles/ontap/defaults/main.yml    
+    - ontap_vars.yml
   roles:
-    - role: ontap_setup
+    - role: ontap
       #  tags:
