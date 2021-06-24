@@ -7,8 +7,10 @@
 # Inter-cluster LIF details
 #####################################################
 nodes:
-  - automation-replication-ots-01
-  - automation-replication-ots-02
+  - Ansible_1
+  - Ansible_2
+#  - automation-replication-ots-01
+#  - automation-replication-ots-02
 
 #Define whether or not to create intercluster lifs on source cluster
 create_source_intercluster_lifs: yes
@@ -122,25 +124,25 @@ run_only: []
 #------------------------------------------------------------------------------
 
 #Please Enter Destination Cluster
-dst_cluster_ip: 172.21.224.190 
+dst_cluster_ip: "" 
 
 #Please Enter Destination Username
-dst_cluster_username: admin
+dst_cluster_username: ""
 
 #Please Enter Destination Password
-dst_cluster_password: ***REMOVED***
+dst_cluster_password: ""
 
 #Please Enter Destination SVM to create mirror relationship
 dst_vserver: ""
 
 #Please Enter Source Cluster
-src_cluster_ip: 172.21.224.190
+src_cluster_ip: ""
 
 #Please Enter Source Username
-src_cluster_username: admin
+src_cluster_username: ""
 
 #Please Enter Source Password
-src_cluster_password: ***REMOVED***
+src_cluster_password: ""
 
 #Please Enter Source SVM
 src_vserver: ""
