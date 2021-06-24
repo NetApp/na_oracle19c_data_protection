@@ -1,4 +1,4 @@
-k#######################################################################
+#######################################################################
 ########### Create Intercluster LIFs on source cluster ###########
 #######################################################################
 
@@ -11,7 +11,7 @@ k#######################################################################
       with_nested:
         - "{{ nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
-    - na_ontap_info:
+    - netapp.ontap.na_ontap_info:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -27,7 +27,7 @@ k#######################################################################
       with_items:
         - "{{ src_ports_info.ontap_info.net_port_info|dict2items }}"
     - name: Remove port from existing broadcast domain
-      na_ontap_ports:
+      netapp.ontap.na_ontap_ports:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -52,7 +52,7 @@ k#######################################################################
 
 - block:
     - name: Create ifgrps on source cluster
-      na_ontap_net_ifgrp:
+      netapp.ontap.na_ontap_net_ifgrp:
         state: present
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -79,7 +79,7 @@ k#######################################################################
 
 - block:
     - name: Create VLANs on individual ports on source cluster
-      na_ontap_net_vlan:
+      netapp.ontap.na_ontap_net_vlan:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -106,7 +106,7 @@ k#######################################################################
 
 - block:
     - name: Create VLANs on ifgrps on source cluster
-      na_ontap_net_vlan:
+      netapp.ontap.na_ontap_net_vlan:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -167,7 +167,7 @@ k#######################################################################
         - "{{ nodes }}"
     - debug:
         var: src_port_ilc_list
-    - na_ontap_info:
+    - netapp.ontap.na_ontap_info:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -183,7 +183,7 @@ k#######################################################################
       with_items:
         - "{{ src_netport_info.ontap_info.net_port_info|dict2items }}"
     - name: Remove port from existing broadcast domain
-      na_ontap_ports:
+      netapp.ontap.na_ontap_ports:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -240,7 +240,7 @@ k#######################################################################
         - "{{ nodes }}"
     - debug:
         var: src_port_sharedvlan_list
-    - na_ontap_info:
+    - netapp.ontap.na_ontap_info:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -256,7 +256,7 @@ k#######################################################################
       with_items:
         - "{{ src_sharedvlan_netport_info.ontap_info.net_port_info|dict2items }}"
     - name: Remove shared vlan ports from existing broadcast domain
-      na_ontap_ports:
+      netapp.ontap.na_ontap_ports:
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         hostname: "{{ src_cluster_ip }}"
@@ -293,7 +293,7 @@ k#######################################################################
 
 - block:
     - name: Set facts for intercluster lif vserver
-      na_ontap_info:
+      netapp.ontap.na_ontap_info:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -314,7 +314,7 @@ k#######################################################################
         - "{{ nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared ports to failover group on source cluster
-      na_ontap_command:
+      netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -343,7 +343,7 @@ k#######################################################################
         - "{{ nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared vlan ports to failover group on source cluster
-      na_ontap_command:
+      netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -371,7 +371,7 @@ k#######################################################################
       with_items:
         - "{{ nodes }}"
     - name: Create Failover Group for shared ifgrps to failover group on source cluster
-      na_ontap_command:
+      netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -399,7 +399,7 @@ k#######################################################################
       with_items:
         - "{{ nodes }}"
     - name: Create Failover Group for shared vlan ifgrps to failover group on source cluster
-      na_ontap_command:
+      netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -422,7 +422,7 @@ k#######################################################################
 
 - block:
     - name: Create intercluster interface with dedicated ports on source cluster
-      na_ontap_interface:
+      netapp.ontap.na_ontap_interface:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -453,7 +453,7 @@ k#######################################################################
 
 - block:
     - name: Create intercluster interface with shared ports on source cluster
-      na_ontap_interface:
+      netapp.ontap.na_ontap_interface:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -482,4 +482,3 @@ k#######################################################################
         - Check if ONTAP API is reachable
         - Check if intercluster LIF details provided are correct
         - Check if variables defined adhere to the guidelines
-
