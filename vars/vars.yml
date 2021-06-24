@@ -7,62 +7,66 @@
 # Inter-cluster LIF details
 #####################################################
 nodes:
-  - Ansible_1
-  - Ansible_2
+  - automation-replication-ots-01
+  - automation-replication-ots-02
 
 #Define whether or not to create intercluster lifs on source cluster
-create_source_intercluster_lifs: [yes|no]
+create_source_intercluster_lifs: yes
 
 source_intercluster_network_port_details:
-  using_dedicated_ports: [yes|no]  #shared or dedicated ports can be used
-  using_ifgrp: [yes|no]  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
-  using_vlans: [yes|no]  #VLANs can be defined if ports are trunked
-  failover_for_shared_individual_ports: [yes|no]  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
-  ifgrp_name: [ifgrp_name]  #Provide the ifgrp name is using ifgrps
-  vlan_id: [vlan_id]  #Provide the VLAN ID is using VLANs
-  ports: [ports] #List of ports per node
-  broadcast_domain: [broadcast_domain]  #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
-  ipspace: [ipspace] #IPspace to be used in creating broadcast domain, when using dedicated ports
-  failover_group_name: [failover_group_name]  #Creates a failover group when using shared ports
+  using_dedicated_ports: no  #shared or dedicated ports can be used
+  using_ifgrp: yes  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
+  using_vlans: yes  #VLANs can be defined if ports are trunked
+  failover_for_shared_individual_ports: yes  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
+  ifgrp_name: a0a  #Provide the ifgrp name is using ifgrps
+  vlan_id: 211  #Provide the VLAN ID is using VLANs
+  ports: 
+    - e0b
+    - e0g  #List of ports per node
+  broadcast_domain: ORA_NFS #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
+  ipspace: Default #IPspace to be used in creating broadcast domain, when using dedicated ports
+  failover_group_name: interclusterlifs  #Creates a failover group when using shared ports
 
 source_intercluster_lif_details:
-  - name: [name-1]
-    ip_address: [ip_address-node-1]
-    netmask: [netmask-node-1]
-    home_port: [home_port-node-2]  #If using ifgrp and VLAN, provide ifgrp_name.vlan_id
-    node: [node-1]
-  - name: [name-2]
-    ip_address: [ip_address-node-2]
-    netmask: [netmask-node-2]
-    home_port: [home_port-node-2]
-    node: [node-2]
+  - name: icl_1
+    address: 172.21.224.195
+    netmask: 255.255.255.0
+    home_port: a0a-211 #If using ifgrp and VLAN, provide ifgrp_name-vlan_id
+    node: automation-replication-ots-01
+  - name: icl_2
+    address: 172.21.224.196
+    netmask: 255.255.255.0
+    home_port: a0a-211
+    node: automation-replication-ots-02
 
 #Define whether or not to create intercluster lifs on destination cluster
-create_destination_intercluster_lifs: [yes|no]
+create_destination_intercluster_lifs: yes
 
 destination_intercluster_network_port_details:
-  using_dedicated_ports: [yes|no]  #shared or dedicated ports can be used
-  using_ifgrp: [yes|no]  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
-  using_vlans: [yes|no]  #VLANs can be defined if ports are trunked
-  failover_for_shared_individual_ports: [yes|no]  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
-  ifgrp_name: [ifgrp_name]  #Provide the ifgrp name is using ifgrps
-  vlan_id: [vlan_id]  #Provide the VLAN ID is using VLANs
-  ports: [ports] #List of ports per node
-  broadcast_domain: [broadcast_domain]  #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
-  ipspace: [ipspace] #IPspace to be used in creating broadcast domain, when using dedicated ports
-  failover_group_name: [failover_group_name]  #Creates a failover group when using shared ports
+  using_dedicated_ports: no  #shared or dedicated ports can be used
+  using_ifgrp: yes  #individual ports or ifgrps can be used. If using shared ifgrps, ifgrps must be existing on the cluster
+  using_vlans: yes  #VLANs can be defined if ports are trunked
+  failover_for_shared_individual_ports: yes  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
+  ifgrp_name: a0a  #Provide the ifgrp name is using ifgrps
+  vlan_id: 212  #Provide the VLAN ID is using VLANs
+  ports:
+    - e0b
+    - e0g #List of ports per node
+  broadcast_domain: ORA_NFS  #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
+  ipspace: Default #IPspace to be used in creating broadcast domain, when using dedicated ports
+  failover_group_name: icl  #Creates a failover group when using shared ports
 
 destination_intercluster_lif_details:
-  - name: [name-1]
-    ip_address: [ip_address-node-1]
-    netmask: [netmask-node-1]
-    home_port: [home_port-node-2]  #If using ifgrp and VLAN, provide ifgrp_name.vlan_id
-    node: [node-1]
-  - name: [name-2]
-    ip_address: [ip_address-node-2]
-    netmask: [netmask-node-2]
-    home_port: [home_port-node-2]
-    node: [node-2]
+  - name: icl_1
+    address: 172.21.224.195
+    netmask: 255.255.255.0
+    home_port: a0a-212 #If using ifgrp and VLAN, provide ifgrp_name-vlan_id
+    node: automation-replication-ots-01
+  - name: icl_2
+    address: 172.21.224.196
+    netmask: 255.255.255.0
+    home_port: a0a-212
+    node: automation-replication-ots-02
 
 ####################################################################################################
 # Operation List
@@ -118,25 +122,25 @@ run_only: []
 #------------------------------------------------------------------------------
 
 #Please Enter Destination Cluster
-dst_cluster_ip: "" 
+dst_cluster_ip: 172.21.224.190 
 
 #Please Enter Destination Username
-dst_cluster_username: "" 
+dst_cluster_username: admin
 
 #Please Enter Destination Password
-dst_cluster_password: ""
+dst_cluster_password: ***REMOVED***
 
 #Please Enter Destination SVM to create mirror relationship
 dst_vserver: ""
 
 #Please Enter Source Cluster
-src_cluster_ip: ""
+src_cluster_ip: 172.21.224.190
 
 #Please Enter Source Username
-src_cluster_username: ""
+src_cluster_username: admin
 
 #Please Enter Source Password
-src_cluster_password: ""
+src_cluster_password: ***REMOVED***
 
 #Please Enter Source SVM
 src_vserver: ""
