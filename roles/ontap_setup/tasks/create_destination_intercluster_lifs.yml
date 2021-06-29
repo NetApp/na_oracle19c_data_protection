@@ -3,35 +3,56 @@
 #######################################################################
 
 - block:
-    - name: Create broadcast domain on destination cluster
-      na_ontap_broadcast_domain:
-        state: present
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        hostname: "{{ dst_cluster_ip }}"
-        name: "{{ destination_intercluster_network_port_details.broadcast_domain }}"
-        mtu: 9000
-        ipspace: "{{ destination_intercluster_network_port_details.ipspace | default("Default") }}"
-        ports: "{{ item[0] }}:{{ item[1] }}"
+    - vars:
+        dst_ports_list: []
+      name: Create list of ports
+      set_fact:
+        dst_ports_list: "{{ dst_ports_list + [item[0]+':'+item[1]] }}"
       with_nested:
         - "{{ nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
-      register: destination_create_bd_register
+    - netapp.ontap.na_ontap_info:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        gather_subset: "net_port_info"
+        https: true
+        validate_certs: false
+      register: dst_ports_info
+    - vars:
+        remdstports: []
+      set_fact:
+        remdstports: "{{ remdstports + [{'port': item.key, 'bd': item.value.broadcast_domain}] }}"
+      when: item.key in dst_ports_list and item.value.broadcast_domain is defined
+      with_items:
+        - "{{ dst_ports_info.ontap_info.net_port_info|dict2items }}"
+    - name: Remove port from existing broadcast domain
+      netapp.ontap.na_ontap_ports:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        state: absent
+        names: "{{ item.port }}"
+        resource_type: broadcast_domain
+        resource_name: "{{ item.bd }}"
+        https: true
+        validate_certs: false
+      with_items: "{{ remdstports }}"
+      when: remdstports is defined
   when: destination_intercluster_network_port_details.using_dedicated_ports|bool
   rescue:
-    - name: Failure 
+    - name: Failure
       fail:
-        msg: 
-        - Create broadcast domain on destination cluster failed with error - "{{ destination_create_bd_register.stderr }}"
+        msg:
+        - Remove port from existing broadcast domain on destination cluster failed with error - "{{ destination_create_ifgrp_register.stderr }}"
         - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable 
+        - 1. Check if ONTAP API is reachable
         - 2. Check if provided nodes and port details are correct
-        - 3. Check if provided IPspace exists
-        - 4. Check if variables defined adhere to the guidelines
+        - 3. Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Create ifgrps on destination cluster 
-      na_ontap_net_ifgrp:
+    - name: Create ifgrps on destination cluster
+      netapp.ontap.na_ontap_net_ifgrp:
         state: present
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
@@ -41,22 +62,24 @@
         ports: "{{ destination_intercluster_network_port_details.ports }}"
         mode: multimode
         node: "{{ item }}"
+        https: true
+        validate_certs: false
       with_items: "{{ nodes }}"
       register: destination_create_ifgrp_register
-  when: destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_ifgrp|bool	  
+  when: destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure 
+    - name: Failure
       fail:
-        msg: 
-        - Create ifgrps on destination cluster failed with error - "{{ destination_create_ifgrp_register.stderr }}"
+        msg:
+        - Ifgrp creation on destination cluster failed with error - "{{ destination_create_ifgrp_register.stderr }}"
         - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable 
+        - 1. Check if ONTAP API is reachable
         - 2. Check if provided nodes and port details are correct
         - 3. Check if variables defined adhere to the guidelines
 
 - block:
     - name: Create VLANs on individual ports on destination cluster
-      na_ontap_net_vlan:
+      netapp.ontap.na_ontap_net_vlan:
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         hostname: "{{ dst_cluster_ip }}"
@@ -64,24 +87,26 @@
         vlanid: "{{ destination_intercluster_network_port_details.vlan_id }}"
         node: "{{ item[0] }}"
         parent_interface: "{{ item[1] }}"
-      with_nested: 
+        https: true
+        validate_certs: false
+      with_nested:
         - "{{ nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
       register: destination_create_vlans_individual_register
   when: destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure 
+    - name: Failure
       fail:
-        msg: 
+        msg:
         - Create VLANs on individual ports on destination cluster failed with error - "{{ destination_create_vlans_individual_register.stderr }}"
         - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable 
+        - 1. Check if ONTAP API is reachable
         - 2. Check if provided nodes and port details are correct
         - 3. Check if variables defined adhere to the guidelines
 
 - block:
     - name: Create VLANs on ifgrps on destination cluster
-      na_ontap_net_vlan:
+      netapp.ontap.na_ontap_net_vlan:
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         hostname: "{{ dst_cluster_ip }}"
@@ -89,147 +114,315 @@
         vlanid: "{{ destination_intercluster_network_port_details.vlan_id }}"
         node: "{{ item }}"
         parent_interface: "{{ destination_intercluster_network_port_details.ifgrp_name }}"
-      with_items: 
+        https: true
+        validate_certs: false
+      with_items:
         - "{{ nodes }}"
       register: destination_create_vlans_ifgrps_register
   when: destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure  
+    - name: Failure
       fail:
-        msg: 
+        msg:
         - Create VLANs on ifgrps on destination cluster failed with error - "{{ destination_create_vlans_ifgrps_register.stderr }}"
         - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable 
+        - 1. Check if ONTAP API is reachable
         - 2. Check if provided nodes and port details are correct
         - 3. Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Create Failover Groups in case of shared ports on destination cluster
-      na_ontap_command:
-        hostname: "{{ dst_cluster_ip }}"
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        command: ['network', 'interface', 'failover-groups', 'create', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}']
-        privilege: 'admin'
-        return_dict: true
-        https: true
-        validate_certs: false
-      register: destination_create_failover_group
-  when: not destination_intercluster_network_port_details.using_dedicated_ports|bool
-  rescue:
-    - name: Failure 
-      fail:
-        msg: 
-        - Create Failover Groups in case of shared ports on destination cluster failed with error - "{{ destination_create_failover_group.stderr }}"
-        - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
-        - Check if variables defined adhere to the guidelines
-
-- block:
-    - name: Add individual shared ports to failover group on destination cluster
-      na_ontap_command: 
-        hostname: "{{ dst_cluster_ip }}"
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        command: ['network', 'interface', 'failover-groups', 'add-targets', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ item[0] }}:{{ item[1] }}']
-        privilege: 'admin'
-        return_dict: true
-        https: true
-        validate_certs: false
+    - vars:
+        dst_port_ilc_list: []
+      name: Create list of ports
+      set_fact:
+        dst_port_ilc_list: "{{ dst_port_ilc_list + [item[0]+':'+item[1]] }}"
+      when: not destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
         - "{{ nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
+    - vars:
+        dst_port_ilc_list: []
+      name: Create list of ports
+      set_fact:
+        dst_port_ilc_list: "{{ dst_port_ilc_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name] }}"
+      when: not destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
+      with_items:
+        - "{{ nodes }}"
+    - vars:
+        dst_port_ilc_list: []
+      name: Create list of ports
+      set_fact:
+        dst_port_ilc_list: "{{ dst_port_ilc_list + [item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
+      when: destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
+      with_nested:
+        - "{{ nodes }}"
+        - "{{ destination_intercluster_network_port_details.ports }}"
+    - vars:
+        dst_port_ilc_list: []
+      name: Create list of ports
+      set_fact:
+        dst_port_ilc_list: "{{ dst_port_ilc_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
+      when: destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
+      with_items:
+        - "{{ nodes }}"
+    - debug:
+        var: dst_port_ilc_list
+    - netapp.ontap.na_ontap_info:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        gather_subset: "net_port_info"
+        https: true
+        validate_certs: false
+      register: dst_netport_info
+    - vars:
+        newdstports: []
+      set_fact:
+        newdstports: "{{ newdstports + [{'port': item.key, 'bd': item.value.broadcast_domain}] }}"
+      when: item.key in dst_port_ilc_list and item.value.broadcast_domain is defined
+      with_items:
+        - "{{ dst_netport_info.ontap_info.net_port_info|dict2items }}"
+    - name: Remove port from existing broadcast domain
+      netapp.ontap.na_ontap_ports:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        state: absent
+        names: "{{ item.port }}"
+        resource_type: broadcast_domain
+        resource_name: "{{ item.bd }}"
+        https: true
+        validate_certs: false
+      with_items: "{{ newdstports }}"
+      when: newdstports is defined
+    - name: Create broadcast domain on destination cluster
+      netapp.ontap.na_ontap_broadcast_domain:
+        state: present
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        name: "{{ destination_intercluster_network_port_details.broadcast_domain }}"
+        mtu: 1500
+        ipspace: "{{ destination_intercluster_network_port_details.ipspace | default(Default) }}"
+        ports: "{{ dst_port_ilc_list }}"
+        https: true
+        validate_certs: false
+      register: destination_create_bd_register
+  when: destination_intercluster_network_port_details.using_dedicated_ports|bool
+  rescue:
+    - name: Failure
+      fail:
+        msg:
+        - Create broadcast domain on destination cluster failed with error - "{{ destination_create_bd_register.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check if provided nodes and port details are correct
+        - 3. Check if provided IPspace exists
+        - 4. Check if variables defined adhere to the guidelines
+
+- block:
+    - vars:
+        dst_port_sharedvlan_list: []
+      name: Create list of shared vlan ports
+      set_fact:
+        dst_port_sharedvlan_list: "{{ dst_port_sharedvlan_list + [item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
+      when: not destination_intercluster_network_port_details.using_ifgrp|bool
+      with_nested:
+        - "{{ nodes }}"
+        - "{{ destination_intercluster_network_port_details.ports }}"
+    - vars:
+        dst_port_sharedvlan_list: []
+      name: Create list of shared vlan ports
+      set_fact:
+        dst_port_sharedvlan_list: "{{ dst_port_sharedvlan_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
+      when: destination_intercluster_network_port_details.using_ifgrp|bool
+      with_items:
+        - "{{ nodes }}"
+    - debug:
+        var: dst_port_sharedvlan_list
+    - netapp.ontap.na_ontap_info:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        gather_subset: "net_port_info"
+        https: true
+        validate_certs: false
+      register: dst_sharedvlan_netport_info
+    - vars:
+        dst_sharedvlanportsbd: []
+      set_fact:
+        dst_sharedvlanportsbd: "{{ dst_sharedvlanportsbd + [{'port': item.key, 'bd': item.value.broadcast_domain}] }}"
+      when: item.key in dst_port_sharedvlan_list and item.value.broadcast_domain is defined
+      with_items:
+        - "{{ dst_sharedvlan_netport_info.ontap_info.net_port_info|dict2items }}"
+    - name: Remove shared vlan ports from existing broadcast domain
+      netapp.ontap.na_ontap_ports:
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        state: absent
+        names: "{{ item.port }}"
+        resource_type: broadcast_domain
+        resource_name: "{{ item.bd }}"
+        https: true
+        validate_certs: false
+      with_items: "{{ dst_sharedvlanportsbd }}"
+      when: dst_sharedvlanportsbd is defined
+    - name: Add shared vlan ports to broadcast domain on destination cluster
+      netapp.ontap.na_ontap_broadcast_domain_ports:
+        state: present
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        broadcast_domain: "{{ destination_intercluster_network_port_details.broadcast_domain }}"
+        ports: "{{ dst_port_sharedvlan_list }}"
+        https: true
+        validate_certs: false
+      register: destination_add_sharedvlan_bd_register
+  when: not destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_vlans|bool
+  rescue:
+    - name: Failure
+      fail:
+        msg:
+        - Add shared vlan ports to broadcast domain on destination cluster failed with error - "{{ destination_add_sharedvlan_bd_register.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check if provided nodes and port details are correct
+        - 3. Check if provided IPspace exists
+        - 4. Check if variables defined adhere to the guidelines
+
+- block:
+    - name: Set facts for intercluster lif vserver
+      netapp.ontap.na_ontap_info:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        gather_subset: "vserver_info"
+        https: true
+        validate_certs: false
+      register: dst_intercluster_vserver
+    - set_fact:
+        icl_vserver: "{{ item.key }}"
+      when: item.value.vserver_type == "admin"
+      with_items: "{{ dst_intercluster_vserver.ontap_info.vserver_info|dict2items }}"
+
+- block:
+    - name: Create list of ports
+      set_fact:
+        dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item[0]+':'+item[1]) + ',' }}"
+      with_nested:
+        - "{{ nodes }}"
+        - "{{ destination_intercluster_network_port_details.ports }}"
+    - name: Create Failover Group for individual shared ports to failover group on destination cluster
+      netapp.ontap.na_ontap_command:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        command: ['network', 'interface', 'failover-groups', 'create', '-vserver', '{{ icl_vserver }}', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ dst_port_fg_list }}']
+        privilege: 'admin'
+        return_dict: true
+        https: true
+        validate_certs: false
       register: destination_add_ports_to_failover_group
   when: not destination_intercluster_network_port_details.using_dedicated_ports|bool and not destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure 
+    - name: Failure
       fail:
-        msg: 
-        - Add individual shared ports to failover group on destination cluster failed with error - "{{ destination_add_ports_to_failover_group.stderr }}"
+        msg:
+        - Create Failover Group for individual shared ports to failover group on destination cluster failed with error - "{{ destination_add_ports_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if provided nodes and port details are correct
         - Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Add individual shared vlan ports to failover group on destination cluster
-      na_ontap_command:
+    - name: Create list of ports
+      set_fact:
+        dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string) + ',' }}"
+      with_nested:
+        - "{{ nodes }}"
+        - "{{ destination_intercluster_network_port_details.ports }}"
+    - name: Create Failover Group for individual shared vlan ports to failover group on destination cluster
+      netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        command: ['network', 'interface', 'failover-groups', 'add-targets', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ item[0] }}:{{ item[1] }}.{{ destination_intercluster_network_port_details.vlan_id }}']
+        command: ['network', 'interface', 'failover-groups', 'create', '-vserver', '{{ icl_vserver }}', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ dst_port_fg_list }}']
         privilege: 'admin'
         return_dict: true
         https: true
         validate_certs: false
-      with_nested:
-        - "{{ nodes }}"
-        - "{{ destination_intercluster_network_port_details.ports }}"
       register: destination_add_vlanports_to_failover_group
   when: not destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure  
+    - name: Failure
       fail:
-        msg: 
-        - Add individual shared vlan ports to failover group on destination cluster failed with error - "{{ destination_add_vlanports_to_failover_group.stderr }}"
+        msg:
+        - Create Failover Group for individual shared vlan ports to failover group on destination cluster failed with error - "{{ destination_add_vlanports_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if provided nodes, vlan and port details are correct
         - Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Add shared ifgrps to failover group on destination cluster
-      na_ontap_command:
+    - name: Create list of ports
+      set_fact:
+        dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item+':'+destination_intercluster_network_port_details.ifgrp_name) + ',' }}"
+      with_items:
+        - "{{ nodes }}"
+    - name: Create Failover Group for shared ifgrps to failover group on destination cluster
+      netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        command: ['network', 'interface', 'failover-groups', 'add-targets', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ item }}:{{ destination_intercluster_network_port_details.ifgrp_name }}']
+        command: ['network', 'interface', 'failover-groups', 'create', '-vserver', '{{ icl_vserver }}', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ dst_port_fg_list }}']
         privilege: 'admin'
         return_dict: true
         https: true
         validate_certs: false
-      with_items:
-        - "{{ nodes }}"
       register: destination_add_ifgrps_to_failover_group
   when: not destination_intercluster_network_port_details.using_dedicated_ports|bool and not destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure  
+    - name: Failure
       fail:
-        msg: 
-        - Add shared ifgrps to failover group on destination cluster failed with error - "{{ destination_add_ifgrps_to_failover_group.stderr }}"
+        msg:
+        - Create Failover Group for shared ifgrps to failover group on destination cluster failed with error - "{{ destination_add_ifgrps_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if provided nodes and ifgrp details are correct
         - Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Add shared vlan ifgrps to failover group on destination cluster
-      na_ontap_command:
+    - name: Create list of ports
+      set_fact:
+        dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string) + ',' }}"
+      with_items:
+        - "{{ nodes }}"
+    - name: Create Failover Group for shared vlan ifgrps to failover group on destination cluster
+      netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        command: ['network', 'interface', 'failover-groups', 'add-targets', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ item }}:{{ destination_intercluster_network_port_details.ifgrp_name }}.{{ destination_intercluster_network_port_details.vlan_id }}']
+        command: ['network', 'interface', 'failover-groups', 'create', '-vserver', '{{ icl_vserver }}', '-failover-group', '{{ destination_intercluster_network_port_details.failover_group_name }}', '-targets', '{{ dst_port_fg_list }}']
         privilege: 'admin'
         return_dict: true
         https: true
         validate_certs: false
-      with_items:
-        - "{{ nodes }}"
       register: destination_add_vlanifgrps_to_failover_group
   when: not destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
-    - name: Failure  
+    - name: Failure
       fail:
-        msg: 
-        - Add shared vlan ifgrps to failover group on destination cluster failed with error - "{{ destination_add_vlanifgrps_to_failover_group.stderr }}"
+        msg:
+        - Create Failover Group for shared vlan ifgrps to failover group on destination cluster failed with error - "{{ destination_add_vlanifgrps_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if provided nodes, vlan and ifgrp details are correct
         - Check if variables defined adhere to the guidelines
 
 - block:
-    - name: Create cluster interface with dedicated ports on destination cluster
-      na_ontap_interface:
+    - name: Create intercluster interface with dedicated ports on destination cluster
+      netapp.ontap.na_ontap_interface:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
@@ -241,7 +434,7 @@
         admin_status: up
         address: "{{ item.address }}"
         netmask: "{{ item.netmask }}"
-        failover_policy: broadcast-domain-wide
+        vserver: "{{ icl_vserver }}"
         is_auto_revert: true
         https: true
         validate_certs: false
@@ -249,18 +442,18 @@
       register: destination_create_cluster_interface_dedicated_register
   when: destination_intercluster_network_port_details.using_dedicated_ports|bool
   rescue:
-    - name: Failure  
+    - name: Failure
       fail:
-        msg: 
-        - Create cluster interface with dedicated ports on destination cluster failed with error - "{{ destination_create_cluster_interface_dedicated_register.stderr }}"
+        msg:
+        - Create intercluster interface with dedicated ports on destination cluster failed with error - "{{ destination_create_cluster_interface_dedicated_register.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if intercluster LIF details provided are correct
         - Check if variables defined adhere to the guidelines
 
 - block:
     - name: Create intercluster interface with shared ports on destination cluster
-      na_ontap_interface:
+      netapp.ontap.na_ontap_interface:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
@@ -272,19 +465,20 @@
         admin_status: up
         address: "{{ item.address }}"
         netmask: "{{ item.netmask }}"
+        vserver: "{{ icl_vserver }}"
         failover_group: "{{ destination_intercluster_network_port_details.failover_group_name }}"
         is_auto_revert: true
         https: true
         validate_certs: false
       with_items: "{{ destination_intercluster_lif_details }}"
       register: destination_create_intercluster_interface_dedicated_register
-  when: destination_intercluster_network_port_details.using_dedicated_ports|bool
+  when: not destination_intercluster_network_port_details.using_dedicated_ports|bool
   rescue:
-    - name: Failure 
+    - name: Failure
       fail:
-        msg: 
+        msg:
         - Create intercluster interface with shared ports on destination cluster failed with error - "{{ destination_create_intercluster_interface_dedicated_register.stderr }}"
         - Possible troubleshooting steps:
-        - Check if ONTAP API is reachable 
+        - Check if ONTAP API is reachable
         - Check if intercluster LIF details provided are correct
         - Check if variables defined adhere to the guidelines

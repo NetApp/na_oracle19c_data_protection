@@ -3,21 +3,20 @@
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
     - name: Create Intercluster LIFs on source cluster
-      include_tasks:
-        - create_source_intercluster_lifs.yml
+      include_tasks: create_source_intercluster_lifs.yml
       when: create_source_intercluster_lifs|bool
       tags: 
         - ontap_src_intercluster_lifs
     - name: Create Intercluster LIFs on destination cluster
-      include_tasks:
-        - create_destination_intercluster_lifs.yml
-      when: create_destination_intercluster_lifs|bool
+      include_tasks: create_destination_intercluster_lifs.yml
       tags:
         - ontap_dst_intercluster_lifs
+      when: create_destination_intercluster_lifs|bool
     - name: Intercluster Configuration and Snapmirror Setup
-      include_tasks:
-        - create_clusterpeer_svmpeer.yml
-        - create_dest_snapmirror.yml
+      include_tasks: create_clusterpeer_svmpeer.yml
       tags:
         - ontap_peer_create
-        - ontap_snapmirror_create	
+    - name: Intercluster Configuration and Snapmirror Setup
+      include_tasks: create_dest_snapmirror.yml
+      tags:
+        - ontap_snapmirror_create
