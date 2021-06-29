@@ -2,8 +2,12 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
+    - name: pre-check
+      include_tasks: pre_check.yml
+      tags:
+        - pre_check
+
     - name: create aws connector
       include_tasks: create_connector.yml
       tags:
         - aws_connector
-      

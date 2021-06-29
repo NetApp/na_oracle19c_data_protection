@@ -5,20 +5,21 @@ access_key:
 
 secret_key: 
 
+my_region: 
 
 
 ####### Connector Deployment and CVO deployment Variables #######
 
 token: 
 
-region_deploy:
+region_deploy: 
 
-key_pair:
+key_pair: 
 
-subnet: subnet-xxxxxxx
+subnet: subnet-xxxxxxxxxxxxxxx
 
-security_group: [sg-xxxxxxxxxx]
+security_group: [sg-xxxxxxxx]
 
-account: account-xxxxxxx
+account: account-xxxxxxxxx
 
-role_name:
+role_name: occm_sufian

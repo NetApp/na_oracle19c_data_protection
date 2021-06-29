@@ -1,41 +1,14 @@
-- name: ONTAP Setup and Storage Config for Oracle
+---
+- name: CVO Setup
+  hosts: localhost
+  gather_facts: False
   collections:
+    - netapp.cloudmanager
     - netapp.ontap
-  hosts: "{{ hosts_group | default ('ontap') }}"
-  connection: local
-  gather_facts: False
+    - community.aws
   vars_files:
-    - roles/ontap/defaults/main.yml    
-    - vars/vars.yml
-  vars_prompt:
-    - name: vsadmin_password
-      prompt: Enter vsadmin password for the SVM
-      unsafe: yes
-      private: yes
+    - roles/cvo_setup/defaults/main.yml
   roles:
-    - role: ontap
+    - role: cvo_setup
   tags:
-    - ontap_config
-
-- name: Oracle Linux Setup and Storage Config for Oracle
-  hosts: oracle
-  gather_facts: False
-  vars_files:
-    - roles/linux/defaults/main.yml
-    - vars/vars.yml
-  roles:
-    - role: linux
-  tags:
-    - linux_config
-
-- name: Oracle installation and configuration
-  hosts: oracle
-  gather_facts: False
-  vars_files:
-    - roles/oracle/defaults/main.yml
-    - roles/linux/defaults/main.yml
-    - vars/vars.yml
-  roles:
-    - role: oracle
-  tags:
-    - oracle_config
+    - cvo_config

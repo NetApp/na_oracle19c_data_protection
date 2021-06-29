@@ -1,48 +1,15 @@
 ---
-
-##### Install Boto3 and awscli #####
-- name: Install the pre-reqs for connector
-  become: yes
-  pip:
-    name:
-       - boto3
-       - awscli
-
-##### Export AWS Environment Keys and region info #####
-
-- name: Echo AWS keys
-  shell: "echo $AWS_ACCESS_KEY_ID"
-  environment:
-    AWS_ACCESS_KEY_ID: "{{ access_key }}"
-
-- name: Echo AWS password keys
-  shell: "echo $AWS_SECRET_KEY_ID"
-  environment:
-    AWS_SECRET_KEY_ID: "{{ secret_key }}"
-
-
-########## Create Role ############
-#- name: Create Role
-#  iam_role:
-#    name: occm_sufian1
-#    assume_role_policy_document:
-#    state: present
-#    validate_certs: true
-#    aws_access_key: ""
-#    aws_secret_key: ""
-
-
 ##### Deploy NetApp Cloud Manager Connector #######
 - name: Create NetApp Cloud Manager connector for AWS
   netapp.cloudmanager.na_cloudmanager_connector_aws:
     state: present
-    refresh_token: "{{ token }}"
-    name: aws_connector_sufian
+    refresh_token: 
+    name: aws_connector_sufian12
     region: "{{ region_deploy }}"
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
     security_group_ids: "{{ security_group }}"
-    iam_instance_profile_name: occm_sufian
+    iam_instance_profile_name: occm_sufian 
     account_id: "{{ account }}"
     company: NetApp
 #    proxy_url: abc.com
