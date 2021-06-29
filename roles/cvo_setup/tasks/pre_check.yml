@@ -1,14 +1,27 @@
 ---
 ##### Install Boto3 and awscli #####
-#- name: Install the pre-reqs for connector
-#  become: yes
-#  pip:
-#    name:
-#       - boto3
-#       - chardet 
-#       - urllib3 
-#  tags:
-#    - pre_check
+- name: Install the pre-reqs for connector
+  become: yes
+  pip:
+    name:
+       - boto3
+       - chardet
+       - urllib3
+       - requests
+       - awscli
+       - pexpect
+  tags:
+    - pre_check
+
+- name: Run aws configure
+  expect:
+    command: aws configure
+    responses:
+      AWS Access Key ID: "AKIATCFKZXU6FYU76P67"
+      AWS Secret Access Key: "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"
+      Default region name: "us-east-1"
+      Default output format: ""
+  no_log: false
 
 
 ########## Create Role ############

@@ -3,13 +3,13 @@
 - name: Create NetApp Cloud Manager connector for AWS
   netapp.cloudmanager.na_cloudmanager_connector_aws:
     state: present
-    refresh_token: 
-    name: aws_connector_sufian12
+    refresh_token: "{{ token }}"
+    name: aws_connector_sufian121
     region: "{{ region_deploy }}"
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
     security_group_ids: "{{ security_group }}"
-    iam_instance_profile_name: occm_sufian 
+    iam_instance_profile_name: occm_sufian
     account_id: "{{ account }}"
     company: NetApp
 #    proxy_url: abc.com
