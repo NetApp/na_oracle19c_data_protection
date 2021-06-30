@@ -7,12 +7,12 @@
       tags:
         - pre_check
 
-    - name: create aws connector
-      include_tasks: create_connector.yml
-      tags:
-        - aws_connector
+#    - name: create aws connector
+#      include_tasks: create_connector.yml
+#      tags:
+#        - aws_connector
 
-    - name: create cvo
-      include_tasks: create_cvo.yml
-      tags:
-        - aws_single
+#    - name: create cvo
+#      include_tasks: create_cvo.yml
+#      tags:
+#        - aws_single

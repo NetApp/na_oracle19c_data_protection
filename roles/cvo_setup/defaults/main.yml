@@ -1,11 +1,10 @@
 ---
 ####### Acess Keys Variables ######
 
-#access_key: 
+access_key: 
 
-#secret_key: 
+secret_key: 
 
-#my_region: 
 
 
 ####### Connector Deployment and CVO deployment Variables #######
