@@ -1,19 +1,19 @@
----
-- name: Create NetApp Cloud Manager CVO for AWS single
-  netapp.cloudmanager.na_cloudmanager_cvo_aws:
-    state: present
-    refresh_token: "{{ token }}"
-    name: ansibleCVO
-    region: us-east-1
-    subnet_id: "{{ subnet }}"
-    vpc_id: vpc-
-    svm_password: ***REMOVED***45
-    client_id: 
-    writing_speed_state: NORMAL
-    is_ha: false
+#---
+#- name: Create NetApp Cloud Manager CVO for AWS single
+#  netapp.cloudmanager.na_cloudmanager_cvo_aws:
+#    state: present
+#    refresh_token: "{{ token }}"
+#    name: ansibleCVO2
+#    region: us-east-1
+#    subnet_id: "{{ subnet }}"
+#    vpc_id: vpc-
+#    svm_password: ***REMOVED***45
+#    client_id: 
+3    writing_speed_state: NORMAL
+#    is_ha: false
 
 #    iam_instance_profile_name: occm_sufian
-  tags: aws_single
+#  tags: aws_single
 
 #- name: Create NetApp Cloud Manager CVO for AWS HA
 #  netapp.cloudmanager.na_cloudmanager_cvo_aws:

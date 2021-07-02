@@ -1,17 +1,35 @@
 ---
+##### Running Credentials ########
+- name: Run aws configure
+  expect:
+    command: aws configure
+    responses:
+      AWS Access Key ID:  "{{ access_key }}"                                                                                    
+      AWS Secret Access Key: "{{ secret_key }}"                                                                                
+      Default region name: ""
+      Default output format: ""
+  no_log: true
+
+  tags:
+    - aws_connector
+
 ##### Deploy NetApp Cloud Manager Connector #######
 - name: Create NetApp Cloud Manager connector for AWS
   netapp.cloudmanager.na_cloudmanager_connector_aws:
     state: present
     refresh_token: "{{ token }}"
-    name: aws_connector_sufian121
+    name: aws_connector_sufian82
     region: "{{ region_deploy }}"
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
     security_group_ids: "{{ security_group }}"
-    iam_instance_profile_name: occm_sufian
+    iam_instance_profile_name: 
     account_id: "{{ account }}"
     company: NetApp
+    associate_public_ip_address: false
+  register: connector
+- debug: var=connector
+
 #    proxy_url: abc.com
 #    proxy_user_name: xyz
 #    proxy_password: abcxyz
@@ -19,5 +37,33 @@
 #    aws_tag: [
 #        {tag_key: abc,
 #        tag_value: a123}]
+  tags:
+    - aws_connector
+
+
+########################################################
+
+- name: Pause for 5 minutes to build app cache
+  pause:
+    minutes: 5
+  tags:
+    - aws_connector
+
+
+#########################################################
+
+
+- name: Create NetApp Cloud Manager CVO for AWS single
+  netapp.cloudmanager.na_cloudmanager_cvo_aws:
+    state: present
+    refresh_token: "{{ token }}"
+    name: ansibleCVO2
+    region: us-east-1
+    subnet_id: "{{ subnet }}"
+    vpc_id: vpc-7d4a2818
+    svm_password: ***REMOVED***45
+    client_id: "{{ connector.msg.client_id }}"
+    writing_speed_state: NORMAL
+    is_ha: false
   tags:
     - aws_connector
