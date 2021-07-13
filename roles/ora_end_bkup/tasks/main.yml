@@ -6,6 +6,6 @@
       include_tasks: ora_bkup_off.yml
       tags:
         - ora_bkup_off
-        - cp_bkup_script
+        - cp_bkup_script_end
         - exe_end_bkup
 
