@@ -1,0 +1,10 @@
+#This Playbook is designed to be ran on a schedule (end user's choice) in AWX/Tower
+- name: Pause Oracle DB for Snapshots
+  hosts: oracle
+  gather_facts: False 
+  vars_files:
+    - roles/ora_begin_bkup/defaults/main.yml
+  roles:
+    - role: ora_begin_bkup
+  tags:
+    - ora_pause_db
