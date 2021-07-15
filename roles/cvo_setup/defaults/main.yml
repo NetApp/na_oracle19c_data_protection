@@ -1,0 +1,22 @@
+---
+####### Acess Keys Variables ######
+
+access_key: 
+
+secret_key: 
+
+
+####### Connector Deployment and CVO deployment Variables #######
+
+token: 
+
+region_deploy: us-east-1
+
+key_pair: 
+
+subnet: 
+
+security_group: 
+
+account: 
+
