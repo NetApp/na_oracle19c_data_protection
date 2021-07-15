@@ -12,3 +12,9 @@
       tags:
         - aws_connector
 
+    - name: create AWS CVO
+      include_tasks: create_cvo.yml
+      tags:
+        - aws_cvo
+
+

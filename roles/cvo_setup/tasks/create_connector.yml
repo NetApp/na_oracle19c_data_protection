@@ -9,7 +9,7 @@
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
     security_group_ids: "{{ security_group }}"
-    iam_instance_profile_name: occm_sufian2
+    iam_instance_profile_name: occm_sufian5
     account_id: "{{ account }}"
     company: NetApp
     associate_public_ip_address: false
@@ -36,48 +36,3 @@
     - aws_connector
 
 
-#########################################################
-
-
-- name: Create NetApp Cloud Manager CVO for AWS single
-  netapp.cloudmanager.na_cloudmanager_cvo_aws:
-    state: present
-    refresh_token: "{{ token }}"
-    name: ansibleCVO222
-    region: us-east-1
-    subnet_id: "{{ subnet }}"
-    vpc_id: vpc-7d4a2818
-    svm_password: ***REMOVED***45
-    client_id: "{{ connector.msg.client_id }}"
-    writing_speed_state: NORMAL
-    is_ha: false
-  tags:
-    - aws_connector
-
-########################################################
-
-#- name: Create NetApp Cloud Manager CVO for AWS HA
-#  netapp.cloudmanager.na_cloudmanager_cvo_aws:
-#    state: present
-#    refresh_token: "{{ xxxxxxxxxxxxxxx }}"
-#    name: TerraformCVO
-#    region: us-west-1
-#    subnet_id: subnet-xxxxxxx
-#    vpc_id: vpc-xxxxxxxx
-#    svm_password: P@assword!
-#    client_id: "{{ xxxxxxxxxxxxxxx }}"
-#    writing_speed_state: NORMAL
-#    aws_tag: [
-#        {tag_key: abc,
-#        tag_value: a123}]
-#    is_ha: true
-#    failover_mode: FloatingIP
-#    node1_subnet_id: subnet-1
-#    node2_subnet_id: subnet-1
-#    mediator_subnet_id: subnet-1
-#    mediator_key_pair_name: key1
-#    cluster_floating_ip: 2.1.1.1
-#    data_floating_ip: 2.1.1.2
-#    data_floating_ip2: 2.1.1.3
-#    svm_floating_ip: 2.1.1.4
-#    route_table_ids: [rt-1,rt-2]

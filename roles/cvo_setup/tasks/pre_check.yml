@@ -1,6 +1,6 @@
 ---
 
-##### Install Boto3 and awscli #####
+##### Check some pre-checks for Centos8 #####
 - name: Install the pre-reqs for connector
   become: yes
   pip:
@@ -32,7 +32,7 @@
 ########## Create Role ########
 - name: Create Role
   iam_role:
-    name: "{{ role_name }}"
+    name: occm_sufian5
     assume_role_policy_document: "{{ lookup('file','policy.json') }}"
     state: present
     validate_certs: true
@@ -43,3 +43,10 @@
     - pre_check
 
 
+########################################################
+
+- name: Pause for 2 minutes to Create Iam Instance Profile
+  pause:
+    minutes: 2
+  tags:
+    - pre-check
