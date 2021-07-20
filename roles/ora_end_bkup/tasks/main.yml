@@ -1,0 +1,11 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Turn off Oracle DBs backup mode on target DB servers after snapshots
+      include_tasks: ora_bkup_off.yml
+      tags:
+        - ora_bkup_off
+        - cp_bkup_script_end
+        - exe_end_bkup
+
