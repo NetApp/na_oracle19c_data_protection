@@ -1,0 +1,66 @@
+- block:
+    - name: Create access token with username/password
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        body_format: json
+        body:
+          grant_type: password
+          username: "{{ email_id }}"
+          password: "{{ password }}"
+          audience: "https://api.cloud.netapp.com"
+          scope: profile
+          client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
+        headers:
+          Content-Type: application/json
+      register: connector_accesstoken
+      when: connector_access == "password"
+    - name: Create access token with refresh token
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        body_format: json
+        body:
+          grant_type: refresh_token
+          refresh_token: "{{ refresh_token }}"
+          client_id: Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC
+        headers:
+          Content-Type: application/json
+      register: connector_accesstoken
+      when: connector_access == "refresh_token"
+    - debug: var=connector_accesstoken
+  rescue:
+    - name: Failure 
+      fail:
+        msg: 
+        - Create access token failed!
+        - Possible troubleshooting steps:
+        - 1. Check if API endpoint [https://netapp-cloud-account.auth0.com/oauth/token] is reachable 
+        - 2. Check if provided username/password or refresh_token are correct
+        - 3. Check if variables defined adhere to the guidelines
+
+- block
+    - name: Add on-prem ONTAP cluster to connector in Cloud Manager
+      uri:
+        url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
+        method: POST
+        body_format: json
+        body:
+          tenantId: "{{ workspace_id }}"
+          name: "{{ on_prem_ontap_name }}"
+          clusterAddress: "{{ on_prem_ontap_cluster_ip }}"
+          clusterUserName: "{{ on_prem_ontap_username }}"
+          clusterPassword: "{{ on_prem_ontap_password }}"
+          location: ON_PREM
+        headers:
+          Content-Type: application/json
+          Authorization: "{{ connector_accesstoken.json.access_token }}"
+  rescue:
+    - name: Failure 
+      fail:
+        msg: 
+        - Add on-prem ONTAP cluster to connector in Cloud Manager failed!
+        - Possible troubleshooting steps:
+        - 1. Check if connector API endpoint is reachable 
+        - 2. Check if provided workspace_id and on-prem ONTAP cluster details are correct
+        - 3. Check if variables defined adhere to the guidelines
