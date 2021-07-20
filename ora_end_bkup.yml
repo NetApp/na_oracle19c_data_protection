@@ -1,0 +1,10 @@
+#This Playbook is designed to be ran on a schedule (end user's choice) in AWX/Tower
+- name: Resume Oracle DB after Snapshot
+  hosts: oracle
+  gather_facts: False 
+  vars_files:
+    - roles/ora_end_bkup/defaults/main.yml
+  roles:
+    - role: ora_end_bkup
+  tags:
+    - ora_resume_db

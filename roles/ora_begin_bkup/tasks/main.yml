@@ -1,0 +1,10 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Put Oracle DBs in backup mode on target DB servers before snapshots
+      include_tasks: ora_bkup_on.yml
+      tags: 
+        - ora_bkup_on
+        - cp_bkup_script_begin
+        - exe_begin_bkup
