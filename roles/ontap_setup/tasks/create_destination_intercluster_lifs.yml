@@ -22,7 +22,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Create broadcast domain on destination cluster failed!
+        - Create broadcast domain on destination cluster failed with error - "{{ destination_create_bd_register.stderr }}"
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable 
         - 2. Check if provided nodes and port details are correct
@@ -48,7 +48,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Create ifgrps on destination cluster failed!
+        - Create ifgrps on destination cluster failed with error - "{{ destination_create_ifgrp_register.stderr }}"
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable 
         - 2. Check if provided nodes and port details are correct
@@ -73,7 +73,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Create VLANs on individual ports on destination cluster failed!
+        - Create VLANs on individual ports on destination cluster failed with error - "{{ destination_create_vlans_individual_register.stderr }}"
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable 
         - 2. Check if provided nodes and port details are correct
@@ -97,7 +97,7 @@
     - name: Failure  
       fail:
         msg: 
-        - Create VLANs on ifgrps on destination cluster failed!
+        - Create VLANs on ifgrps on destination cluster failed with error - "{{ destination_create_vlans_ifgrps_register.stderr }}"
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable 
         - 2. Check if provided nodes and port details are correct
@@ -120,7 +120,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Create Failover Groups in case of shared ports on destination cluster failed!
+        - Create Failover Groups in case of shared ports on destination cluster failed with error - "{{ destination_create_failover_group.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if variables defined adhere to the guidelines
@@ -145,7 +145,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Add individual shared ports to failover group on destination cluster failed!
+        - Add individual shared ports to failover group on destination cluster failed with error - "{{ destination_add_ports_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if provided nodes and port details are correct
@@ -171,7 +171,7 @@
     - name: Failure  
       fail:
         msg: 
-        - Add individual shared vlan ports to failover group on destination cluster failed!
+        - Add individual shared vlan ports to failover group on destination cluster failed with error - "{{ destination_add_vlanports_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if provided nodes, vlan and port details are correct
@@ -196,7 +196,7 @@
     - name: Failure  
       fail:
         msg: 
-        - Add shared ifgrps to failover group on destination cluster failed!
+        - Add shared ifgrps to failover group on destination cluster failed with error - "{{ destination_add_ifgrps_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if provided nodes and ifgrp details are correct
@@ -221,7 +221,7 @@
     - name: Failure  
       fail:
         msg: 
-        - Add shared vlan ifgrps to failover group on destination cluster failed!
+        - Add shared vlan ifgrps to failover group on destination cluster failed with error - "{{ destination_add_vlanifgrps_to_failover_group.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if provided nodes, vlan and ifgrp details are correct
@@ -252,7 +252,7 @@
     - name: Failure  
       fail:
         msg: 
-        - Create cluster interface with dedicated ports on destination cluster failed!
+        - Create cluster interface with dedicated ports on destination cluster failed with error - "{{ destination_create_cluster_interface_dedicated_register.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if intercluster LIF details provided are correct
@@ -283,7 +283,7 @@
     - name: Failure 
       fail:
         msg: 
-        - Create intercluster interface with shared ports on destination cluster failed!
+        - Create intercluster interface with shared ports on destination cluster failed with error - "{{ destination_create_intercluster_interface_dedicated_register.stderr }}"
         - Possible troubleshooting steps:
         - Check if ONTAP API is reachable 
         - Check if intercluster LIF details provided are correct
