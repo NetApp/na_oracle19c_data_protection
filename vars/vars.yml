@@ -70,6 +70,19 @@ destination_intercluster_lif_details:
     home_port: a0a-212
     node: automation-replication-ots-02
 
+###################################################################################################
+# variables for - Add on-prem ONTAP to Connector in Cloud Manager 
+###################################################################################################
+connector_ip: 172.30.10.55
+connector_access: refresh_token
+refresh_token: ***REMOVED***
+workspace_id: workspace-TtPXVvC8
+on_prem_ontap_name: on-prem
+on_prem_ontap_cluster_ip: 10.61.185.163
+on_prem_ontap_username: admin
+on_prem_ontap_password: ***REMOVED***
+
+
 ####################################################################################################
 # Operation List
 ####################################################################################################

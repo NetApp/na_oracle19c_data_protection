@@ -17,4 +17,8 @@
       tags:
         - aws_cvo
 
+    - name: Add on-prem ONTAP to connector
+      include_tasks: add_onprem_ontap_to_connector.yml
+      tags:
+        - onprem_to_aws_connector
 
