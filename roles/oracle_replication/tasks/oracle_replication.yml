@@ -1,0 +1,45 @@
+- block:
+    - name: ONTAP Info
+      na_ontap_info:
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        http_port: null
+        https: true
+        validate_certs: false
+        gather_subset: "clock_info"
+      tags:
+        - ontap_time
+
+    - set_fact:
+        temp: "{{ ontap_time.ontap_info.clock_info.local_time }}"
+
+    - set_fact:
+        readable_format: "{{ '%H.%M.%S.%Y-%m-%d' | strftime(temp) }}"
+
+    - name: Consistency Group Snapshot
+      na_ontap_cg_snapshot:
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        state: present
+        use_rest: always
+        vserver: "{{ src_vserver }}"
+        snapshot: "{{ readable_format + '.' + src_snapshot_name }}"
+        volumes: "{{ src_cg_vols }}"
+        snapmirror_label: "{{ src_snapshot_name }}"
+      tags:
+        - ontap_cg_snapshot
+	
+    - name: Snapmirror Update
+      na_ontap_command:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        command: "['snapmirror', 'update', '-destination-path', '{{ dst_vserver + ':' + item }}', '-source-snapshot', '{{ readable_format + '.' + src_snapshot_name }}']"
+        https: true
+        validate_certs: false
+      with_items:
+        - "{{ dst_cg_vols }}"
+      tags:
+        - ontap_snapmirror_update
