@@ -43,3 +43,12 @@
         - "{{ dst_cg_vols }}"
       tags:
         - ontap_snapmirror_update
+
+  rescue:
+    - name: Failure
+      fail:
+        msg:
+        - Create destination volume for SnapMirror failed with error - "{{ oracle_replication.stderr }}"
+        - Possible troubleshooting steps:
+        - 1. Check if ONTAP API is reachable
+        - 2. Check if variables defined adhere to the guidelines

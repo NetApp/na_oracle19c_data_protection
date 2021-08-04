@@ -40,6 +40,8 @@
       with_together:
         - "{{ src_cg_vols }}"
         - "{{ dst_cg_vols }}"
+      tags:
+        - ontap_snapmirror
   rescue:
     - name: Failure
       fail:
