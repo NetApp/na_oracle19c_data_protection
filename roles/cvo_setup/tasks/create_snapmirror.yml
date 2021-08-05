@@ -57,7 +57,6 @@
               - "172.30.10.48"
             policyName: "MirrorAllSnapshots"
             #maxTransferRate: "1024"
-            #client_id: "8viO1aWuuYsULEvdlvCteSiCyWkfZAi1clients"
           replicationVolume:
             sourceSvmName: "svm0"
             sourceVolumeName: "source"

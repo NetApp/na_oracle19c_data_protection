@@ -1,24 +1,24 @@
 ---
 ####### Acess Keys Variables ######
 
-access_key: ***REMOVED***
+access_key: 
 
-secret_key: ***REMOVED***
+secret_key: 
 
 
 ####### Connector Deployment and CVO deployment Variables #######
 
-token: ***REMOVED***
+token: 
 
-region_deploy: us-east-1
+region_deploy: 
 
-key_pair: sufi-key-virginia
+key_pair: 
 
-subnet: subnet-cc8b2095
+subnet: 
 
-security_group: sg-060e37e2accea3699
+security_group: 
 
-account: account-LwOIqR76
+account: 
 
 
 vpc: vpc-7d4a2818
@@ -48,4 +48,3 @@ policy: MirrorAllSnapshots
 max_transfer_rate: 900000
 
 
-ip: 10.61.185.78
