@@ -7,12 +7,12 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
-	vserver: "{{ dst_vserver }}"
+        vserver: "{{ dst_vserver }}"
         policy_name: "{{ snapmirror_policy }}"
-	policy_type: async_mirror
-	comment: "Created by Ansible"
-	https: true
-	validate_certs: false
+        policy_type: async_mirror
+        comment: "Created by Ansible"
+        https: true
+        validate_certs: false
       tags:
         - ontap_snapmirror_policy
 
