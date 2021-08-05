@@ -1,102 +1,47 @@
 #################################################################
 #################################################################
-# Getting source volume(s) and sizes
 - block:
-    - name: Get ONTAP Volume Info
-      na_ontap_info:
-        hostname: "{{ src_cluster_ip }}"
-        username: "{{ src_cluster_username }}"
-        password: "{{ src_cluster_password }}"
-        https: true
-        validate_certs: false
-        gather_subset:
-        - volume_info
-      register: netapp
-
-    - name: Get Volume Details for Volume List
-      vars:
-        size_list: []
-      set_fact:
-        size_list: "{{ size_list + [item[1].value.volume_space_attributes.size] }}"
-      when: (( item[1].value.volume_id_attributes.name is match (item[0])) and ( item[1].value.volume_id_attributes.owning_vserver_name  ==  src_vserver ))
-      with_nested:
-        - "{{ src_vol_name_list }}"
-        - "{{ lookup('dict', netapp.ontap_info.volume_info) }}"
-    - debug:
-        msg: "The source volumes are {{ item }}"
-      with_items:
-        - "{{ src_vol_name_list }}"
-    - debug:
-        msg: "The size of source volumes are  {{ item }}"
-      with_items:
-        - "{{ size_list }}"
-    - debug:
-        msg: "The destination volumes that will be created are {{ item }}"
-      with_items:
-        - "{{ item.dst_vol_name_list }}"
-      ignore_errors: yes
-
-# Create Destination volume(s)
-- block:
-    - name: Creating Destination Volume
-      na_ontap_volume:
+    - name: Create Snapmiror Policy
+      na_ontap_snapmirror_policy:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"      
+        password: "{{ dst_cluster_password }}"
         state: present
-        name: "{{ item.0 }}"
         vserver: "{{ dst_vserver }}"
-        aggregate_name: "{{ dst_aggr }}"
-        size: "{{ item.1 }}"
-        size_unit: bytes
-        policy: default
-        type: DP
+        policy_name: "{{ snapmirror_policy }}"
+        policy_type: async_mirror
+        comment: "Created by Ansible"
         https: true
         validate_certs: false
-      register: destination_volume
-      with_together:
-        - "{{ dst_vol_name_list }}"
-        - "{{ size_list }}"
-  rescue:
-    - name: Failure
-      fail:
-        msg:
-        - Create destination volume for SnapMirror failed with error - "{{ destination_volume.stderr }}"
-        - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable
-        - 2. Check debug messages for source volume(s) and size list
-        - 3. Check if variables defined adhere to the guidelines
-########################################################
-- block:   
-    - pause:
-        seconds: "{{ delay }}"
+      tags:
+        - ontap_snapmirror_policy
 
-#########################################################
-- block:
     - name: Create ONTAP/ONTAP SnapMirror
       na_ontap_snapmirror:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        source_hostname: "{{ src_cluster_ip }}"
-        source_username: "{{ src_cluster_username }}"
-        source_password: "{{ src_cluster_password }}"
         state: present
+        source_endpoint:
+          cluster: "{{ src_cluster_name }}"
+          path: "{{ src_vserver + ':' + item.0 }}"
+        destination_endpoint:
+          cluster: "{{ dst_cluster_name }}"
+          path: "{{ dst_vserver + ':' + item.1 }}"
         initialize: true
-        source_volume: "{{ item.0 }}"
-        destination_volume: "{{ item.1 }}"
-        source_vserver: "{{ src_vserver }}"
-        destination_vserver: "{{ dst_vserver }}"
-        schedule: "{{ schedule }}"
-        policy: "{{ policy }}"
-        max_transfer_rate: "{{ max_transfer_rate }}"
-        relationship_type: data_protection
+        create_destination:
+          enabled: true
+        policy: "{{ snapmirror_policy }}"
+        relationship_type: extended_data_protection
         https: true
         validate_certs: false
+        use_rest: always
       register: snapmirror_create
       with_together:
-        - "{{ src_vol_name_list }}"
-        - "{{ dst_vol_name_list }}"
+        - "{{ src_cg_vols }}"
+        - "{{ dst_cg_vols }}"
+      tags:
+        - ontap_snapmirror
   rescue:
     - name: Failure
       fail:

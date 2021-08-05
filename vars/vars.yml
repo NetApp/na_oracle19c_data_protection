@@ -135,6 +135,8 @@ run_only: []
 #------------------------------------------------------------------------------
 # Source & Destination Credential List [Please use Vault to encrypt credentials]
 #------------------------------------------------------------------------------
+#Please Enter Destination Cluster Name
+dst_cluster_name:
 
 #Please Enter Destination Cluster
 dst_cluster_ip: "" 
@@ -147,6 +149,9 @@ dst_cluster_password: ""
 
 #Please Enter Destination SVM to create mirror relationship
 dst_vserver: ""
+
+#Please Enter Source Cluster Name
+src_cluster_name:
 
 #Please Enter Source Cluster
 src_cluster_ip: ""
@@ -164,17 +169,20 @@ src_vserver: ""
 #------------------------------------------------------------------------------
 # SnapMirror Details
 #------------------------------------------------------------------------------
+#Please Enter Source Snapshot Name
+src_snapshot_name:
+
 #Please Enter Source Volume Name to be protected
-src_vol_name_list: []
+src_cg_vols: []
 
 #Please Enter Destination Volume Name
-dst_vol_name_list: []
+dst_cg_vols: []
 
 #Please Enter Source Volume Name to be protected
 src_lun_name_list: []
+
 #Please Enter Source Volume Name to be protected
 dst_lun_name_list: []
-
 
 # Please Enter Destination Aggregate to create mirror relationship
 dst_aggr: ""
@@ -183,7 +191,7 @@ dst_aggr: ""
 schedule: hourly
 
 #Please Enter Destination Snapmirror Policy
-policy: MirrorAllSnapshots
+snapmirror_policy: async_policy_ora
 
 #Please Enter Destination max Transfer
 max_transfer_rate: 900000
