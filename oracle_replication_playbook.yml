@@ -18,10 +18,10 @@
   connection: local
   gather_facts: False
   vars_files:
-    - roles/ontap/defaults/main.yml    
+    - roles/ontap_setup/defaults/main.yml    
     - vars/vars.yml
   roles:
-    - role: ontap_replication
+    - role: oracle_replication
 
 - name: Resume Oracle DB
   hosts: oracle
