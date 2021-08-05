@@ -1,22 +1,51 @@
 ---
 ####### Acess Keys Variables ######
 
-access_key: 
+access_key: ***REMOVED***
 
-secret_key: 
+secret_key: ***REMOVED***
 
 
 ####### Connector Deployment and CVO deployment Variables #######
 
-token: 
+token: ***REMOVED***
 
 region_deploy: us-east-1
 
-key_pair: 
+key_pair: sufi-key-virginia
 
-subnet: 
+subnet: subnet-cc8b2095
 
-security_group: 
+security_group: sg-060e37e2accea3699
 
-account: 
+account: account-LwOIqR76
 
+
+vpc: vpc-7d4a2818
+
+#Please Enter Source Volume Name to be protected
+src_vol_name_list: []
+
+#Please Enter Destination Volume Name
+dst_vol_name_list: []
+
+#Please Enter Source Volume Name to be protected
+src_lun_name_list: []
+#Please Enter Source Volume Name to be protected
+dst_lun_name_list: []
+
+
+# Please Enter Destination Aggregate to create mirror relationship
+dst_aggr: ""
+
+#Please Enter Destination Snapmirror Schedule
+schedule: hourly
+
+#Please Enter Destination Snapmirror Policy
+policy: MirrorAllSnapshots
+
+#Please Enter Destination max Transfer
+max_transfer_rate: 900000
+
+
+ip: 10.61.185.78

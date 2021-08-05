@@ -6,14 +6,15 @@
   netapp.cloudmanager.na_cloudmanager_cvo_aws:
     state: present
     refresh_token: "{{ token }}"
-    name: ansibleCVO222
+    name: ansiblecvosufian
     region: us-east-1
     subnet_id: "{{ subnet }}"
-    vpc_id: vpc-
-    svm_password: ***REMOVED***45
+    vpc_id: "{{ vpc }}"
+    svm_password: ***REMOVED***
     client_id: "{{ connector.msg.client_id }}"
     writing_speed_state: NORMAL
     is_ha: false
+#    associate_public_ip_address: false
   tags:
     - aws_cvo
 

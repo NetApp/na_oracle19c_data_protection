@@ -22,3 +22,7 @@
       tags:
         - onprem_to_aws_connector
 
+    - name: snap-mirror
+      include_tasks: create_snapmirror.yml
+      tags:
+        - snap

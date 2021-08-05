@@ -4,7 +4,7 @@
   netapp.cloudmanager.na_cloudmanager_connector_aws:
     state: present
     refresh_token: "{{ token }}"
-    name: aws_connector_sufian2222
+    name: aws_connector_sufian12
     region: "{{ region_deploy }}"
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
