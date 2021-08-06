@@ -170,7 +170,7 @@ src_vserver: ""
 # SnapMirror Details
 #------------------------------------------------------------------------------
 #Please Enter Source Snapshot Name
-src_snapshot_name:
+cg_snapshot_name_prefix: []
 
 #Please Enter Source Volume Name to be protected
 src_cg_vols: []
