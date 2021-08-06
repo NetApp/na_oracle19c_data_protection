@@ -8,6 +8,7 @@
         https: true
         validate_certs: false
         gather_subset: "clock_info"
+      register: ontap_time
       tags:
         - ontap_time
 
@@ -25,18 +26,18 @@
         state: present
         use_rest: always
         vserver: "{{ src_vserver }}"
-        snapshot: "{{ readable_format + '.' + src_snapshot_name }}"
+        snapshot: "{{ cg_snapshot_name_prefix + '.' + readable_format }}"
         volumes: "{{ src_cg_vols }}"
-        snapmirror_label: "{{ src_snapshot_name }}"
+        snapmirror_label: "{{ cg_snapshot_name_prefix }}"
       tags:
         - ontap_cg_snapshot
-	
+    
     - name: Snapmirror Update
       na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        command: "['snapmirror', 'update', '-destination-path', '{{ dst_vserver + ':' + item }}', '-source-snapshot', '{{ readable_format + '.' + src_snapshot_name }}']"
+        command: "['snapmirror', 'update', '-destination-path', '{{ dst_vserver + ':' + item }}', '-source-snapshot', '{{ cg_snapshot_name_prefix + '.' + readable_format }}']"
         https: true
         validate_certs: false
       with_items:
