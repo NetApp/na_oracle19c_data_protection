@@ -10,13 +10,49 @@ secret_key:
 
 token: 
 
-region_deploy: us-east-1
+cvo_name:
+
+cvo_svm_password:
+
+region_deploy: 
 
 key_pair: 
 
 subnet: 
 
+vpc:
+
+svm_password:
+
 security_group: 
+
+connector_name:
 
 account: 
 
+aws_role_name:
+
+####### On-Prem to CVO Snapmirror Vars #############
+
+connector_ips: 
+
+on_prem_id: 
+
+dest_cvo_id: 
+
+source_ic_lifs:
+ - ""
+ - ""
+
+dest_ic_lifs:
+ - ""
+
+cvo_snap_policy: 
+
+source_svm: 
+
+source_vol:  
+
+dest_vol: 
+
+dest_aggrg: 

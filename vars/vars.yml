@@ -75,7 +75,7 @@ destination_intercluster_lif_details:
 ###################################################################################################
 connector_ip: 172.30.10.55
 connector_access: refresh_token
-refresh_token: ***REMOVED***
+refresh_token: 
 workspace_id: workspace-TtPXVvC8
 on_prem_ontap_name: on-prem
 on_prem_ontap_cluster_ip: 10.61.185.163

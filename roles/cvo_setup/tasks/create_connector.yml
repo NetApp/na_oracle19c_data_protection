@@ -4,12 +4,12 @@
   netapp.cloudmanager.na_cloudmanager_connector_aws:
     state: present
     refresh_token: "{{ token }}"
-    name: aws_connector_sufian2222
+    name: "{{ connector_name }}"
     region: "{{ region_deploy }}"
     key_name: "{{ key_pair }}"
     subnet_id: "{{ subnet }}"
     security_group_ids: "{{ security_group }}"
-    iam_instance_profile_name: occm_sufian5
+    iam_instance_profile_name: "{{ aws_role_name }}"
     account_id: "{{ account }}"
     company: NetApp
     associate_public_ip_address: false
@@ -27,12 +27,10 @@
     - aws_connector
 
 
-########################################################
+######## Delay to build connector ###############
 
 - name: Pause for 5 minutes to build connector
   pause:
     minutes: 5
   tags:
     - aws_connector
-
-

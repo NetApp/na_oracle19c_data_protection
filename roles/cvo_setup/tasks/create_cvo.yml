@@ -1,19 +1,18 @@
 ---
-
-#########################################################
-
+###########   Create CVO Instace in AWS  #############
 - name: Create NetApp Cloud Manager CVO for AWS single
   netapp.cloudmanager.na_cloudmanager_cvo_aws:
     state: present
     refresh_token: "{{ token }}"
-    name: ansibleCVO222
-    region: us-east-1
+    name: "{{ cvo_name }}"
+    region: "{{ region_deploy }}"
     subnet_id: "{{ subnet }}"
-    vpc_id: vpc-
-    svm_password: ***REMOVED***45
+    vpc_id: "{{ vpc }}"
+    svm_password: "{{ cvo_svm_password }}"
     client_id: "{{ connector.msg.client_id }}"
     writing_speed_state: NORMAL
     is_ha: false
+#    associate_public_ip_address: false
   tags:
     - aws_cvo
 
