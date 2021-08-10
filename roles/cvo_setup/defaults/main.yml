@@ -8,7 +8,7 @@ secret_key:
 
 ####### Connector Deployment and CVO deployment Variables #######
 
-token: GC5t6MltPT-8Q-RE8mY_K_N6mcKI1tRFWH3zav-kCDz4e
+token: 
 
 cvo_name:
 
@@ -34,25 +34,25 @@ aws_role_name:
 
 ####### On-Prem to CVO Snapmirror Vars #############
 
-connector_ips: 172.30.0.17
+connector_ips: 
 
-on_prem_id: OnPremWorkingEnvironment-qyht4mMH
+on_prem_id: 
 
-dest_cvo_id: VsaWorkingEnvironment-ArMRFl20
+dest_cvo_id: 
 
 source_ic_lifs:
- - "10.61.185.78"
- - "10.61.185.79"
+ - ""
+ - ""
 
 dest_ic_lifs:
- - "172.30.0.146"
+ - ""
 
-cvo_snap_policy: MirrorAllSnapshots
+cvo_snap_policy: 
 
-source_svm: svm0 
+source_svm: 
 
-source_vol: source 
+source_vol:  
 
-dest_vol: newone1 
+dest_vol: 
 
-dest_aggrg: aggr1 
+dest_aggrg: 
