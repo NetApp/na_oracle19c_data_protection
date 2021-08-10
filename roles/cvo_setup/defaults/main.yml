@@ -8,7 +8,11 @@ secret_key:
 
 ####### Connector Deployment and CVO deployment Variables #######
 
-token: 
+token: GC5t6MltPT-8Q-RE8mY_K_N6mcKI1tRFWH3zav-kCDz4e
+
+cvo_name:
+
+cvo_svm_password:
 
 region_deploy: 
 
@@ -16,35 +20,39 @@ key_pair:
 
 subnet: 
 
+vpc:
+
+svm_password:
+
 security_group: 
+
+connector_name:
 
 account: 
 
+aws_role_name:
 
-vpc: vpc-7d4a2818
+####### On-Prem to CVO Snapmirror Vars #############
 
-#Please Enter Source Volume Name to be protected
-src_vol_name_list: []
+connector_ips: 172.30.0.17
 
-#Please Enter Destination Volume Name
-dst_vol_name_list: []
+on_prem_id: OnPremWorkingEnvironment-qyht4mMH
 
-#Please Enter Source Volume Name to be protected
-src_lun_name_list: []
-#Please Enter Source Volume Name to be protected
-dst_lun_name_list: []
+dest_cvo_id: VsaWorkingEnvironment-ArMRFl20
 
+source_ic_lifs:
+ - "10.61.185.78"
+ - "10.61.185.79"
 
-# Please Enter Destination Aggregate to create mirror relationship
-dst_aggr: ""
+dest_ic_lifs:
+ - "172.30.0.146"
 
-#Please Enter Destination Snapmirror Schedule
-schedule: hourly
+cvo_snap_policy: MirrorAllSnapshots
 
-#Please Enter Destination Snapmirror Policy
-policy: MirrorAllSnapshots
+source_svm: svm0 
 
-#Please Enter Destination max Transfer
-max_transfer_rate: 900000
+source_vol: source 
 
+dest_vol: newone1 
 
+dest_aggrg: aggr1 
