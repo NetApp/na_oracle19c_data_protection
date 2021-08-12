@@ -1,0 +1,11 @@
+#This Playbook is designed to be ran on-demand when DB recovery is needed
+- name: recover Oracle DB to desired recovery point
+  hosts: oracle
+  gather_facts: False 
+  vars_files:
+    - roles/ora_recovery/defaults/main.yml
+    - vars/vars.yml
+  roles:
+    - role: ora_recovery
+  tags:
+    - ora_recovery
