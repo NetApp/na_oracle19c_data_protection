@@ -206,3 +206,9 @@ rw_rule: any
 mount_points: []
 client_name: []
 nfs_data_lif: ""
+
+# Define recovery point for DB recovery. Recovery type: [scn, or time] and recovery point as explained below:
+# Specify the exact time stamp for time based recovery in format 'YYYY-MM-DD:HH24:MI:SS'
+# Specify recovery system change number or scn. Note: the recovery scn number is upto but not include that scn.
+recovery_type: time
+recovery_point:  2021-08-11:02:49:00
