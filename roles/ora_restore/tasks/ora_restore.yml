@@ -1,0 +1,105 @@
+- block:
+    - name: Obtain Oracle Consistency Group Volumes
+      set_fact:
+        src_cg_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+    - debug:
+        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"	    
+
+    - name: Break ONTAP/ONTAP SnapMirror
+      na_ontap_snapmirror:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        state: present
+        relationship_state: break
+        source_endpoint:
+          cluster: "{{ src_cluster_name }}"
+          path: "{{ src_vserver + ':' + item.0 }}"
+        destination_endpoint:
+          cluster: "{{ dst_cluster_name }}"
+          path: "{{ dst_vserver + ':' + item.1 }}"
+        policy: "{{ snapmirror_policy }}"
+        relationship_type: extended_data_protection
+        https: true
+        validate_certs: false
+        use_rest: always
+      with_together:
+        - "{{ src_cg_vols }}"
+        - "{{ dst_cg_vols }}"
+      tags:
+        - ontap_snapmirror_break
+
+    - name: Restore User Required Snapshot on Destination Volumes
+      block:
+        - name: List Snapshots from the destination
+          na_ontap_info:
+            state: info
+            username: "{{ dst_cluster_username }}"
+            password: "{{ dst_cluster_password }}"
+            hostname: "{{ dst_cluster_ip }}"
+            https: true
+            validate_certs: false
+            gather_subset:
+            - snapshot_info
+            query:
+              snapshot-info:
+                vserver: "{{ dst_vserver }}"
+                name: "{{ cg_snapshot_name_prefix }}*"
+          register: snapshots
+        - debug:
+            msg: "Snapshot List {{ snapshots }}."
+        - debug:
+            msg: "The snapshot is   {{ item.value.name }} The volume is {{ item.value.volume }}"
+          loop: "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - name: Access times for CG Snapshot.
+          set_fact:
+            accesstime_list: "{{ accesstime_list }} + ['{{ item[1].value.access_time }}']"
+            snapshot_list: "{{ snapshot_list }} + [ '{{ item[0] }}={{ item[1].value.name }}' ]"
+          when:
+            - ( item[1].value.volume is match (item[0]))
+            - ( item[1].value.vserver is match (dst_vserver))
+            - ( item[1].value.name is search (cg_snapshot_name_prefix))
+          with_nested:
+            - "{{ dst_cg_vols }}"
+            - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - debug:
+            msg: "Snapshot List {{ snapshot_list }}."
+        - debug:
+            msg: "Access Time List {{ accesstime_list }}."
+        - name: Get Max Access Time.
+          set_fact:
+            accesstime_list_max: "{{ accesstime_list | max }}"
+        - debug:
+            msg: " Max Access Time {{ accesstime_list_max }}"
+        - name: Access times for CG Snapshot.
+          set_fact:
+            latest_snapshot_name: "{{ item[1].value.name }}"
+          when:
+            - ( item[1].value.volume is match (item[0]))
+            - ( item[1].value.access_time is search (accesstime_list_max))
+          with_nested:
+            - "{{ dst_cg_vols }}"
+            - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - debug:
+            msg: "Snapshot restore {{ latest_snapshot_name  }}"
+    
+    - name: FlexClone Oracle Database Volumes
+      na_ontap_volume_clone:
+        state: present
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        hostname: "{{ dst_cluster_ip }}"
+        https: true
+        validate_certs: false	
+        vserver: "{{ dst_vserver }}"
+        parent_volume: "{{ item }}"
+        name: "clone_{{ item }}"
+        space_reserve: none
+        parent_snapshot: "{{ latest_snapshot_name }}"
+        junction_path: "/{{ item }}"
+        uid: 1
+        gid: 1
+      with_items:
+        - "{{ dst_cg_vols }}"
+      tags:
+       - ontap_volume_clone
