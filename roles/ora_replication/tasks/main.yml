@@ -3,6 +3,6 @@
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
     - name: Oracle Replication Tasks
-      include_tasks: oracle_replication.yml
+      include_tasks: ora_replication.yml
       tags: 
         - ontap_oracle_replication
