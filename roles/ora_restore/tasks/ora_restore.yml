@@ -83,23 +83,3 @@
         - debug:
             msg: "Snapshot restore {{ latest_snapshot_name  }}"
     
-    - name: FlexClone Oracle Database Volumes
-      na_ontap_volume_clone:
-        state: present
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        hostname: "{{ dst_cluster_ip }}"
-        https: true
-        validate_certs: false	
-        vserver: "{{ dst_vserver }}"
-        parent_volume: "{{ item }}"
-        name: "clone_{{ item }}"
-        space_reserve: none
-        parent_snapshot: "{{ latest_snapshot_name }}"
-        junction_path: "/{{ item }}"
-        uid: 1
-        gid: 1
-      with_items:
-        - "{{ dst_cg_vols }}"
-      tags:
-       - ontap_volume_clone
