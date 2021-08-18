@@ -1,7 +1,7 @@
 - block:
     - name: Obtain Oracle Consistency Group Volumes
       set_fact:
-        src_cg_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+        src_cg_vols: "{{ src_orabinary_vols + src_db_vols }}"
     - debug:
         msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
 
@@ -38,7 +38,7 @@
       tags:
         - ontap_cg_snapshot
     
-    - name: Snapmirror Update for All Oralce Volumes
+    - name: Snapmirror Update for DB and Binary Oracle Volumes
       na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
