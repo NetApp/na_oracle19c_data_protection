@@ -169,11 +169,17 @@ src_vserver: ""
 #------------------------------------------------------------------------------
 # SnapMirror Details
 #------------------------------------------------------------------------------
-#Please Enter Source Snapshot Name
+#Please Enter Source Snapshot Prefix Name
 cg_snapshot_name_prefix: []
 
-#Please Enter Source Volume Name to be protected
-src_cg_vols: []
+#Please Enter Source Oracle Binary Volume(s)
+src_orabinary_vols:
+
+#Please Enter Source Database Volume(s)
+src_db_vols:
+
+#Please Enter Source Archive Volume(s)
+src_archivelog_vols:
 
 #Please Enter Destination Volume Name
 dst_cg_vols: []
