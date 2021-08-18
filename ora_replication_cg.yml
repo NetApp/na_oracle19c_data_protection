@@ -20,7 +20,7 @@
     - roles/ora_replication_cg/defaults/main.yml    
     - vars/vars.yml
   roles:
-    - role: ora_replication
+    - role: ora_replication_cg
 
 - name: Resume Oracle DB after Snapshot
   hosts: oracle
