@@ -1,10 +1,4 @@
 - block:
-    - name: Obtain Oracle Consistency Group Volumes
-      set_fact:
-        src_cg_vols: "{{ src_orabinary_vols + src_db_vols }}"
-    - debug:
-        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
-
     - name: ONTAP Info
       na_ontap_info:
         hostname: "{{ src_cluster_ip }}"
@@ -24,7 +18,7 @@
     - set_fact:
         readable_format: "{{ '%H.%M.%S.%Y-%m-%d' | strftime(temp) }}"
 
-    - name: Consistency Group Snapshot
+    - name: Archive Logs Snapshot
       na_ontap_cg_snapshot:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
@@ -33,12 +27,12 @@
         use_rest: always
         vserver: "{{ src_vserver }}"
         snapshot: "{{ cg_snapshot_name_prefix + '.' + readable_format }}"
-        volumes: "{{ src_cg_vols }}"
+        volumes: "{{ src_archivelog_vols }}"
         snapmirror_label: "{{ cg_snapshot_name_prefix }}"
       tags:
-        - ontap_cg_snapshot
-    
-    - name: Snapmirror Update for DB and Binary Oracle Volumes
+        - ontap_logs_snapshot
+
+    - name: Snapmirror Update for Oracle Archive Logs
       na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
@@ -47,7 +41,7 @@
         https: true
         validate_certs: false
       with_items:
-        - "{{ dst_cg_vols }}"
+       - "{{ dst_cg_vols }}"
       tags:
         - ontap_snapmirror_update
 
@@ -58,4 +52,4 @@
         - Create destination volume for SnapMirror failed with error - "{{ oracle_replication.stderr }}"
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable
-        - 2. Check if variables defined adhere to the guidelines
+        - 2. Check if variables defined adhere to the guidelines      
