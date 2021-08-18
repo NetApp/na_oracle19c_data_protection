@@ -136,10 +136,10 @@ run_only: []
 # Source & Destination Credential List [Please use Vault to encrypt credentials]
 #------------------------------------------------------------------------------
 #Please Enter Destination Cluster Name
-dst_cluster_name:
+dst_cluster_name: ""
 
 #Please Enter Destination Cluster
-dst_cluster_ip: "" 
+dst_cluster_ip: ""
 
 #Please Enter Destination Username
 dst_cluster_username: ""
@@ -151,7 +151,7 @@ dst_cluster_password: ""
 dst_vserver: ""
 
 #Please Enter Source Cluster Name
-src_cluster_name:
+src_cluster_name: ""
 
 #Please Enter Source Cluster
 src_cluster_ip: ""
@@ -170,19 +170,16 @@ src_vserver: ""
 # SnapMirror Details
 #------------------------------------------------------------------------------
 #Please Enter Source Snapshot Prefix Name
-cg_snapshot_name_prefix: []
+cg_snapshot_name_prefix: oracle
 
 #Please Enter Source Oracle Binary Volume(s)
-src_orabinary_vols:
+src_orabinary_vols: [] 
 
 #Please Enter Source Database Volume(s)
-src_db_vols:
+src_db_vols: []
 
 #Please Enter Source Archive Volume(s)
-src_archivelog_vols:
-
-#Please Enter Destination Volume Name
-dst_cg_vols: []
+src_archivelog_vols: []
 
 #Please Enter Source Volume Name to be protected
 src_lun_name_list: []
@@ -244,4 +241,4 @@ nfs_data_lif: ""
 # Specify the exact time stamp for time based recovery in format 'YYYY-MM-DD:HH24:MI:SS'
 # Specify recovery system change number or scn. Note: the recovery scn number is upto but not include that scn.
 recovery_type: time
-recovery_point:  2021-08-11:02:49:00
+recovery_point:  ""
