@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-    - name: Oracle Replication Tasks
-      include_tasks: ora_replication.yml
+    - name: Oracle Replication Tasks for Binary and DB volumes
+      include_tasks: ora_replication_cg.yml
       tags: 
-        - ontap_oracle_replication
+        - ontap_oracle_replication_cg
