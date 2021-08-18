@@ -9,14 +9,14 @@
         https: true
         validate_certs: false
         vserver: "{{ dst_vserver }}"
-        parent_volume: "{{ item }}"
-        name: "clone_{{ item }}"
+        parent_volume: "{{ 'dr_' + item }}"
+        name: "clone_{{ 'dr_' + item }}"
         space_reserve: none
         parent_snapshot: "{{ latest_snapshot_name }}"
-        junction_path: "/{{ item }}"
+        junction_path: "/{{ 'dr_' + item }}"
         uid: 1
         gid: 1
       with_items:
-        - "{{ dst_cg_vols }}"
+        - "{{ src_cg_vols }}"
       tags:
        - ontap_volume_clone

@@ -11,21 +11,20 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
-        relationship_state: break
+        relationship_state: active
         source_endpoint:
           cluster: "{{ src_cluster_name }}"
-          path: "{{ src_vserver + ':' + item.0 }}"
+          path: "{{ src_vserver + ':' + item }}"
         destination_endpoint:
           cluster: "{{ dst_cluster_name }}"
-          path: "{{ dst_vserver + ':' + item.1 }}"
+          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
         policy: "{{ snapmirror_policy }}"
         relationship_type: extended_data_protection
         https: true
         validate_certs: false
         use_rest: always
-      with_together:
+      with_items:
         - "{{ src_cg_vols }}"
-        - "{{ dst_cg_vols }}"
       tags:
         - ontap_snapmirror_break
 
@@ -54,13 +53,13 @@
         - name: Access times for CG Snapshot.
           set_fact:
             accesstime_list: "{{ accesstime_list }} + ['{{ item[1].value.access_time }}']"
-            snapshot_list: "{{ snapshot_list }} + [ '{{ item[0] }}={{ item[1].value.name }}' ]"
+            snapshot_list: "{{ snapshot_list }} + [ '{{ 'dr_' + item[0] }}={{ item[1].value.name }}' ]"
           when:
-            - ( item[1].value.volume is match (item[0]))
+            - ( item[1].value.volume is match ('dr_' + item[0]))
             - ( item[1].value.vserver is match (dst_vserver))
             - ( item[1].value.name is search (cg_snapshot_name_prefix))
           with_nested:
-            - "{{ dst_cg_vols }}"
+            - "{{ src_cg_vols }}"
             - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
         - debug:
             msg: "Snapshot List {{ snapshot_list }}."
@@ -75,10 +74,10 @@
           set_fact:
             latest_snapshot_name: "{{ item[1].value.name }}"
           when:
-            - ( item[1].value.volume is match (item[0]))
+            - ( item[1].value.volume is match ('dr_' + item[0]))
             - ( item[1].value.access_time is search (accesstime_list_max))
           with_nested:
-            - "{{ dst_cg_vols }}"
+            - "{{ src_cg_vols }}"
             - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
         - debug:
             msg: "Snapshot restore {{ latest_snapshot_name  }}"

@@ -2,7 +2,7 @@
 - name: Oracle DB Restore
   collections:
     - netapp.ontap
-  hosts: "{{ hosts_group | default ('localhost') }}"
+  hosts: localhost
   connection: local
   gather_facts: False
   vars_files:

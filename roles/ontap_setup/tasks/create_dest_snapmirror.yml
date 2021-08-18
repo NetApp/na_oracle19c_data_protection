@@ -16,6 +16,12 @@
       tags:
         - ontap_snapmirror_policy
 
+    - name: Obtain Oracle Consistency Group Volumes
+      set_fact:
+        src_cg_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+    - debug:
+        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
+
     - name: Create ONTAP/ONTAP SnapMirror
       na_ontap_snapmirror:
         hostname: "{{ dst_cluster_ip }}"
@@ -24,10 +30,10 @@
         state: present
         source_endpoint:
           cluster: "{{ src_cluster_name }}"
-          path: "{{ src_vserver + ':' + item.0 }}"
+          path: "{{ src_vserver + ':' + item }}"
         destination_endpoint:
           cluster: "{{ dst_cluster_name }}"
-          path: "{{ dst_vserver + ':' + item.1 }}"
+          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
         initialize: true
         create_destination:
           enabled: true
@@ -36,10 +42,9 @@
         https: true
         validate_certs: false
         use_rest: always
-      register: snapmirror_create
-      with_together:
+      with_items:
         - "{{ src_cg_vols }}"
-        - "{{ dst_cg_vols }}"
+#        - "{{ dst_cg_vols }}"
       tags:
         - ontap_snapmirror
   rescue:

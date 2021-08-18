@@ -37,13 +37,13 @@
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
-        command: "['snapmirror', 'update', '-destination-path', '{{ dst_vserver + ':' + item }}', '-source-snapshot', '{{ cg_snapshot_name_prefix + '.' + readable_format }}']"
+        command: "['snapmirror', 'update', '-destination-path', '{{ dst_vserver + ':' + 'dr_' + item }}', '-source-snapshot', '{{ cg_snapshot_name_prefix + '.' + readable_format }}']"
         https: true
         validate_certs: false
       with_items:
-       - "{{ dst_cg_vols }}"
+       - "{{ src_archivelog_vols }}"
       tags:
-        - ontap_snapmirror_update
+        - ontap_logs_snapmirror_update
 
   rescue:
     - name: Failure
