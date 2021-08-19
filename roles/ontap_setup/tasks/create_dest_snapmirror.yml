@@ -13,8 +13,6 @@
         comment: "Created by Ansible"
         https: true
         validate_certs: false
-      tags:
-        - ontap_snapmirror_policy
 
     - name: Obtain Oracle Consistency Group Volumes
       set_fact:
@@ -44,9 +42,10 @@
         use_rest: always
       with_items:
         - "{{ src_cg_vols }}"
-#        - "{{ dst_cg_vols }}"
-      tags:
-        - ontap_snapmirror
+  tags:
+    - ontap_snapmirror_create
+    - ontap_snapmirror_policy
+    - ontap_snapmirror  
   rescue:
     - name: Failure
       fail:
