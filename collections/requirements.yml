@@ -2,4 +2,4 @@
 collections:
   - netapp.cloudmanager
   - netapp.ontap
-  - community.aws.iam_role
+  - community.aws
