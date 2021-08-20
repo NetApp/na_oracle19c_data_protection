@@ -32,6 +32,10 @@ account:
 
 aws_role_name:
 
+####### On-Prem Add to Cloud Manager ########
+
+connector_access:
+
 ####### On-Prem to CVO Snapmirror Vars #############
 
 connector_ips: 
