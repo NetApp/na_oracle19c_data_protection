@@ -39,7 +39,7 @@
         - 2. Check if provided username/password or refresh_token are correct
         - 3. Check if variables defined adhere to the guidelines
 
-- block
+- block:
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
         url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
