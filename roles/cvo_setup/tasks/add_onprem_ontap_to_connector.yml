@@ -1,6 +1,6 @@
 - block:
     - name: Gather Connector IP Address
-      ec2_instance_facts:
+      community.aws.ec2_instance_info:
         instance_ids:
           - i-0190aee3a5a8fa1c6
       register: connector_info
