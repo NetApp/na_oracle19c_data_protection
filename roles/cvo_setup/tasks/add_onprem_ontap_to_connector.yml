@@ -2,8 +2,9 @@
     - name: Gather Connector IP Address
       ec2_instance_facts:
         instance_ids:
-	  - i-0190aee3a5a8fa1c6
-
+          - i-0190aee3a5a8fa1c6
+      register: connector_info
+      
     - name: Create access token with username/password
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
