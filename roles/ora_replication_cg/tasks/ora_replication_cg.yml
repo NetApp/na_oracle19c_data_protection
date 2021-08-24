@@ -6,7 +6,7 @@
         msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
 
     - name: ONTAP Info
-      na_ontap_info:
+      netapp.ontap.na_ontap_info:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
