@@ -1,28 +1,28 @@
 # Tasl for creating cluster peer
 - block:
-    - name: Create cluster peer
-      na_ontap_cluster_peer:
-        state: present
-        source_intercluster_lifs: "{{ src_lif }}"
-        dest_intercluster_lifs: "{{ dst_lif }}"
-        passphrase: "{{ passphrase }}"
-        hostname: "{{ src_cluster_ip }}"
-        username: "{{ src_cluster_username }}"
-        password: "{{ src_cluster_password }}"
-        dest_hostname: "{{ dst_cluster_ip }}"
-        https: true
-        validate_certs: false
-      register: cluster_peer  
-  rescue:
-    - name: Failure
-      fail:
-        msg:
-        - Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
-        - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable
-        - 2. Check credentials
-        - 3. Check source cluster IP
-        - 4. Check destination cluster IP
+#    - name: Create cluster peer
+#      na_ontap_cluster_peer:
+#        state: present
+#        source_intercluster_lifs: "{{ src_lif }}"
+#        dest_intercluster_lifs: "{{ dst_lif }}"
+#        passphrase: "{{ passphrase }}"
+#        hostname: "{{ src_cluster_ip }}"
+#        username: "{{ src_cluster_username }}"
+#        password: "{{ src_cluster_password }}"
+#        dest_hostname: "{{ dst_cluster_ip }}"
+#        https: true
+#        validate_certs: false
+#      register: cluster_peer  
+#  rescue:
+#    - name: Failure
+#      fail:
+#        msg:
+#        - Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
+#        - Possible troubleshooting steps:
+#        - 1. Check if ONTAP API is reachable
+#        - 2. Check credentials
+#        - 3. Check source cluster IP
+#        - 4. Check destination cluster IP
 
 # Tasks for create vserver peer
 - block:
