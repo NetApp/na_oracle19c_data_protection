@@ -1,6 +1,6 @@
 - block:
     - name: ONTAP Info
-      na_ontap_info:
+      netapp.ontap.na_ontap_info:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
@@ -19,12 +19,12 @@
         readable_format: "{{ '%H.%M.%S.%Y-%m-%d' | strftime(temp) }}"
 
     - name: Archive Logs Snapshot
-      na_ontap_cg_snapshot:
+      netapp.ontap.na_ontap_cg_snapshot:
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         state: present
-        use_rest: always
+        use_rest: Always
         vserver: "{{ src_vserver }}"
         snapshot: "{{ cg_snapshot_name_prefix + '.' + readable_format }}"
         volumes: "{{ src_archivelog_vols }}"
