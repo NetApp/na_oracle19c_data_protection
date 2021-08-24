@@ -1,5 +1,5 @@
 # Tasl for creating cluster peer
-#- block:
+# - block:
 #    - name: Create cluster peer
 #      na_ontap_cluster_peer:
 #        state: present
