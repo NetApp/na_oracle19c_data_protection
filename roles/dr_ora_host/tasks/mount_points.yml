@@ -7,7 +7,7 @@
     - debug:
         msg: "Source Consistency Group Volumes {{ src_vols }}"
    
-   - name: Create mount points for NFS file systems
+    - name: Create mount points for NFS file systems
       file:
         state=directory
         path="{{ item }}"
