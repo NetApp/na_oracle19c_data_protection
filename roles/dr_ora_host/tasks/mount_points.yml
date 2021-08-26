@@ -22,6 +22,6 @@
       become: true
       with_together:
           - '{{ mount_points }}'
-          - '{{ src_cg_vols }}'
+          - '{{ src_vols }}'
       tags:
         - mount_host_datastores

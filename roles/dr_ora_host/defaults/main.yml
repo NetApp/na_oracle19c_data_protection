@@ -1,6 +1,8 @@
 #############################################
 ### Linux default configuration variables ###
 #############################################
+#
+src_vols:
 
 # Set DB version specific OL rpm: [ oracle-database-server-12cR2-preinstall | oracle-database-preinstall-19c ]
 preinstall_rpm: oracle-database-preinstall-19c
