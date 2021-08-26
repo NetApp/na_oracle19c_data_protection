@@ -1,4 +1,16 @@
 #This Playbook is designed to be ran on-demand when DB recovery is needed
+- name: Dst Volume Info
+  collections:
+    - netapp.ontap
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_files:
+    - roles/dst_vol_info/defaults/main.yml
+    - vars/vars.yml
+  roles:
+    - role: dst_vol_info
+
 - name: Oracle Linux Setup and Storage Config for Oracle
   hosts: dr_oracle
   gather_facts: True
