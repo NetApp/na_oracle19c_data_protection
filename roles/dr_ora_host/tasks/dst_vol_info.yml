@@ -1,6 +1,0 @@
-- block:
-    - name: Obtain Oracle Consistency Group Volumes
-      set_fact:
-        src_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
-    - debug:
-        msg: "Source Consistency Group Volumes {{ src_vols }}"
