@@ -1,7 +1,13 @@
 ---
 # NFS Specific Mount Points
 - block:
-    - name: Create mount points for NFS file systems
+    - name: Obtain Oracle Consistency Group Volumes
+      set_fact:
+        src_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+    - debug:
+        msg: "Source Consistency Group Volumes {{ src_vols }}"
+   
+   - name: Create mount points for NFS file systems
       file:
         state=directory
         path="{{ item }}"
