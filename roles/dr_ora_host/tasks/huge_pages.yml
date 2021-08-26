@@ -1,0 +1,37 @@
+---
+#Disable transparent hugepages in current system
+- block:
+    - name: Disable transparent hugepages in current system
+      shell: |
+        echo never > /sys/kernel/mm/transparent_hugepage/enabled
+        echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      become: true
+      tags:
+        - disable_thp
+
+#Disable transparent hugepages at reboot
+    - name: Disable transparent hugepages at reboot
+      lineinfile:
+        path: /etc/rc.local
+        line: |
+          # Disable transparent hugepages
+          if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+            echo never > /sys/kernel/mm/transparent_hugepage/enabled
+          fi
+          if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+            echo never > /sys/kernel/mm/transparent_hugepage/defrag
+          fi
+      become: true
+      tags:
+        - disable_thp
+
+#Configure Kernel for hugepages
+    - name: Configure kernel for hugepages
+      when: hugepages_nr != None
+      sysctl:
+        name: vm.nr_hugepages
+        value: '{{ hugepages_nr }}'
+        state: present
+      become: true
+      tags:
+        - config_hugepages
