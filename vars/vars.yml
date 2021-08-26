@@ -150,6 +150,9 @@ dst_cluster_password: ""
 #Please Enter Destination SVM to create mirror relationship
 dst_vserver: ""
 
+#Please Enter NFS Lif for dst vserver
+dst_nfs_lif: ""
+
 #Please Enter Source Cluster Name
 src_cluster_name: ""
 
