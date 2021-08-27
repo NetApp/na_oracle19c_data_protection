@@ -239,6 +239,7 @@ rw_rule: any
 mount_points: []
 client_name: []
 nfs_data_lif: ""
+hugepages_nr: 3072
 
 # Define recovery point for DB recovery. Recovery type: [scn, or time] and recovery point as explained below:
 # Specify the exact time stamp for time based recovery in format 'YYYY-MM-DD:HH24:MI:SS'
