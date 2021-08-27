@@ -1,0 +1,10 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Put Oracle DBs in backup mode on target DB servers before snapshots
+      include_tasks: ora_switch_log.yml
+      tags: 
+        - ora_switch_log
+        - cp_switch_log_script
+        - exe_switch_log_script

@@ -1,13 +1,13 @@
 #This Playbook is designed to be ran on a schedule (end user's choice) in AWX/Tower
-- name: Pause Oracle DB for Snapshots
+- name: Oracle Switch Log
   hosts: oracle
   gather_facts: False
   vars_files:
-    - roles/ora_begin_bkup/defaults/main.yml
+    - roles/ora_switch_log/defaults/main.yml
   roles:
-    - role: ora_begin_bkup
+    - role: ora_switch_log
   tags:
-    - ora_pause_db
+    - ora_switch_log
 
 - name: Oracle Archive Logs Snapshot
   collections:
@@ -21,13 +21,3 @@
     - vars/vars.yml
   roles:
     - role: ora_replication_logs
-
-- name: Resume Oracle DB after Snapshot
-  hosts: oracle
-  gather_facts: False
-  vars_files:
-    - roles/ora_end_bkup/defaults/main.yml
-  roles:
-    - role: ora_end_bkup
-  tags:
-    - ora_resume_db
