@@ -10,9 +10,9 @@
     - name:
       fail:
         msg: NFS shares not mounted correctly!
-      when: '"{{ item.0 }} from {{ item.1.lif }}:/{{ item.1.vol_name }}" not in result.stdout'
+      when: '"{{ item.0 }} from {{ dst_nfs_lif }}:/dr_{{ item.1 }}" not in result.stdout'
       with_together:
         - "{{ mount_points }}"
-        - "{{ host_datastores_nfs }}"
+        - "{{ src_vols }}"
       tags:
         - verify_nfs_mounts
