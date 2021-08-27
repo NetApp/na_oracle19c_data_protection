@@ -6,7 +6,7 @@
         msg: "Source Consistency Group Volumes {{ src_cg_vols }}"	    
 
     - name: Break ONTAP/ONTAP SnapMirror
-      na_ontap_snapmirror:
+      netapp.ontap.na_ontap_snapmirror:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
@@ -31,7 +31,7 @@
     - name: Restore User Required Snapshot on Destination Volumes
       block:
         - name: List Snapshots from the destination
-          na_ontap_info:
+          netapp.ontap.na_ontap_info:
             state: info
             username: "{{ dst_cluster_username }}"
             password: "{{ dst_cluster_password }}"
