@@ -18,7 +18,7 @@
         destination_endpoint:
           cluster: "{{ dst_cluster_name }}"
           path: "{{ dst_vserver + ':' + 'dr_' + item }}"
-        policy: "{{ snapmirror_policy }}"
+#        policy: "{{ snapmirror_policy }}"
         relationship_type: extended_data_protection
         https: true
         validate_certs: false
