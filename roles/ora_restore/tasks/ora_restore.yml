@@ -11,7 +11,7 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
-        relationship_state: active
+        relationship_state: broken
         source_endpoint:
           cluster: "{{ src_cluster_name }}"
           path: "{{ src_vserver + ':' + item }}"
