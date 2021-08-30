@@ -23,7 +23,7 @@
 
     - set_fact:
 #        readable_format: "{{ '%H.%M.%S.%Y-%m-%d' | strftime(temp) }}"
-        readable_format: "{{ '%Y-%m-%d:%h:%M:%S' | strftime(temp) }}"
+        readable_format: "{{ '%Y-%m-%d:%H:%M:%S' | strftime(temp) }}"
 
     - name: Consistency Group Snapshot
       netapp.ontap.na_ontap_cg_snapshot:
