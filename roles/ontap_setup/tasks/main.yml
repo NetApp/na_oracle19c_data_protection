@@ -12,10 +12,10 @@
 #      tags:
 #        - ontap_dst_intercluster_lifs
 #      when: create_destination_intercluster_lifs|bool
-    - name: Intercluster Configuration and Snapmirror Setup
-      include_tasks: create_clusterpeer_svmpeer.yml
-      tags:
-        - ontap_peer_create
+#    - name: Intercluster Configuration and Snapmirror Setup
+#      include_tasks: create_clusterpeer_svmpeer.yml
+#      tags:
+#        - ontap_peer_create
     - name: Intercluster Configuration and Snapmirror Setup
       include_tasks: create_dest_snapmirror.yml
       tags:
