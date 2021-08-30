@@ -82,7 +82,8 @@
         - debug:
             msg: "Snapshot restore {{ latest_snapshot_name  }}"
         - name: Get snapshot timestamp
-	  set_fact:
-	    recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
-	- debug:
-	    msg: "Your Recovery Point {{ recovery_point }}" 
+          set_fact:
+            recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
+        - debug:
+            msg: "Your Recovery Point {{ recovery_point }}"
+
