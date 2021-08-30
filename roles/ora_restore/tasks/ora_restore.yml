@@ -11,7 +11,7 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
-        relationship_state: broken
+        relationship_state: active
         source_endpoint:
           cluster: "{{ src_cluster_name }}"
           path: "{{ src_vserver + ':' + item }}"
@@ -81,4 +81,8 @@
             - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
         - debug:
             msg: "Snapshot restore {{ latest_snapshot_name  }}"
-    
+        - name: Get snapshot timestamp
+	  set_fact:
+	    recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
+	- debug:
+	    msg: "Your Recovery Point {{ recovery_point }}" 
