@@ -22,7 +22,6 @@
         temp: "{{ ontap_time.ontap_info.clock_info.local_time }}"
 
     - set_fact:
-#        readable_format: "{{ '%H.%M.%S.%Y-%m-%d' | strftime(temp) }}"
         readable_format: "{{ '%Y-%m-%d:%H:%M:%S' | strftime(temp) }}"
 
     - name: Consistency Group Snapshot
