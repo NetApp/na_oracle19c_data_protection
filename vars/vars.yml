@@ -245,4 +245,3 @@ hugepages_nr: 3072
 # Specify the exact time stamp for time based recovery in format 'YYYY-MM-DD:HH24:MI:SS'
 # Specify recovery system change number or scn. Note: the recovery scn number is upto but not include that scn.
 recovery_type: time
-recovery_point:  ""
