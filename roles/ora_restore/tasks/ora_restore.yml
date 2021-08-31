@@ -11,14 +11,13 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
-        relationship_state: active
+        relationship_state: broken
         source_endpoint:
           cluster: "{{ src_cluster_name }}"
           path: "{{ src_vserver + ':' + item }}"
         destination_endpoint:
           cluster: "{{ dst_cluster_name }}"
           path: "{{ dst_vserver + ':' + 'dr_' + item }}"
-#        policy: "{{ snapmirror_policy }}"
         relationship_type: extended_data_protection
         https: true
         validate_certs: false
