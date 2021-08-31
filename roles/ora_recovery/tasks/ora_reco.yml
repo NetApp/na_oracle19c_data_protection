@@ -19,6 +19,6 @@
     - name: Recover each DB registered in /etc/oratab in running mode
       shell: "{{ script_dir }}/ora_recovery.sh {{ recovery_type }} {{ recovery_point }}"
       become: true
-      become_user: '{{ oracle_user }}'
+#      become_user: '{{ oracle_user }}'
       tags:
         - exe_reco_script
