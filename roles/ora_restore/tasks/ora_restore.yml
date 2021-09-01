@@ -98,6 +98,8 @@
         - name: Get snapshot timestamp
           set_fact:
             recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
+          delegate_to: "{{ groups['dr_oracle'[0] }}"
+          delegate_facts: true  	  
         - debug:
             msg: "Your Recovery Point {{ recovery_point }}"
 
