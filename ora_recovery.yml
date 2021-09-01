@@ -1,26 +1,26 @@
 #This Playbook is designed to be ran on-demand when DB recovery is needed
-- name: Dst Volume Info
-  collections:
-    - netapp.ontap
-  hosts: localhost
-  connection: local
-  gather_facts: False
-  vars_files:
-    - roles/dst_vol_info/defaults/main.yml
-    - vars/vars.yml
-  roles:
-    - role: dst_vol_info
+#- name: Dst Volume Info
+#  collections:
+#    - netapp.ontap
+#  hosts: localhost
+#  connection: local
+#  gather_facts: False
+#  vars_files:
+#    - roles/dst_vol_info/defaults/main.yml
+#    - vars/vars.yml
+#  roles:
+#    - role: dst_vol_info
 
-- name: Oracle Linux Setup and Storage Config for Oracle
-  hosts: dr_oracle
-  gather_facts: True
-  vars_files:
-    - roles/dr_ora_host/defaults/main.yml
-    - vars/vars.yml
-  roles:
-    - role: dr_ora_host
-  tags:
-    - linux_config
+#- name: Oracle Linux Setup and Storage Config for Oracle
+#  hosts: dr_oracle
+#  gather_facts: True
+#  vars_files:
+#    - roles/dr_ora_host/defaults/main.yml
+#    - vars/vars.yml
+#  roles:
+#    - role: dr_ora_host
+#  tags:
+#    - linux_config
 
 - name: Oracle DB Restore
   collections:
@@ -35,14 +35,14 @@
   roles:
     - role: ora_restore
 
-- name: recover Oracle DB to desired recovery point
-  hosts: dr_oracle
-  gather_facts: False 
-  vars_files:
-    - roles/ora_recovery/defaults/main.yml
-    - roles/ora_restore/defaults/main.yml
-    - vars/vars.yml
-  roles:
-    - role: ora_recovery
-  tags:
-    - ora_recovery
+#- name: recover Oracle DB to desired recovery point
+#  hosts: dr_oracle
+#  gather_facts: False 
+#  vars_files:
+#    - roles/ora_recovery/defaults/main.yml
+#    - roles/ora_restore/defaults/main.yml
+#    - vars/vars.yml
+#  roles:
+#    - role: ora_recovery
+#  tags:
+#    - ora_recovery

@@ -3,7 +3,7 @@
       set_fact:
         src_cg_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
     - debug:
-        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"	    
+        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
 
     - name: Break ONTAP/ONTAP SnapMirror
       netapp.ontap.na_ontap_snapmirror:
@@ -26,6 +26,21 @@
         - "{{ src_cg_vols }}"
       tags:
         - ontap_snapmirror_break
+
+    - name: Enable NFS and junction path for Destination Volumes
+      netapp.ontap.na_ontap_volume:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        state: present
+        vserver: "{{ dst_vserver }}"
+        policy: "{{ export_policy_name }}"	
+        name: "dr_{{ item }}"
+        junction_path: "/dr_{{ item }}"
+        https: true
+        validate_certs: false
+      with_items:
+        - "{{ src_cg_vols }}"      
 
     - name: Restore User Required Snapshot on Destination Volumes
       block:
