@@ -12,9 +12,18 @@
         group: '{{ oracle_install_group }}'
         mode: 0755
       become: true
-      become_user: '{{ oracle_user }}'
       tags:
         - cp_reco_script
+
+    - name: Sync up control files before DB recovery on Oracle DB Servers
+      ansible.builtin.copy:
+        src: "{{ control_files[1] }}"
+        dest: "{{ control_files[0] }}"
+        remote: yes
+      become: true
+      become_user: "{{ oracle_user }}"      
+      tags:
+        - sync_control_file      
 
     - name: Recover each DB registered in /etc/oratab in running mode
       shell: "{{ script_dir }}/ora_recovery.sh {{ recovery_type }} {{ recovery_point }}"
