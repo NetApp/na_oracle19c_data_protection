@@ -43,7 +43,7 @@ EOF
      whenever sqlerror exit SQL.SQLCODE
      shutdown abort;
      startup mount;
-     recover database until time '$2' using backup controlfile;
+     recover automatic database until time '$2' using backup controlfile;
      alter database open resetlogs;
      exit;
 EOF
