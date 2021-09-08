@@ -1,0 +1,14 @@
+---
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+- block:
+    - name: Oracle Restore Tasks
+      include_tasks: ora_restore.yml
+      tags:
+        - ontap_ora_restore
+
+#    - name: Oracle Volumes Flexclone
+#      include_tasks: ora_flexclone.yml
+#      tags:
+#        - ontap_ora_flexclone
+

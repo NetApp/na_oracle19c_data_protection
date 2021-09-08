@@ -1,0 +1,15 @@
+---
+#Increase file descriptor hard limits
+- block: 
+   - name: Increase file descriptor hard limit
+     lineinfile:
+       path: /etc/security/limits.conf
+       line: "*               hard    nofile          65536"
+     become: true
+
+#Increase min stack size
+   - name: Increase min stack size
+     lineinfile:
+       path: /etc/security/limits.conf
+       line: "*               soft    stack           10240"
+     become: true

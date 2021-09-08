@@ -1,4 +1,8 @@
 ---
 collections:
-- netapp.cloudmanager
-- community.aws.iam_role
+  - netapp.cloudmanager
+#  - netapp.ontap
+  - community.aws
+
+  - name: netapp.ontap
+    version: 21.10.0

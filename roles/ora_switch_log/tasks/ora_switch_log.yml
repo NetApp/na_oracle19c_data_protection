@@ -1,33 +1,24 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
-# Recover Oracle DB until recovery point desired after a snapshot restore
+# Put Oracle DB in backup mode before snapshots to ensure app consistency
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-    - name: Copy recovery script to target Oracle DB servers
+    - name: Copy switch log script to target Oracle DB servers
       ansible.builtin.copy:
-        src: ora_recovery.sh 
+        src: ora_switch_log.sh 
         dest: '{{ script_dir }}'
         owner: '{{ oracle_user }}'
         group: '{{ oracle_install_group }}'
         mode: 0755
       become: true
+      become_user: '{{ oracle_user }}'
       tags:
-        - cp_reco_script
+        - cp_switch_log_script
 
-    - name: Sync up control files before DB recovery on Oracle DB Servers
-      ansible.builtin.copy:
-        src: "{{ control_files[1] }}"
-        dest: "{{ control_files[0] }}"
-        remote_src: yes
-      become: true
-      become_user: "{{ oracle_user }}"      
-      tags:
-        - sync_control_file      
-
-    - name: Recover each DB registered in /etc/oratab in running mode
-      shell: "{{ script_dir }}/ora_recovery.sh {{ recovery_type }} {{ recovery_point }}"
+    - name: Switch current log for each DB registered in /etc/oratab 
+      shell: "{{ script_dir }}/ora_switch_log.sh"
       become: true
       become_user: '{{ oracle_user }}'
       tags:
-        - exe_reco_script
+        - exe_switch_log_script

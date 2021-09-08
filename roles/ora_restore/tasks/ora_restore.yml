@@ -1,0 +1,105 @@
+- block:
+    - name: Obtain Oracle Consistency Group Volumes
+      set_fact:
+        src_cg_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+    - debug:
+        msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
+
+    - name: Break ONTAP/ONTAP SnapMirror
+      netapp.ontap.na_ontap_snapmirror:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        state: present
+        relationship_state: broken
+        source_endpoint:
+          cluster: "{{ src_cluster_name }}"
+          path: "{{ src_vserver + ':' + item }}"
+        destination_endpoint:
+          cluster: "{{ dst_cluster_name }}"
+          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
+        relationship_type: extended_data_protection
+        https: true
+        validate_certs: false
+        use_rest: always
+      with_items:
+        - "{{ src_cg_vols }}"
+      tags:
+        - ontap_snapmirror_break
+
+    - name: Enable NFS and junction path for Destination Volumes
+      netapp.ontap.na_ontap_volume:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        state: present
+        vserver: "{{ dst_vserver }}"
+        policy: "{{ export_policy_name }}"	
+        name: "dr_{{ item }}"
+        junction_path: "/dr_{{ item }}"
+        https: true
+        validate_certs: false
+      with_items:
+        - "{{ src_cg_vols }}"      
+
+    - name: Restore User Required Snapshot on Destination Volumes
+      block:
+        - name: List Snapshots from the destination
+          netapp.ontap.na_ontap_info:
+            state: info
+            username: "{{ dst_cluster_username }}"
+            password: "{{ dst_cluster_password }}"
+            hostname: "{{ dst_cluster_ip }}"
+            https: true
+            validate_certs: false
+            gather_subset:
+            - snapshot_info
+            query:
+              snapshot-info:
+                vserver: "{{ dst_vserver }}"
+                name: "{{ cg_snapshot_name_prefix }}*"
+          register: snapshots
+        - debug:
+            msg: "Snapshot List {{ snapshots }}."
+        - debug:
+            msg: "The snapshot is   {{ item.value.name }} The volume is {{ item.value.volume }}"
+          loop: "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - name: Access times for CG Snapshot.
+          set_fact:
+            accesstime_list: "{{ accesstime_list }} + ['{{ item[1].value.access_time }}']"
+            snapshot_list: "{{ snapshot_list }} + [ '{{ 'dr_' + item[0] }}={{ item[1].value.name }}' ]"
+          when:
+            - ( item[1].value.volume is match ('dr_' + item[0]))
+            - ( item[1].value.vserver is match (dst_vserver))
+            - ( item[1].value.name is search (cg_snapshot_name_prefix))
+          with_nested:
+            - "{{ src_cg_vols }}"
+            - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - debug:
+            msg: "Snapshot List {{ snapshot_list }}."
+        - debug:
+            msg: "Access Time List {{ accesstime_list }}."
+        - name: Get Max Access Time.
+          set_fact:
+            accesstime_list_max: "{{ accesstime_list | max }}"
+        - debug:
+            msg: " Max Access Time {{ accesstime_list_max }}"
+        - name: Access times for CG Snapshot.
+          set_fact:
+            latest_snapshot_name: "{{ item[1].value.name }}"
+          when:
+            - ( item[1].value.volume is match ('dr_' + item[0]))
+            - ( item[1].value.access_time is search (accesstime_list_max))
+          with_nested:
+            - "{{ src_cg_vols }}"
+            - "{{ lookup('dict', snapshots.ontap_info.snapshot_info) }}"
+        - debug:
+            msg: "Snapshot restore {{ latest_snapshot_name  }}"
+        - name: Get snapshot timestamp
+          set_fact:
+            recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
+          delegate_to: "{{ groups['dr_oracle'][0] }}"
+          delegate_facts: true  	  
+        - debug:
+            msg: "Your Recovery Point {{ recovery_point }}"
+

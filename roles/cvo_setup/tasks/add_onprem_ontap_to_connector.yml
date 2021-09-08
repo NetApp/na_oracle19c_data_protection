@@ -1,4 +1,13 @@
 - block:
+    - name: Gather Connector IP Address
+      community.aws.ec2_instance_info:
+        instance_ids:
+          - i-0190aee3a5a8fa1c6
+      register: connector_info
+    - set_fact:
+        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
+    - debug: var=msg
+
     - name: Create access token with username/password
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -39,7 +48,7 @@
         - 2. Check if provided username/password or refresh_token are correct
         - 3. Check if variables defined adhere to the guidelines
 
-- block
+- block:
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
         url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
@@ -47,10 +56,10 @@
         body_format: json
         body:
           tenantId: "{{ workspace_id }}"
-          name: "{{ on_prem_ontap_name }}"
-          clusterAddress: "{{ on_prem_ontap_cluster_ip }}"
-          clusterUserName: "{{ on_prem_ontap_username }}"
-          clusterPassword: "{{ on_prem_ontap_password }}"
+          name: "{{ src_cluster_name }}"
+          clusterAddress: "{{ src_cluster_ip }}"
+          clusterUserName: "{{ src_cluster_username }}"
+          clusterPassword: "{{ src_cluster_password }}"
           location: ON_PREM
         headers:
           Content-Type: application/json

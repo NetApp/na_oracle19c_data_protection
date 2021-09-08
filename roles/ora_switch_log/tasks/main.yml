@@ -2,7 +2,9 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-    - name: Oracle Replication Tasks
-      include_tasks: oracle_replication.yml
+    - name: Put Oracle DBs in backup mode on target DB servers before snapshots
+      include_tasks: ora_switch_log.yml
       tags: 
-        - ontap_oracle_replication
+        - ora_switch_log
+        - cp_switch_log_script
+        - exe_switch_log_script

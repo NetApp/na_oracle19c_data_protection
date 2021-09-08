@@ -1,0 +1,23 @@
+#This Playbook is designed to be ran on a schedule (end user's choice) in AWX/Tower
+- name: Oracle Switch Log
+  hosts: oracle
+  gather_facts: False
+  vars_files:
+    - roles/ora_switch_log/defaults/main.yml
+  roles:
+    - role: ora_switch_log
+  tags:
+    - ora_switch_log
+
+- name: Oracle Archive Logs Snapshot
+  collections:
+    - netapp.ontap
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_files:
+    - roles/ontap_setup/defaults/main.yml    
+    - roles/ora_replication_logs/defaults/main.yml    
+    - vars/vars.yml
+  roles:
+    - role: ora_replication_logs

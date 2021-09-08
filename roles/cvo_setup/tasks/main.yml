@@ -2,27 +2,27 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-    - name: pre-check
-      include_tasks: pre_check.yml
-      tags:
-        - pre_check
-
-    - name: create aws connector
-      include_tasks: create_connector.yml
-      tags:
-        - aws_connector
-
-    - name: create AWS CVO
-      include_tasks: create_cvo.yml
-      tags:
-        - aws_cvo
+#    - name: pre-check
+#      include_tasks: pre_check.yml
+#      tags:
+#        - pre_check
+#
+#    - name: create aws connector
+#      include_tasks: create_connector.yml
+#      tags:
+#        - aws_connector
+#
+#    - name: create AWS CVO
+#      include_tasks: create_cvo.yml
+#      tags:
+#        - aws_cvo
 
     - name: Add on-prem ONTAP to connector
       include_tasks: add_onprem_ontap_to_connector.yml
       tags:
         - onprem_to_aws_connector
 
-    - name: snap-mirror
-      include_tasks: create_snapmirror.yml
-      tags:
-        - snap
+#    - name: snap-mirror
+#      include_tasks: create_snapmirror.yml
+#      tags:
+#        - snap

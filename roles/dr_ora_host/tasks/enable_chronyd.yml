@@ -1,0 +1,19 @@
+---
+# Enable chronyd service
+- block:
+    - name: Enable chronyd service
+      ansible.builtin.service:
+        name: chronyd
+        enabled: yes
+      become: true
+      tags:
+        - enable_chronyd
+
+#Restart chronyd service
+    - name: start chronyd service
+      ansible.builtin.service:
+        name: chronyd
+        state: started
+      become: true
+      tags:
+        - start_chronyd

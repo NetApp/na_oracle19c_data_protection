@@ -1,0 +1,33 @@
+---
+# NFS Specific Mount Points
+- block:
+    - name: Obtain Oracle Consistency Group Volumes
+      set_fact:
+        src_vols: "{{ src_orabinary_vols + src_db_vols + src_archivelog_vols }}"
+    - debug:
+        msg: "Source Consistency Group Volumes {{ src_vols }}"
+   
+    - name: Create mount points for NFS file systems
+      file:
+        state=directory
+        path="{{ item }}"
+      become: true
+      with_items:
+        - '{{ mount_points }}'
+      tags:
+        - cre_mount_points
+
+# NFS Specific, Load Balance Oracle Data stores between two controllers: host1 on controller1, host2 on controller2 so on
+    - name: Mount NFS file systems on Oracle hosts
+      mount:
+        path: '{{ item.0 }}'
+        src: "{{ dst_nfs_lif }}:/dr_{{ item.1 }}"
+        fstype: nfs
+        opts: "rw,bg,hard,nointr,rsize=32768,wsize=32768,tcp,vers=3,timeo=600"
+        state: mounted
+      become: true
+      with_together:
+          - '{{ mount_points }}'
+          - '{{ src_vols }}'
+      tags:
+        - mount_host_datastores

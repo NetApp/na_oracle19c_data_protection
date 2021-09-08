@@ -1,0 +1,10 @@
+---
+#------------------------------------------------------------------------------
+# Restore Details
+#------------------------------------------------------------------------------
+accesstime_list: []
+snapshot_list: []
+accesstime_list_max: ""
+latest_snapshot_name: ""
+recovery_type: time
+recovery_point:  ""

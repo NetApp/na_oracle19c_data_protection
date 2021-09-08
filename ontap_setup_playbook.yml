@@ -2,12 +2,12 @@
 - name: ONTAP Intercluster Setup and Configuration 
   collections:
     - netapp.ontap
-  hosts: "{{ hosts_group | default ('ontap') }}"
+  hosts: localhost
   connection: local
   gather_facts: False
   vars_files:
-    - roles/ontap/defaults/main.yml    
-    - ontap_vars.yml
+    - roles/ontap_setup/defaults/main.yml    
+    - vars/vars.yml
   roles:
-    - role: ontap
+    - role: ontap_setup
       #  tags:
