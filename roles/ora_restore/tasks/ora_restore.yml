@@ -34,13 +34,13 @@
         password: "{{ dst_cluster_password }}"
         state: present
         vserver: "{{ dst_vserver }}"
-        policy: "{{ export_policy_name }}"	
+        policy: "{{ export_policy_details.name }}"
         name: "dr_{{ item }}"
         junction_path: "/dr_{{ item }}"
         https: true
         validate_certs: false
       with_items:
-        - "{{ src_cg_vols }}"      
+        - "{{ src_cg_vols }}"
 
     - name: Restore User Required Snapshot on Destination Volumes
       block:
@@ -99,7 +99,6 @@
           set_fact:
             recovery_point: "{{ latest_snapshot_name | regex_replace('^oracle_snap.(.*)$', '\\1') }}"
           delegate_to: "{{ groups['dr_oracle'][0] }}"
-          delegate_facts: true  	  
+          delegate_facts: true
         - debug:
             msg: "Your Recovery Point {{ recovery_point }}"
-

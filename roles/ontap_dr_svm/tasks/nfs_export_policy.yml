@@ -13,10 +13,10 @@
         state: present
         vserver: "{{ svm_name }}"
         policy_name: "{{ nfs_exp_policy }}"
-        client_match: "{{ client_match }}"
+        client_match: "{{ export_policy_details.client_match }}"
         protocol: "{{ data_protocol }}"
-        ro_rule: sys
-        rw_rule: sys
+        ro_rule: "{{ export_policy_details.ro_rule }}"
+        rw_rule: "{{ export_policy_details.rw_rule }}"
         super_user_security: sys
         allow_suid: true
         https: true
@@ -26,7 +26,7 @@
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
-# Add NFS Export Policy to the root volume 
+# Add NFS Export Policy to the root volume
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
     - name: Add ora svm nfs export policy to the root volume

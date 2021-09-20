@@ -1,5 +1,5 @@
 ##################################################
-###### Disaster Recovery Ansible Role 
+###### Disaster Recovery Ansible Role
 ###### na_ontap_snapmirror-dr
 ##################################################
 
@@ -22,7 +22,7 @@ source_intercluster_network_port_details:
   failover_for_shared_individual_ports: yes  #Whether to enable failover when using shared individual ports - requires minimum two individual ports per node that are compatible to allow intercluster traffic
   ifgrp_name: a0a  #Provide the ifgrp name is using ifgrps
   vlan_id: 211  #Provide the VLAN ID is using VLANs
-  ports: 
+  ports:
     - e0b
     - e0g  #List of ports per node
   broadcast_domain: ORA_NFS #If using dedicated ports, it will create this bd dedicated to intercluster lifs. If using shared ports, ensure that this bd exists in the cluster already
@@ -71,16 +71,16 @@ destination_intercluster_lif_details:
     node: automation-replication-ots-02
 
 ###################################################################################################
-# variables for - Add on-prem ONTAP to Connector in Cloud Manager 
+# variables for - Add on-prem ONTAP to Connector in Cloud Manager
 ###################################################################################################
 connector_ip: 172.30.10.55
 connector_access: refresh_token
-refresh_token: 
+refresh_token:
 workspace_id: workspace-TtPXVvC8
-on_prem_ontap_name: on-prem
-on_prem_ontap_cluster_ip: 10.61.185.163
-on_prem_ontap_username: admin
-on_prem_ontap_password: ***REMOVED***
+#on_prem_ontap_name: on-prem
+#on_prem_ontap_cluster_ip: 10.61.185.163
+#on_prem_ontap_username: admin
+#on_prem_ontap_password: ***REMOVED***
 
 
 ####################################################################################################
@@ -88,21 +88,21 @@ on_prem_ontap_password: ***REMOVED***
 ####################################################################################################
 ##
 #OPERATION-1:
-#:CLUSTER- This operation will establish a cluster-peer and vserver peer 
-cluster_vserver_peer: ""
+#:CLUSTER- This operation will establish a cluster-peer and vserver peer
+#cluster_vserver_peer: ""
 ##
 #OPERATION-2:
 #PROTECT DATABASE VOLUMES:- This operation will create a SnapMirror Destination, SnapMirror Relation and Initialize
-protect_volumes: ""
+#protect_volumes: ""
 ##
 #OPERATION-3:
 #SNAPSHOT DATABASE VOLUMES:- This operation will create a Consistency Group Snapshot and Update the Snapmirror
-cg_snapshot_volumes: ""
+#cg_snapshot_volumes: ""
 ##
 #OPERATION-4:
 #SERVE DATA NFS VOLUMES FROM DESTINATION DR CLUSTER: This operation will break, restore snapshot,create export policy create volume mount, update dr destination fstab and mount volume.
-failover_to_destination_nfs: ""
-nfs: ""
+#failover_to_destination_nfs: ""
+#nfs: ""
 ##
 #OPERATION-5:
 #SERVE DATA ISCSI LUNS FROM DESTINATION DR CLUSTER: This operation will break, restore snapshot,create export policy #create volume mount, update dr destination fstab and mount volume.
@@ -111,27 +111,27 @@ nfs: ""
 ##
 #OPERATION-6:
 #RESYNC BACK MIRROR RELATION AFTER IT WAS BROKEN:- This operation will resync the relationship from the Source to Destination as long as the relationship is not deleted and is in broken state.
-resync_snapmirror: ""
+#resync_snapmirror: ""
 ##
 #OPERATION-7:
 #REVERSE-RESYNC MIRROR RELATION FROM DESTINATION TO SOURCE:- This operation will reverse-resync the relationship from the Destination to Source as long as the relationship is not deleted and is in broken state.
-reverse_resync_snapmirror: ""
+#reverse_resync_snapmirror: ""
 
 ####################################################################################################
 # Peer
 ####################################################################################################
-peer: []
-src_name: ""
+#peer: []
+#src_name: ""
 src_lif: []
-dst_name: ""
+#dst_name: ""
 dst_lif: []
 passphrase: IamAp483p45a83
 ####################################################################################################
 # Database
 ####################################################################################################
-workload: []
-name:
-run_only: []
+#workload: []
+#name:
+#run_only: []
 #------------------------------------------------------------------------------
 # Source & Destination Credential List [Please use Vault to encrypt credentials]
 #------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ src_vserver: ""
 cg_snapshot_name_prefix: oracle
 
 #Please Enter Source Oracle Binary Volume(s)
-src_orabinary_vols: [] 
+src_orabinary_vols: []
 
 #Please Enter Source Database Volume(s)
 src_db_vols: []
@@ -185,22 +185,22 @@ src_db_vols: []
 src_archivelog_vols: []
 
 #Please Enter Source Volume Name to be protected
-src_lun_name_list: []
+#src_lun_name_list: []
 
 #Please Enter Source Volume Name to be protected
-dst_lun_name_list: []
+#dst_lun_name_list: []
 
 # Please Enter Destination Aggregate to create mirror relationship
-dst_aggr: ""
+#dst_aggr: ""
 
 #Please Enter Destination Snapmirror Schedule
-schedule: hourly
+#schedule: hourly
 
 #Please Enter Destination Snapmirror Policy
 snapmirror_policy: async_policy_ora
 
 #Please Enter Destination max Transfer
-max_transfer_rate: 900000
+#max_transfer_rate: 900000
 
 #------------------------------------------------------------------------------
 # Restore Details
@@ -213,32 +213,38 @@ restore_snapshot_name: ""
 # NFS
 #------------------------------------------------------------------------------
 
-#Use this to failover NFS volumes 
-nfs: ""
+#Use this to failover NFS volumes
+#nfs: ""
 
 #------------------------------------------------------------------------------
 # Export Policy Details
 #------------------------------------------------------------------------------
+#Enter the destination export policy details
+export_policy_details:
+  name: nfs_export_policy
+  client_match: 0.0.0.0/0
+  ro_rule: sys
+  rw_rule: sys
 
 #Please Enter Destination Export Policy Name
-export_policy_name: 10.195.62.203
+#export_policy_name: 10.195.62.203
 
 #Please Enter Destination  Export Policy Client
-client_match: 0.0.0.0/0
+#client_match: 0.0.0.0/0
 
 #Please Enter Destination  Export Policy RO Rule
-ro_rule: any
+#ro_rule: any
 
 #Please Enter Destination  Export Policy RW Rule
-rw_rule: any
+#rw_rule: any
 
 #------------------------------------------------------------------------------
 # Oracle Host
 #------------------------------------------------------------------------------
 
 mount_points: []
-client_name: []
-nfs_data_lif: ""
+#client_name: []
+#nfs_data_lif: ""
 hugepages_nr: 3072
 
 # Define recovery point for DB recovery. Recovery type: [scn, or time] and recovery point as explained below:
