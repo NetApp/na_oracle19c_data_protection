@@ -35,7 +35,7 @@
     name: "{{ aws_role_name }}"
     assume_role_policy_document: "{{ lookup('file','policy.json') }}"
     state: present
-    validate_certs: true
+    validate_certs: false
     managed_policies:
       - arn:aws:iam::210811600188:policy/OCCM
     state: present
