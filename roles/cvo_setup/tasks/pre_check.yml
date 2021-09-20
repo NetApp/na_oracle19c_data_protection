@@ -32,7 +32,7 @@
 ########## Create Role ########
 - name: Create Role
   iam_role:
-    name: "{{ aws_role_name }}"
+    name: sufian_occm5
     assume_role_policy_document: "{{ lookup('file','policy.json') }}"
     state: present
     validate_certs: false
