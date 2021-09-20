@@ -5,6 +5,7 @@ access_key:
 
 secret_key: 
 
+aws_role_name:
 
 ####### Connector Deployment and CVO deployment Variables #######
 
@@ -30,7 +31,6 @@ connector_name:
 
 account: 
 
-aws_role_name:
 
 ####### On-Prem Add to Cloud Manager ########
 
