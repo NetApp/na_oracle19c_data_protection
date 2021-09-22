@@ -33,4 +33,4 @@
   pause:
     minutes: 5
   tags:
-    - aws_connector
+    - aws
