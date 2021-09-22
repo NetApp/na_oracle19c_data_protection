@@ -49,4 +49,4 @@
   pause:
     minutes: 2
   tags:
-    - pre-check
+    - pre_check
