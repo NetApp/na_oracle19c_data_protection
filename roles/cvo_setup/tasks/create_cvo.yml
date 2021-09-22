@@ -27,7 +27,7 @@
     subnet_id: "{{ subnet }}"
     vpc_id: "{{ vpc }}"
     svm_password: "{{ cvo_svm_password }}"
-    client_id: "{{ connector.msg.client_id }}"
+    client_id: 7VXHLJFYhy58nxwQJMnz89mzsjxXEZq2
     writing_speed_state: NORMAL
     aws_tag: [
         {tag_key: abc,
