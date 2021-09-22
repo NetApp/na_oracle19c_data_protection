@@ -14,8 +14,8 @@
     company: NetApp
     associate_public_ip_address: false
   register: connector
-- debug:
-    msg: "my connector {{ connector }}"
+#- debug:
+#    msg: "my connector {{ connector }}"
 
 #    proxy_url: abc.com
 #    proxy_user_name: xyz
