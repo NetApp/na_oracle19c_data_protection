@@ -29,8 +29,8 @@
 
 ######## Delay to build connector ###############
 
-- name: Pause for 5 minutes to build connector
+- name: Pause for 2 minutes to build connector
   pause:
-    minutes: 0
+    minutes: 2
   tags:
     - aws_connector
