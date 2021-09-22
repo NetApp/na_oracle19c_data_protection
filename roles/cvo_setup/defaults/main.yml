@@ -8,6 +8,8 @@ secret_key:
 
 ####### Connector Deployment and CVO deployment Variables #######
 
+connector:
+
 token: 
 
 cvo_name:
