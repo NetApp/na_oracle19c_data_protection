@@ -37,7 +37,6 @@
     node1_subnet_id: "{{ subnet }}"
     node2_subnet_id: "{{ subnet }}"
     mediator_subnet_id: "{{ subnet }}"
-    use_latest_version: false
-    ontap_version: 9.8
+    instance_type: Explore
   tags:
     - aws_cvo_ha
