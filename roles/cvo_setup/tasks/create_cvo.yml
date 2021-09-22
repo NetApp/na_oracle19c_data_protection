@@ -34,5 +34,8 @@
         tag_value: a123}]
     is_ha: true
     mediator_assign_public_ip: false
+    node1_subnet_id: "{{ subnet }}"
+    node2_subnet_id: "{{ subnet }}"
+    mediator_subnet_id: "{{ subnet }}"
   tags:
     - aws_cvo_ha
