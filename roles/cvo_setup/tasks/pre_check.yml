@@ -47,6 +47,6 @@
 
 - name: Pause for 2 minutes to Create Iam Instance Profile
   pause:
-    minutes: 4
+    minutes: 2
   tags:
     - pre_check
