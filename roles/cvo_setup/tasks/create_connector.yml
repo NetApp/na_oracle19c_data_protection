@@ -13,8 +13,8 @@
     account_id: "{{ account }}"
     company: NetApp
     associate_public_ip_address: false
-  register: connector
-- debug: var=connector
+#  register: connector
+#- debug: var=connector
 
 #    proxy_url: abc.com
 #    proxy_user_name: xyz
@@ -31,6 +31,6 @@
 
 - name: Pause for 5 minutes to build connector
   pause:
-    minutes: 5
+    minutes: 0
   tags:
     - aws_connector
