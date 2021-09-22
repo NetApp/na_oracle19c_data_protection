@@ -37,6 +37,7 @@
     node1_subnet_id: "{{ subnet }}"
     node2_subnet_id: "{{ subnet }}"
     mediator_subnet_id: "{{ subnet }}"
+    license_type: ha-cot-explore-paygo
     instance_type: Explore
   tags:
     - aws_cvo_ha
