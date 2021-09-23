@@ -41,5 +41,8 @@
     instance_type: m5.xlarge
     instance_profile_name: sufian_occm9
     security_group_id: "{{ security_group }}"
+    cluster_floating_ip: 172.30.0.124
+    data_floating_ip: 172.30.0.125
+    data_floating_ip2: 172.30.0.126
   tags:
     - aws_cvo_ha
