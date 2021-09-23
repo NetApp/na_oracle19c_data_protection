@@ -38,7 +38,7 @@
     node2_subnet_id: "{{ subnet }}"
     mediator_subnet_id: "{{ subnet }}"
     license_type: ha-cot-standard-paygo
-    instance_type: Explore
+    instance_type: Standard
     instance_profile_name: sufian_occm9
     security_group_id: "{{ security_group }}"
   tags:
