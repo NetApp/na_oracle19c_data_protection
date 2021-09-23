@@ -44,6 +44,6 @@
     cluster_floating_ip: 172.30.0.124
     data_floating_ip: 172.30.0.125
     data_floating_ip2: 172.30.0.126
-    route_table_ids: 
+    route_table_ids: rtb-075d2e62
   tags:
     - aws_cvo_ha
