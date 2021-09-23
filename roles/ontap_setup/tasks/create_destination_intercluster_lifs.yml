@@ -9,7 +9,7 @@
       set_fact:
         dst_ports_list: "{{ dst_ports_list + [item[0]+':'+item[1]] }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - netapp.ontap.na_ontap_info:
         username: "{{ dst_cluster_username }}"
@@ -64,7 +64,7 @@
         node: "{{ item }}"
         https: true
         validate_certs: false
-      with_items: "{{ nodes }}"
+      with_items: "{{ dst_nodes }}"
       register: destination_create_ifgrp_register
   when: destination_intercluster_network_port_details.using_dedicated_ports|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
@@ -90,7 +90,7 @@
         https: true
         validate_certs: false
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
       register: destination_create_vlans_individual_register
   when: destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
@@ -117,7 +117,7 @@
         https: true
         validate_certs: false
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
       register: destination_create_vlans_ifgrps_register
   when: destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
   rescue:
@@ -138,7 +138,7 @@
         dst_port_ilc_list: "{{ dst_port_ilc_list + [item[0]+':'+item[1]] }}"
       when: not destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - vars:
         dst_port_ilc_list: []
@@ -147,7 +147,7 @@
         dst_port_ilc_list: "{{ dst_port_ilc_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name] }}"
       when: not destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
     - vars:
         dst_port_ilc_list: []
       name: Create list of ports
@@ -155,7 +155,7 @@
         dst_port_ilc_list: "{{ dst_port_ilc_list + [item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
       when: destination_intercluster_network_port_details.using_vlans|bool and not destination_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - vars:
         dst_port_ilc_list: []
@@ -164,7 +164,7 @@
         dst_port_ilc_list: "{{ dst_port_ilc_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
       when: destination_intercluster_network_port_details.using_vlans|bool and destination_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
     - debug:
         var: dst_port_ilc_list
     - netapp.ontap.na_ontap_info:
@@ -228,7 +228,7 @@
         dst_port_sharedvlan_list: "{{ dst_port_sharedvlan_list + [item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
       when: not destination_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - vars:
         dst_port_sharedvlan_list: []
@@ -237,7 +237,7 @@
         dst_port_sharedvlan_list: "{{ dst_port_sharedvlan_list + [item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string] }}"
       when: destination_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
     - debug:
         var: dst_port_sharedvlan_list
     - netapp.ontap.na_ontap_info:
@@ -311,7 +311,7 @@
       set_fact:
         dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item[0]+':'+item[1]) + ',' }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared ports to failover group on destination cluster
       netapp.ontap.na_ontap_command:
@@ -340,7 +340,7 @@
       set_fact:
         dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item[0]+':'+item[1]+'-'+destination_intercluster_network_port_details.vlan_id|string) + ',' }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
         - "{{ destination_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared vlan ports to failover group on destination cluster
       netapp.ontap.na_ontap_command:
@@ -369,7 +369,7 @@
       set_fact:
         dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item+':'+destination_intercluster_network_port_details.ifgrp_name) + ',' }}"
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
     - name: Create Failover Group for shared ifgrps to failover group on destination cluster
       netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
@@ -397,7 +397,7 @@
       set_fact:
         dst_port_fg_list: "{{ dst_port_fg_list|default('') + (item+':'+destination_intercluster_network_port_details.ifgrp_name+'-'+destination_intercluster_network_port_details.vlan_id|string) + ',' }}"
       with_items:
-        - "{{ nodes }}"
+        - "{{ dst_nodes }}"
     - name: Create Failover Group for shared vlan ifgrps to failover group on destination cluster
       netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"

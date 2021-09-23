@@ -6,7 +6,11 @@
 #####################################################
 # Inter-cluster LIF details
 #####################################################
-nodes:
+src_nodes:
+  - Ansible_1
+  - Ansible_2
+
+dst_nodes:
   - Ansible_1
   - Ansible_2
 #  - automation-replication-ots-01

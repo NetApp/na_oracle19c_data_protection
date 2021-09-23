@@ -34,9 +34,9 @@
         summary: yes
       register: ontap_info_node_register
     - name: Check validity of ONTAP cluster nodes
-      set_fact: 
+      set_fact:
         ontap_nodes_validity: yes
-      when: nodes is subset(ontap_info_node_register.ontap_info.cluster_node_info)
+      when: dst_nodes is subset(ontap_info_node_register.ontap_info.cluster_node_info)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@
         summary: yes
       register: ontap_info_aggregate_register
     - name: Check validity of ONTAP cluster aggregates
-      set_fact: 
+      set_fact:
         ontap_aggregates_validity: yes
       when: (data_aggregates | map(attribute='aggr_name') | list) is subset(ontap_info_aggregate_register.ontap_info.aggregate_info)
 
@@ -81,17 +81,17 @@
         ontap_vlan_check: []
         query: "[].value[] | [?node=='{{ item }}'].vlanid[]"
       when: (storage_vlans | map(attribute='vlan_id') | list) is subset(ontap_info_vlan_register.ontap_info.net_vlan_info | dict2items | json_query(query))
-      with_items: "{{ nodes }}"
+      with_items: "{{ dst_nodes }}"
     - vars:
         ontap_vlan_ifgrp: []
       set_fact:
         ontap_vlan_ifgrp: "{{ ontap_vlan_ifgrp + [item.value.parent_interface] }}"
       with_items: "{{ ontap_info_vlan_register.ontap_info.net_vlan_info | dict2items }}"
-      when: item.value.vlanid in (storage_vlans | map(attribute='vlan_id') | list) 
+      when: item.value.vlanid in (storage_vlans | map(attribute='vlan_id') | list)
     - name: Check validity of VLANs on ifgroups
       set_fact:
         ontap_vlan_validity: yes
-      when: (ontap_vlan_check | difference(nodes) | list)|length==0
+      when: (ontap_vlan_check | difference(dst_nodes) | list)|length==0
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
