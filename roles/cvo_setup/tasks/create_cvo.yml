@@ -46,5 +46,6 @@
     data_floating_ip2: 172.30.0.126
     route_table_ids: rtb-075d2e62
     failover_mode: PrivateIP
+    mediator_key_pair_name: sufi-key-virginia
   tags:
     - aws_cvo_ha
