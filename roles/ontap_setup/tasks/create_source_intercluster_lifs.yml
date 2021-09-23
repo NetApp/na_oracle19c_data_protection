@@ -9,7 +9,7 @@
       set_fact:
         src_ports_list: "{{ src_ports_list + [item[0]+':'+item[1]] }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - netapp.ontap.na_ontap_info:
         username: "{{ src_cluster_username }}"
@@ -64,7 +64,7 @@
         node: "{{ item }}"
         https: true
         validate_certs: false
-      with_items: "{{ nodes }}"
+      with_items: "{{ src_nodes }}"
       register: source_create_ifgrp_register
   when: source_intercluster_network_port_details.using_dedicated_ports|bool and source_intercluster_network_port_details.using_ifgrp|bool
   rescue:
@@ -90,7 +90,7 @@
         https: true
         validate_certs: false
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
       register: source_create_vlans_individual_register
   when: source_intercluster_network_port_details.using_vlans|bool and not source_intercluster_network_port_details.using_ifgrp|bool
@@ -117,7 +117,7 @@
         https: true
         validate_certs: false
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
       register: source_create_vlans_ifgrps_register
   when: source_intercluster_network_port_details.using_vlans|bool and source_intercluster_network_port_details.using_ifgrp|bool
   rescue:
@@ -138,7 +138,7 @@
         src_port_ilc_list: "{{ src_port_ilc_list + [item[0]+':'+item[1]] }}"
       when: not source_intercluster_network_port_details.using_vlans|bool and not source_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - vars:
         src_port_ilc_list: []
@@ -147,7 +147,7 @@
         src_port_ilc_list: "{{ src_port_ilc_list + [item+':'+source_intercluster_network_port_details.ifgrp_name] }}"
       when: not source_intercluster_network_port_details.using_vlans|bool and source_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
     - vars:
         src_port_ilc_list: []
       name: Create list of ports
@@ -155,7 +155,7 @@
         src_port_ilc_list: "{{ src_port_ilc_list + [item[0]+':'+item[1]+'-'+source_intercluster_network_port_details.vlan_id|string] }}"
       when: source_intercluster_network_port_details.using_vlans|bool and not source_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - vars:
         src_port_ilc_list: []
@@ -164,7 +164,7 @@
         src_port_ilc_list: "{{ src_port_ilc_list + [item+':'+source_intercluster_network_port_details.ifgrp_name+'-'+source_intercluster_network_port_details.vlan_id|string] }}"
       when: source_intercluster_network_port_details.using_vlans|bool and source_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
     - debug:
         var: src_port_ilc_list
     - netapp.ontap.na_ontap_info:
@@ -228,7 +228,7 @@
         src_port_sharedvlan_list: "{{ src_port_sharedvlan_list + [item[0]+':'+item[1]+'-'+source_intercluster_network_port_details.vlan_id|string] }}"
       when: not source_intercluster_network_port_details.using_ifgrp|bool
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - vars:
         src_port_sharedvlan_list: []
@@ -237,7 +237,7 @@
         src_port_sharedvlan_list: "{{ src_port_sharedvlan_list + [item+':'+source_intercluster_network_port_details.ifgrp_name+'-'+source_intercluster_network_port_details.vlan_id|string] }}"
       when: source_intercluster_network_port_details.using_ifgrp|bool
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
     - debug:
         var: src_port_sharedvlan_list
     - netapp.ontap.na_ontap_info:
@@ -311,7 +311,7 @@
       set_fact:
         src_port_fg_list: "{{ src_port_fg_list|default('') + (item[0]+':'+item[1]) + ',' }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared ports to failover group on source cluster
       netapp.ontap.na_ontap_command:
@@ -340,7 +340,7 @@
       set_fact:
         src_port_fg_list: "{{ src_port_fg_list|default('') + (item[0]+':'+item[1]+'-'+source_intercluster_network_port_details.vlan_id|string) + ',' }}"
       with_nested:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
         - "{{ source_intercluster_network_port_details.ports }}"
     - name: Create Failover Group for individual shared vlan ports to failover group on source cluster
       netapp.ontap.na_ontap_command:
@@ -369,7 +369,7 @@
       set_fact:
         src_port_fg_list: "{{ src_port_fg_list|default('') + (item+':'+source_intercluster_network_port_details.ifgrp_name) + ',' }}"
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
     - name: Create Failover Group for shared ifgrps to failover group on source cluster
       netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"
@@ -397,7 +397,7 @@
       set_fact:
         src_port_fg_list: "{{ src_port_fg_list|default('') + (item+':'+source_intercluster_network_port_details.ifgrp_name+'-'+source_intercluster_network_port_details.vlan_id|string) + ',' }}"
       with_items:
-        - "{{ nodes }}"
+        - "{{ src_nodes }}"
     - name: Create Failover Group for shared vlan ifgrps to failover group on source cluster
       netapp.ontap.na_ontap_command:
         hostname: "{{ src_cluster_ip }}"

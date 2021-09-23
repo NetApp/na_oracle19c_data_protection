@@ -16,8 +16,8 @@ svm_mgmt_defaults:
   - {lif_name: '{{ svm_name }}_mgmt'}
 
 nfs_lifs_defaults:
-  - {name: '{{ svm_name }}_nfs_lif01', home_node: '{{ nodes[0] }}'}
-  - {name: '{{ svm_name }}_nfs_lif02', home_node: '{{ nodes[1] }}'}
+  - {name: '{{ svm_name }}_nfs_lif01', home_node: '{{ dst_nodes[0] }}'}
+  - {name: '{{ svm_name }}_nfs_lif02', home_node: '{{ dst_nodes[1] }}'}
 
 #Data Protocol to be used for export policy rules
 data_protocol: nfs
