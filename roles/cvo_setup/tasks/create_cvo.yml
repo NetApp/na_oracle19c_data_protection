@@ -45,5 +45,6 @@
     data_floating_ip: 172.30.0.125
     data_floating_ip2: 172.30.0.126
     route_table_ids: rtb-075d2e62
+    failover_mode: PrivateIP
   tags:
     - aws_cvo_ha
