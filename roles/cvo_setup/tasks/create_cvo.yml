@@ -39,5 +39,7 @@
     mediator_subnet_id: "{{ subnet }}"
     license_type: ha-cot-standard-paygo
     instance_type: Explore
+    instance_profile_name: sufian_occm9
+    secuirty_group_id: "{{ security_group }}"
   tags:
     - aws_cvo_ha
