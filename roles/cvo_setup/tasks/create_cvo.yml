@@ -30,8 +30,8 @@
     client_id: "{{ connector.msg.client_id }}"
     writing_speed_state: NORMAL
     aws_tag: [
-        {tag_key: abc,
-        tag_value: a123}]
+        {tag_key: netapp1,
+        tag_value: net123}]
     is_ha: true
     mediator_assign_public_ip: false
     node1_subnet_id: "{{ subnet }}"
