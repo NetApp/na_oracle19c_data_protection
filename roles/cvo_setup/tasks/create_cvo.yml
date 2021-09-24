@@ -27,7 +27,7 @@
     subnet_id: "{{ subnet }}"
     vpc_id: "{{ vpc }}"
     svm_password: "{{ cvo_svm_password }}"
-    client_id: RXgqvzlBu26CIEiMc2VrdbfPXKOv1XXD
+    client_id: "{{ connector.msg.client_id }}"
     writing_speed_state: NORMAL
     aws_tag: [
         {tag_key: abc,
@@ -39,7 +39,7 @@
     mediator_subnet_id: "{{ subnet }}"
     license_type: ha-cot-explore-paygo
     instance_type: m5.xlarge
-    instance_profile_name: sufian_occm9
+    instance_profile_name: "{{ aws_role_name }}"
     security_group_id: "{{ security_group }}"
     cluster_floating_ip: 172.30.0.124
     data_floating_ip: 172.30.0.125
