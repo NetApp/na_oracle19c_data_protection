@@ -24,7 +24,9 @@
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
         state: present
-        use_rest: Always
+        https: true
+        validate_certs: false
+        use_rest: always
         vserver: "{{ src_vserver }}"
         snapshot: "{{ cg_snapshot_name_prefix + '.' + readable_format }}"
         volumes: "{{ src_archivelog_vols }}"
