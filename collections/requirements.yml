@@ -1,7 +1,7 @@
 ---
 collections:
   - netapp.cloudmanager
-#  - netapp.ontap
+  - community.general
   - community.aws
 
   - name: netapp.ontap
