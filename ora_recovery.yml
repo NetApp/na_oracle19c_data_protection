@@ -10,7 +10,9 @@
     - vars/vars.yml
   roles:
     - role: dst_vol_info
-
+  tags:
+    - ora_restore
+    
 - name: Oracle DB Restore
   collections:
     - netapp.ontap
@@ -23,7 +25,9 @@
     - vars/vars.yml
   roles:
     - role: ora_restore
-
+  tags:
+    - ora_restore
+    
 - name: Oracle Linux Setup and Storage Config for Oracle
   hosts: dr_oracle
   gather_facts: True
