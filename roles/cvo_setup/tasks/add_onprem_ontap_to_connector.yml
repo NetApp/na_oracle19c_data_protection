@@ -9,9 +9,9 @@
         aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
         filters:
           "instance-id": i-057cbbd865e1187f0
-      register: ec2_instance_facts
-#    - set_fact:
-#        msg: "{{ ec2_instance_info | json_query('instances[*].private_ip_address') }}"
+      register: ec2_instance_info
+    - set_fact:
+        msg: "{{ ec2_instance_info | json_query('instances[*].private_ip_address') }}"
     - debug: var=ec2_instance_info
       tags:
         - on_prem_connect
