@@ -1,5 +1,47 @@
 - block:
-
+######## Get Connector IP #############
+    - name: Gather Connector IP Address
+      ec2_instance_info:
+        instance_ids:
+          - "{{ connector.msg.instance_id }}"
+      register: connector_info
+    - set_fact:
+        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
+    - debug: var=msg
+    
+######## Create Access Token with username/password #############
+    - name: Create access token with username/password
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        body_format: json
+        body:
+          grant_type: password
+          username: "{{ email_id }}"
+          password: "{{ password }}"
+          audience: "https://api.cloud.netapp.com"
+          scope: profile
+          client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
+        headers:
+          Content-Type: application/json
+      register: connector_accesstoken
+      when: connector_access == "password"
+      
+######## Create Access Token with Refresh Token #############      
+    - name: Create access token with refresh token
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        body_format: json
+        body:
+          grant_type: refresh_token
+          refresh_token: "{{ token }}"
+          client_id: Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC
+        headers:
+          Content-Type: application/json
+      register: connector_accesstoken
+      when: connector_access == "refresh_token"
+    - debug: var=connector_accesstoken
     
 ################## Get Workspace ID ###################
     - name: Get Workspace ID
@@ -9,11 +51,36 @@
         return_content: yes
         headers:
           Content-Type: application/json
-          Authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5rSXlPVFUzUWpZek1ESkRPVGd5TlRJMU1EUkZNVFpFUTBFd1JEUkJRVGxFT1VFMU5UUkNOZyJ9.eyJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9mdWxsX25hbWUiOiJBaG1hZCBTdWZpYW4iLCJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9lbWFpbF92ZXJpZmllZCI6ZmFsc2UsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2Nvbm5lY3Rpb25faWQiOiJjb25fdk5DdjdsdjBKa2t5OWxMZCIsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2lzX2ZlZGVyYXRlZCI6dHJ1ZSwiaHR0cDovL2Nsb3VkLm5ldGFwcC5jb20vaW50ZXJuYWwiOiJOZXRBcHAiLCJpc3MiOiJodHRwczovL25ldGFwcC1jbG91ZC1hY2NvdW50LmF1dGgwLmNvbS8iLCJzdWIiOiJ3YWFkfEg0dTFtY3c0OGppaEc3RVJ5MHY0SlFJLUdlQ2FkY2htb0NUdWlpeVZSTXMiLCJhdWQiOiJodHRwczovL2FwaS5jbG91ZC5uZXRhcHAuY29tIiwiaWF0IjoxNjMyODY3Mzg5LCJleHAiOjE2MzI5NTM3ODksImF6cCI6Ik11MFYxeXdnWXRlSTZ3MU1iRDE1ZktmVklVck5YR1dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.jplormITzV6Xu4ALH-7ArAcOdZQoiiVEyuOci0YvCYu2oB8vXR3vHvbdbvFaEhquxQayR55yLXPPDt9vUlo9JD6pCT4WSlFWxyWf6ngMC3zVsf4qMSmcozOfaz3Cm3eemw2tezBooyCVaVZbDliC7jD6OsrnQ-4cWLHadwLAAtgitpEW5dIs6F0Gz-qx1JOveVFZK_m54dKhwl47HqEBPHR-WnsW3sGJu9FXK6d1ceVSP9SjP4Umnu30BESUetZZozKNeresYvdgyOo2YQBKc9sY3daVUN8VIDo6I22BWQkxsKtUuLKPtG6BB9NuPjcVi73goh767AY1VpBIdn2-OQ"
+          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
       register: result
     - set_fact:
         msgs: "{{ result | json_query('json[0]') }}"
     - debug: var=msgs.workspacePublicId
+      
+################## Create on Prem Connection ###################
+    - name: Add on-prem ONTAP cluster to connector in Cloud Manager
+      uri:
+        url: "http://{{ msg }}/occm/api/onprem/working-environments"
+        method: POST
+        body_format: json
+        body:
+          tenantId: "{{ msgs.workspacePublicId }}"
+          name: "{{ src_cluster_name }}"
+          clusterAddress: "{{ src_cluster_ip }}"
+          clusterUserName: "{{ src_cluster_username }}"
+          clusterPassword: "{{ src_cluster_password }}"
+          location: ON_PREM
+        headers:
+          Content-Type: application/json
+          Authorization: "{{ connector_accesstoken.json.access_token }}"
   tags:
-     on_prem_connect
-   
+    - on_prem_connect
+  rescue:
+    - name: Failure 
+      fail:
+        msg: 
+        - Add on-prem ONTAP cluster to connector in Cloud Manager failed!
+        - Possible troubleshooting steps:
+        - 1. Check if connector API endpoint is reachable 
+        - 2. Check if provided workspace_id and on-prem ONTAP cluster details are correct
+        - 3. Check if variables defined adhere to the guidelines
