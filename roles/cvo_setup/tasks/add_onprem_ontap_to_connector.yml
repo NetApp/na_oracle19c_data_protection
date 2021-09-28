@@ -70,6 +70,8 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ connector_accesstoken.json.access_token }}"
+  tags:
+    - on_prem_connect
   rescue:
     - name: Failure 
       fail:
