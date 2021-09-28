@@ -1,4 +1,5 @@
 - block:
+######## Get Connector IP #############
     - name: Gather Connector IP Address
       community.aws.ec2_instance_info:
         instance_ids:
@@ -7,7 +8,8 @@
     - set_fact:
         msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
     - debug: var=msg
-
+    
+######## Create Access Token with username/password #############
     - name: Create access token with username/password
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -25,6 +27,7 @@
       register: connector_accesstoken
       when: connector_access == "password"
       
+######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -51,6 +54,7 @@
           Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
       register: result
       
+################## Create on Prem Connection ###################
       
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
