@@ -4,7 +4,7 @@
         instance_ids:
           - i-057cbbd865e1187f0
       register: result
-    - debug: msg="{{ ec2_metadata.instances[0].private_ip_address }}
+    - debug: msg="{{ result.instances[0].private_ip_address }}
       tags:
         - on_prem_connect
 
