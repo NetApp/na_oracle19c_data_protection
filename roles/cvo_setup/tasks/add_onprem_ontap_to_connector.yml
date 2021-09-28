@@ -55,7 +55,6 @@
       register: result
       
 ################## Create on Prem Connection ###################
-      
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
         url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
