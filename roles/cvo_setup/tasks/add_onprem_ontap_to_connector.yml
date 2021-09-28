@@ -1,7 +1,5 @@
 - block:
     - name: Gather Connector IP Address
-      connection: local
-      gather_facts: no
       community.aws.ec2_instance_info:
         instance_ids:
           - i-057cbbd865e1187f0
