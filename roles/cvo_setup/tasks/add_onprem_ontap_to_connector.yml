@@ -3,9 +3,9 @@
       ec2_instance_info:
         instance_ids:
           - i-057cbbd865e1187f0
-      register: msg
-#    - set_fact:
-#        msg: "{{ ec2_instance_info | json_query('instances[*].private_ip_address') }}"
+      register: result
+    - set_fact:
+        msg: "{{ result | json_query('instances[*].private_ip_address') }}"
     - debug: var=msg
       tags:
         - on_prem_connect
