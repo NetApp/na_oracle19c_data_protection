@@ -6,3 +6,5 @@ collections:
 
   - name: netapp.ontap
     version: 21.10.0
+    
+  - name: community.aws
