@@ -4,9 +4,9 @@
         instance_ids:
           - i-057cbbd865e1187f0
       register: result
-    - set_fact:
-        msg: "{{ result | json_query('instances[*].private_ip_address') }}"
-    - debug: var=msg
+#    - set_fact:
+#        msg: "{{ result | json_query('instances[*].private_ip_address') }}"
+    - debug: result.private_ip_address
       tags:
         - on_prem_connect
 
