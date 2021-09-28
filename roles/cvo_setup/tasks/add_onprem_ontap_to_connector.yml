@@ -2,7 +2,7 @@
     - name: Gather Connector IP Address
       community.aws.ec2_instance_info:
         instance_ids:
-          - i-0190aee3a5a8fa1c6
+          - i-057cbbd865e1187f0
       register: connector_info
     - set_fact:
         msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
