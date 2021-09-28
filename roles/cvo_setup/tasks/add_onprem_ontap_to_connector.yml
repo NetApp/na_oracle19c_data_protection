@@ -46,7 +46,7 @@
 ################## Get Workspace ID ###################
     - name: Get Workspace ID
       uri:
-        url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ connector.msg.account_id }}/workspace"
+        url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
         method: GET
         return_content: yes
         headers:
@@ -57,7 +57,7 @@
 ################## Create on Prem Connection ###################
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
-        url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
+        url: "http://{{ msg }}/occm/api/onprem/working-environments"
         method: POST
         body_format: json
         body:
