@@ -1,9 +1,8 @@
 ---
 collections:
-  - netapp.cloudmanager
-#  - netapp.ontap
   - community.aws
   - amazon.aws
+  - netapp.cloudmanager
 
   - name: netapp.ontap
     version: 21.10.0
