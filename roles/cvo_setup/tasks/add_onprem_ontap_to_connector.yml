@@ -35,7 +35,7 @@
         body_format: json
         body:
           grant_type: refresh_token
-          refresh_token: "{{ refresh_token }}"
+          refresh_token: "{{ token }}"
           client_id: Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC
         headers:
           Content-Type: application/json
