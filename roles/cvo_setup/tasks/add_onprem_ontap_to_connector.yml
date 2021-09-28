@@ -1,7 +1,7 @@
 - block:
 ######## Get Connector IP #############
     - name: Gather Connector IP Address
-      community.aws.ec2_instance_info:
+      ec2_instance_info:
         instance_ids:
           - "{{ connector.msg.instance_id }}"
       register: connector_info
