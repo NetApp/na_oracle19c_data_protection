@@ -13,6 +13,8 @@
     - set_fact:
         msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
     - debug: var=msg
+      tags:
+        - on_prem_connect
 
     - name: Create access token with username/password
       uri:
