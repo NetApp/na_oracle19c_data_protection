@@ -1,6 +1,8 @@
 - block:
     - name: Gather Connector IP Address
       ec2_instance_info:
+        aws_access_key: "{{ access_key }}"
+        aws_secret_key: "{{ secret_key }}"
         instance_ids:
           - i-057cbbd865e1187f0
       register: result
