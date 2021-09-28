@@ -13,7 +13,7 @@
       register: result
     - set_fact:
         msgs: "{{ result | json_query('content') }}"
-    - debug: var=msgs
+    - debug: var=msgs.workspacePublicId
   tags:
      on_prem_connect
    
