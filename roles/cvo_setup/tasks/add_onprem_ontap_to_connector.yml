@@ -61,7 +61,7 @@
         method: POST
         body_format: json
         body:
-          tenantId: "{{ result.workspacePublicId }}"
+          tenantId: "{{ result.content.workspacePublicId }}"
           name: "{{ src_cluster_name }}"
           clusterAddress: "{{ src_cluster_ip }}"
           clusterUserName: "{{ src_cluster_username }}"
