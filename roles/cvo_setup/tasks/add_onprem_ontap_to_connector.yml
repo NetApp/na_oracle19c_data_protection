@@ -6,7 +6,7 @@
       register: result
 #    - set_fact:
 #        msg: "{{ result | json_query('instances[*].private_ip_address') }}"
-    - debug: result.msg.private_ip_address
+    - debug: var=result
       tags:
         - on_prem_connect
 
