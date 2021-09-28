@@ -7,9 +7,8 @@
         instance_ids:
           - i-057cbbd865e1187f0
       register: connector_info
-    - debug: var=connector_info
-#    - set_fact:
-#        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
+    - set_fact:
+        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
       tags:
         - on_prem_connect
 
