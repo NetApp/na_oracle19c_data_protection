@@ -1,12 +1,12 @@
 - block:
     - name: Gather Connector IP Address
-      ec2_instance_info:
+      community.aws.ec2_instance_info:
         instance_ids:
           - i-057cbbd865e1187f0
-      register: result
-    - debug: msg= "{{ result.instances[0].private_ip_address }}"
-      tags:
-        - on_prem_connect
+      register: connector_info
+    - set_fact:
+        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
+    - debug: var=msg
 
     - name: Create access token with username/password
       uri:
