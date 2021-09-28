@@ -53,6 +53,7 @@
           Content-Type: application/json
           Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
       register: result
+    - debug: var=result
       
 ################## Create on Prem Connection ###################
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
