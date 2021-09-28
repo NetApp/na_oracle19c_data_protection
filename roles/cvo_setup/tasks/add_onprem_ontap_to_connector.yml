@@ -1,18 +1,12 @@
 - block:
-    - name: Gather EC2 instance info  
-      action: ec2_metadata_facts      
-
-    - name: Get EC2 instance facts
-      ec2_instance_info:
-        region: us-east-1
-        aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
-        aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
-        filters:
-          "instance-id": i-057cbbd865e1187f0
-      register: ec2_instance_info
+    - name: Gather Connector IP Address
+      community.aws.ec2_instance_info:
+        instance_ids:
+          - i-057cbbd865e1187f0
+      register: connector_info
     - set_fact:
-        msg: "{{ ec2_instance_info | json_query('instances[*].private_ip_address') }}"
-    - debug: var=ec2_instance_info
+        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
+    - debug: var=msg
       tags:
         - on_prem_connect
 
