@@ -40,8 +40,8 @@
       register: connector_accesstoken
       when: connector_access == "refresh_token"
     - debug: var=connector_accesstoken
-      tags:
-        - on_prem_connect
+#      tags:
+#        - on_prem_connect
   rescue:
     - name: Failure 
       fail:
@@ -68,8 +68,8 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ connector_accesstoken.json.access_token }}"
-      tags:
-        - on_prem_connect
+ #     tags:
+ #       - on_prem_connect
   rescue:
     - name: Failure 
       fail:
