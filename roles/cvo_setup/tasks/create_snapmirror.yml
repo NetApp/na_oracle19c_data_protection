@@ -1,21 +1,21 @@
 ############################# Create Access Token ##################
 - block:
- #   - name: Create access token with username/password
- #     uri:
- #       url: "https://netapp-cloud-account.auth0.com/oauth/token"
- #       method: POST
- #       body_format: json
- #       body:
- #         grant_type: password
- #         username: "{{ email_id }}"
- #         password: "{{ password }}"
- #         audience: "https://api.cloud.netapp.com"
- #         scope: profile
- #         client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
- #       headers:
- #         Content-Type: application/json
- #     register: connector_accesstoken
-    #  when: connector_access == "password"
+    - name: Create access token with username/password
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        body_format: json
+        body:
+          grant_type: password
+          username: "{{ email_id }}"
+          password: "{{ password }}"
+          audience: "https://api.cloud.netapp.com"
+          scope: profile
+          client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
+        headers:
+          Content-Type: application/json
+      register: connector_accesstoken
+      when: connector_access == "password"
     - name: Create access token with refresh token
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -28,7 +28,7 @@
         headers:
           Content-Type: application/json
       register: connector_accesstoken
-  #    when: connector_access == "refresh_token"
+      when: connector_access == "refresh_token"
     - debug: var=connector_accesstoken
   rescue:
     - name: Failure 
