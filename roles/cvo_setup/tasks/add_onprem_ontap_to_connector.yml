@@ -1,6 +1,6 @@
 - block:
     - name: Gather Connector IP Address
-      ec2_instance_facts:
+      ec2_instance_fact:
         region: us-east-1
         aws_access_key: "{{ access_key }}"
         aws_secret_key: "{{ secret_key }}"
