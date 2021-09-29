@@ -25,6 +25,7 @@
         state: present
         source_working_environment_name: "{{ src_cluster_name }}"
         source_working_environment_id: OnPremWorkingEnvironment-HauAk0XV
+        destination_working_environment_id: VsaWorkingEnvironment-zE7ZBzPM
         source_volume_name: "{{ item }}"
         destination_working_environment_name: "{{ cvo_name }}"
         destination_volume_name: "{{ 'dr_' + item }}"
