@@ -60,7 +60,7 @@
 ################## Create on Prem Connection ###################
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
-        url: "http://{{ msg }}/occm/api/onprem/working-environments"
+        url: "http://{{ msg[0].private_ip_address }}/occm/api/onprem/working-environments"
         method: POST
         body_format: json
         body:
