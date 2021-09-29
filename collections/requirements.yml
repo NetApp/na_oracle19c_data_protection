@@ -1,6 +1,7 @@
 ---
 collections:
-  - netapp.cloudmanager
+  - name: netapp.cloudmanager
+    version: 21.10.0
   
   - name: netapp.ontap
     version: 21.10.0
