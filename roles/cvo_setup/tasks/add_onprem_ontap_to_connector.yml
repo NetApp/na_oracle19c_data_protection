@@ -7,6 +7,6 @@
       register: connector_info
     - set_fact:
         msg: "{{ connector_info | json_query('instances[*]') }}"
-    - debug: var=msg
+    - debug: var=msg[0].private_ip_address
   tags:
     - on_prem_connect
