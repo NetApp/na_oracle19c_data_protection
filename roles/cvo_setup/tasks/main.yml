@@ -25,4 +25,6 @@
     - name: snap-mirror
       include_tasks: create_snapmirror.yml
       tags:
-        - snap
+        - ontap_snapmirror_create
+        - ontap_snapmirror_policy
+        - ontap_snapmirror
