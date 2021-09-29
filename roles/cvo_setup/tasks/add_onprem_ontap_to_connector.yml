@@ -8,4 +8,5 @@
     - set_fact:
         msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
     - debug: var=msg[0]
-
+  tags:
+    - on_prem_connect
