@@ -32,6 +32,7 @@
         policy: "{{ snapmirror_policy }}"
         client_id: zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5
         refresh_token: "{{ token }}"
+        source_svm_name: ora_svm01
       with_items:
         - "{{ src_cg_vols }}"
   tags:
