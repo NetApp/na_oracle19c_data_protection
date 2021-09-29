@@ -28,8 +28,8 @@
         destination_working_environment_name: "{{ cvo_name }}"
         destination_volume_name: "{{ dr_' + item }}"
         policy: "{{ snapmirror_policy }}"
-        client_id: 
-        refresh_token:
+        client_id: zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5
+        refresh_token: "{{ token }}"
       with_items:
         - "{{ src_cg_vols }}"
   tags:
