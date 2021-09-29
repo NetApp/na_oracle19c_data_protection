@@ -24,6 +24,7 @@
       netapp.cloudmanager.na_cloudmanager_snapmirror:
         state: present
         source_working_environment_name: "{{ src_cluster_name }}"
+        source_working_environment_id: OnPremWorkingEnvironment-HauAk0XV
         source_volume_name: "{{ item }}"
         destination_working_environment_name: "{{ cvo_name }}"
         destination_volume_name: "{{ 'dr_' + item }}"
