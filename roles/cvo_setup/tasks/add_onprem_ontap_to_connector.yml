@@ -3,10 +3,10 @@
     - name: Gather Connector IP Address
       ec2_instance_info:
         instance_ids:
-          - "{{ connector.msg.instance_id }}"
+          - i-0462f521cdce6b8fc
       register: connector_info
     - set_fact:
-        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
-    - debug: var=msg
+        msg: "{{ connector_info | json_query('instances[*]') }}"
+    - debug: var=msg.private_ip_address
   tags:
     - on_prem_connect
