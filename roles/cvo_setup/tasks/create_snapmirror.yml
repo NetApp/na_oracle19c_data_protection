@@ -85,7 +85,7 @@
 #################################################################
 
     - name: Create ONTAP/ONTAP SnapMirror
-      na_ontap_snapmirror:
+      netapp.ontap.na_ontap_snapmirror:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
