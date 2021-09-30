@@ -126,6 +126,7 @@
         return_content: yes
         headers:
           Content-Type: application/json
+          x-agent-id: zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5
           Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
       register: results
     - set_fact:
