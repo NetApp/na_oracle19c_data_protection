@@ -116,6 +116,8 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ connector_accesstoken.json.access_token }}"
+      with_items:
+        - "{{ src_cg_vols }}"
       register: result
       failed_when:
         - ' "202" not in result.msg '
