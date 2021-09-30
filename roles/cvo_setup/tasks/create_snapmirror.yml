@@ -84,53 +84,53 @@
 #################################################################
 #################################################################
 
-    - name: Create ONTAP/ONTAP SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        hostname: "{{ dst_cluster_ip }}"
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        state: present
-        source_endpoint:
-          cluster: "{{ src_cluster_name }}"
-          path: "{{ src_vserver + ':' + item }}"
-        destination_endpoint:
-          cluster: "{{ dst_cluster_name }}"
-          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
-        initialize: true
-        create_destination:
-          enabled: true
-        policy: "{{ snapmirror_policy }}"
-        relationship_type: extended_data_protection
-        https: true
-        validate_certs: false
-        use_rest: always
-      with_items:
-        - "{{ src_cg_vols }}"
-  tags:
-    - ontap_snapmirror_create
-    - ontap_snapmirror_policy
-    - ontap_snapmirror
-  rescue:
-    - name: Failure
-      fail:
-        msg:
-        - Create destination volume for SnapMirror failed with error - "{{ snapmirror_create.stderr }}"
-        - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable
-        - 2. Check if variables defined adhere to the guidelines
+#    - name: Create ONTAP/ONTAP SnapMirror
+#      netapp.ontap.na_ontap_snapmirror:
+#        hostname: "{{ dst_cluster_ip }}"
+#        username: "{{ dst_cluster_username }}"
+#        password: "{{ dst_cluster_password }}"
+#        state: present
+#        source_endpoint:
+#          cluster: "{{ src_cluster_name }}"
+#          path: "{{ src_vserver + ':' + item }}"
+#        destination_endpoint:
+#          cluster: "{{ dst_cluster_name }}"
+#          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
+#        initialize: true
+#        create_destination:
+#          enabled: true
+#        policy: "{{ snapmirror_policy }}"
+#        relationship_type: extended_data_protection
+#        https: true
+#        validate_certs: false
+#        use_rest: always
+#      with_items:
+#        - "{{ src_cg_vols }}"
+#  tags:
+#    - ontap_snapmirror_create
+#    - ontap_snapmirror_policy
+#    - ontap_snapmirror
+#  rescue:
+#    - name: Failure
+#      fail:
+#        msg:
+#        - Create destination volume for SnapMirror failed with error - "{{ snapmirror_create.stderr }}"
+#        - Possible troubleshooting steps:
+#        - 1. Check if ONTAP API is reachable
+#        - 2. Check if variables defined adhere to the guidelines
 ################## Get InterCluster Lif IPS ###################
-#    - name: Get InterCluster Lif IPS
-#      uri:
-#        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=OnPremWorkingEnvironment-HauAk0XV&peerWorkingEnvironmentId=VsaWorkingEnvironment-zE7ZBzPM"
-#        method: GET
-#        return_content: yes
-#        headers:
-#          Content-Type: application/json
-#          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
-#      register: results
-#    - set_fact:
-#        lifs: "{{ result | json_query('json[0]') }}"
-#    - debug: var=lifs
+    - name: Get InterCluster Lif IPS
+      uri:
+        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=OnPremWorkingEnvironment-HauAk0XV&peerWorkingEnvironmentId=VsaWorkingEnvironment-zE7ZBzPM"
+        method: GET
+        return_content: yes
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
+      register: results
+    - set_fact:
+        lifs: "{{ result | json_query('json[0]') }}"
+    - debug: var=lifs
 
 ################### Create Snapmirror ###################
 #    - name: Create Snapmirror from On-Prem to CVO
