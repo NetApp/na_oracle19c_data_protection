@@ -97,38 +97,38 @@
     - debug: var=lifs
 
 ################### Create Snapmirror ###################
-    - name: Create Snapmirror from On-Prem to CVO
-      uri:
-        url: "http://172.30.0.139/occm/api/replication/vsa"
-        method: POST
-        body_format: json
-        body:
-          replicationRequest:
-            sourceWorkingEnvironmentId: OnPremWorkingEnvironment-HauAk0XV
-            destinationWorkingEnvironmentId: VsaWorkingEnvironment-zE7ZBzPM
-            sourceInterclusterLifIps: 
-             - 10.61.185.26
-            destinationInterclusterLifIps: 
-             - 172.30.0.168	
-            policyName: "{{ snapmirror_policy }}"
+#    - name: Create Snapmirror from On-Prem to CVO
+#      uri:
+#        url: "http://172.30.0.139/occm/api/replication/vsa"
+#        method: POST
+#        body_format: json
+#        body:
+#          replicationRequest:
+#            sourceWorkingEnvironmentId: OnPremWorkingEnvironment-HauAk0XV
+#            destinationWorkingEnvironmentId: VsaWorkingEnvironment-zE7ZBzPM
+#            sourceInterclusterLifIps: 
+#             - 10.61.185.26
+#            destinationInterclusterLifIps: 
+#             - 172.30.0.168	
+#            policyName: "{{ snapmirror_policy }}"
             #maxTransferRate: "1024"
-          replicationVolume:
-            sourceSvmName: ora_svm01
-            sourceVolumeName: "{{ item }}"
-            destinationVolumeName: "{{ 'dr_' + item }}"
-            destinationAggregateName: aggr1
+#          replicationVolume:
+#            sourceSvmName: ora_svm01
+#            sourceVolumeName: "{{ item }}"
+#            destinationVolumeName: "{{ 'dr_' + item }}"
+#            destinationAggregateName: aggr1
             #numOfDisksApprovedToAdd: 2
-            advancedMode: false
-        headers:
-          Content-Type: application/json
-          Authorization: "{{ connector_accesstoken.json.access_token }}"
-      with_items:
-        - "{{ src_cg_vols }}"
-      register: result
-      failed_when:
-        - ' "202" not in result.msg '
-  tags:
-    - ontap_snapmirror_create
-    - ontap_snapmirror_policy
-    - ontap_snapmirror        
+#            advancedMode: false
+#        headers:
+#          Content-Type: application/json
+#          Authorization: "{{ connector_accesstoken.json.access_token }}"
+#      with_items:
+#        - "{{ src_cg_vols }}"
+#      register: result
+#      failed_when:
+#        - ' "202" not in result.msg '
+#  tags:
+#    - ontap_snapmirror_create
+#    - ontap_snapmirror_policy
+3    - ontap_snapmirror        
  
