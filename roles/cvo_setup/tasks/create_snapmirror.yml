@@ -119,19 +119,14 @@
 #        - 1. Check if ONTAP API is reachable
 #        - 2. Check if variables defined adhere to the guidelines
 ################## Get InterCluster Lif IPS ###################
-    - name: Get InterCluster Lif IPS
-      uri:
-        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=VsaWorkingEnvironment-zE7ZBzPM&peerWorkingEnvironmentId=OnPremWorkingEnvironment-HauAk0XV"
-        method: GET
-        return_content: yes
-        headers:
-          Content-Type: application/json
-          x-agent-id: zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5
-          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
-      register: results
-    - set_fact:
-        lifs: "{{ result | json_query('json[0]') }}"
-    - debug: var=lifs
+    - name: Get NetApp info as Cluster Admin (Password Authentication)
+      na_ontap_info:
+        hostname: 10.61.186.85
+        username: admin
+        password: ***REMOVED***
+      register: ontap_info
+    - debug:
+        msg: "{{ ontap_info.ontap_info }}"
 
 ################### Create Snapmirror ###################
 #    - name: Create Snapmirror from On-Prem to CVO
