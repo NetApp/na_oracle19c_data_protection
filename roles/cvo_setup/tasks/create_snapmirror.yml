@@ -121,7 +121,7 @@
 ################## Get InterCluster Lif IPS ###################
     - name: Get InterCluster Lif IPS
       uri:
-        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=OnPremWorkingEnvironment-HauAk0XV&peerWorkingEnvironmentId=VsaWorkingEnvironment-zE7ZBzPM"
+        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=VsaWorkingEnvironment-zE7ZBzPM&peerWorkingEnvironmentId=OnPremWorkingEnvironment-HauAk0XV"
         method: GET
         return_content: yes
         headers:
