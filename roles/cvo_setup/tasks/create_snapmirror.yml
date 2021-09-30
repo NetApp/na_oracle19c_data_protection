@@ -80,6 +80,21 @@
       register: connector_accesstoken
       when: connector_access == "refresh_token"
     - debug: var=connector_accesstoken
+    
+    
+################## Get InterCluster Lif IPS ###################
+    - name: Get InterCluster Lif IPS
+      uri:
+        url: "https://cloudmanager.cloud.netapp.com/occm/api/replication/interclusterlifs?workingEnvironmentId=<OnPremWorkingEnvironment-HauAk0XV>&peerWorkingEnvironmentId=<VsaWorkingEnvironment-zE7ZBzPM>"
+        method: GET
+        return_content: yes
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
+      register: results
+    - set_fact:
+        lifs: "{{ result | json_query('json[0]') }}"
+    - debug: var=lifs
 
 ################### Create Snapmirror ###################
     - name: Create Snapmirror from On-Prem to CVO
