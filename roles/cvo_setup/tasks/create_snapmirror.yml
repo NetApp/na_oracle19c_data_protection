@@ -29,7 +29,7 @@
         source_volume_name: "{{ item }}"
 #        destination_working_environment_name: "{{ cvo_name }}"
         destination_volume_name: "{{ 'dr_' + item }}"
-        policy: "{{ snapmirror_policy }}"
+        policy: Async_Mirror
         client_id: "zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5"
         refresh_token: "{{ token }}"
         source_svm_name: ora_svm01
