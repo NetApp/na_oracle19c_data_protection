@@ -1,6 +1,6 @@
 #################################################################
 #################################################################
-- block:
+#- block:
     - name: Create Snapmiror Policy
       netapp.ontap.na_ontap_snapmirror_policy:
         hostname: "{{ dst_cluster_ip }}"
@@ -80,15 +80,6 @@
       register: connector_accesstoken
       when: connector_access == "refresh_token"
     - debug: var=connector_accesstoken
-  rescue:
-    - name: Failure 
-      fail:
-        msg: 
-        - Create access token failed!
-        - Possible troubleshooting steps:
-        - 1. Check if API endpoint [https://netapp-cloud-account.auth0.com/oauth/token] is reachable 
-        - 2. Check if provided username/password or refresh_token are correct
-        - 3. Check if variables defined adhere to the guidelines
 
 ################### Create Snapmirror ###################
     - name: Create Snapmirror from On-Prem to CVO
@@ -123,12 +114,4 @@
     - ontap_snapmirror_create
     - ontap_snapmirror_policy
     - ontap_snapmirror        
-  rescue:
-    - name: Failure
-      fail:
-        msg:
-        - Snapmirror failed!
-        - Possible troubleshooting steps:
-        - 1. Check if API endpoint [https://netapp-cloud-account.auth0.com/oauth/token] is reachable
-        - 2. Check if provided username/password or refresh_token are correct
-        - 3. Check if variables defined adhere to the guidelines
+ 
