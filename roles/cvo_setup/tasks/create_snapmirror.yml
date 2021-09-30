@@ -50,7 +50,6 @@
 
 
 ############################# Create Access Token ##################
-- block:
     - name: Create access token with username/password
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -92,7 +91,6 @@
         - 3. Check if variables defined adhere to the guidelines
 
 ################### Create Snapmirror ###################
-- block:
     - name: Create Snapmirror from On-Prem to CVO
       uri:
         url: "http://172.30.0.139/occm/api/replication/vsa"
