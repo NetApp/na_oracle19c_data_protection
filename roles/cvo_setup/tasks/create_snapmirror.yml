@@ -1,6 +1,6 @@
 #################################################################
 #################################################################
-#- block:
+- block:
     - name: Create Snapmiror Policy
       netapp.ontap.na_ontap_snapmirror_policy:
         hostname: "{{ dst_cluster_ip }}"
