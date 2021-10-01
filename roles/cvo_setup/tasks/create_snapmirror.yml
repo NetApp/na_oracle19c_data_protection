@@ -131,20 +131,19 @@
     
     
 ############ Cluster Peer #############
-
-- name: Create cluster peer
-  netapp.ontap.na_ontap_cluster_peer:
-    state: present
-    source_intercluster_lifs: "{{ my_vars[0] }}"
-    dest_intercluster_lifs:  "{{ my_var[0] }}"
-    passphrase: "{{ passphrase }}"
-    hostname: "{{ src_cluster_ip }}"
-    username: "{{ src_cluster_username }}"
-    password: "{{ src_cluster_password }}"
-    dest_hostname: "{{ dst_cluster_ip }}"
-    https: true
-    validate_certs: false
-  register: cluster_peer
+    - name: Create cluster peer
+      netapp.ontap.na_ontap_cluster_peer:
+        state: present
+        source_intercluster_lifs: "{{ my_vars[0] }}"
+        dest_intercluster_lifs:  "{{ my_var[0] }}"
+        passphrase: "{{ passphrase }}"
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        dest_hostname: "{{ dst_cluster_ip }}"
+        https: true
+        validate_certs: false
+      register: cluster_peer
     
 #################################################################
 #################################################################
