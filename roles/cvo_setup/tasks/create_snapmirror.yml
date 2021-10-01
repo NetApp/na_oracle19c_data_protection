@@ -130,6 +130,14 @@
         validate_certs: false
         gather_subset:
           - net_interface_info
+        query:
+           net-interface-info:
+             role: intercluster
+        desired_attributes:
+           net-interface-info:
+             address:
+        register: info
+    - debug: var=info.ontap_info.net_interface_info
       register: ontap_info
     - debug: var=ontap_info
 
