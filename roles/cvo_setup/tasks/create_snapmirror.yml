@@ -143,6 +143,8 @@
         dest_hostname: "{{ dst_cluster_ip }}"
         https: true
         validate_certs: false
+        dest_username: admin
+        dest_password: NetApp123
       register: cluster_peer
     
 #################################################################
