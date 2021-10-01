@@ -83,7 +83,6 @@
     
     
 ################## Get InterCluster Lif IP for Destination ###################
-- block:
     - name: Get LIF info
       netapp.ontap.na_ontap_info:
         hostname: "{{ dst_cluster_ip }}"
@@ -108,7 +107,6 @@
 
 
 ################## Get InterCluster Lif IP for Source ###################
-- block:
     - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
       netapp.ontap.na_ontap_info:
         hostname: "{{ src_cluster_ip }}"
