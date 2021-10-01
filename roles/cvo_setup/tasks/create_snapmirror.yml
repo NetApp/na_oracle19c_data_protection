@@ -20,19 +20,19 @@
     - debug:
         msg: "Source Consistency Group Volumes {{ src_cg_vols }}"
 
-    - name: Create ONTAP/ONTAP SnapMirror
-      netapp.cloudmanager.na_cloudmanager_snapmirror:
-        state: present
+#    - name: Create ONTAP/ONTAP SnapMirror
+#      netapp.cloudmanager.na_cloudmanager_snapmirror:
+#        state: present
 #        source_working_environment_name: "{{ src_cluster_name }}"
-        source_working_environment_id: OnPremWorkingEnvironment-HauAk0XV
-        destination_working_environment_id: VsaWorkingEnvironment-zE7ZBzPM
-        source_volume_name: ora1_u01  # "{{ item }}"
+#        source_working_environment_id: OnPremWorkingEnvironment-HauAk0XV
+#        destination_working_environment_id: VsaWorkingEnvironment-zE7ZBzPM
+#        source_volume_name: ora1_u01  # "{{ item }}"
 #        destination_working_environment_name: "{{ cvo_name }}"
-        destination_volume_name: test_vol1 #"{{ 'dr_' + item }}"
-        policy: "{{ snapmirror_policy }}"
-        client_id: "zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5"
-        refresh_token: "{{ token }}"
-        source_svm_name: ora_svm01
+#        destination_volume_name: test_vol1 #"{{ 'dr_' + item }}"
+#        policy: "{{ snapmirror_policy }}"
+#        client_id: "zzUFO6Sf6i4eu2Jm9mG9QutjquiWCUv5"
+#        refresh_token: "{{ token }}"
+#        source_svm_name: ora_svm01
 #      with_items:
 #        - "{{ src_cg_vols }}"
 #  tags:
@@ -119,14 +119,16 @@
 #        - 1. Check if ONTAP API is reachable
 #        - 2. Check if variables defined adhere to the guidelines
 ################## Get InterCluster Lif IPS ###################
-#    - name: Get NetApp info as Cluster Admin (Password Authentication)
-#      na_ontap_info:
-#        hostname: 10.61.186.85
-#        username: admin
-#        password: ***REMOVED***
-#      register: ontap_info
-#    - debug:
-#        msg: "{{ ontap_info.ontap_info }}"
+- block:
+    - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
+      na_ontap_info:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        gather_subset:
+          - net_interface_info
+      register: ontap_info
+    - debug: var=ontap_info
 
 ################### Create Snapmirror ###################
 #    - name: Create Snapmirror from On-Prem to CVO
