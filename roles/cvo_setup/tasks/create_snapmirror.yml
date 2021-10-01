@@ -121,7 +121,7 @@
 ################## Get InterCluster Lif IPS ###################
 - block:
     - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
-      na_ontap_info:
+      netapp.ontap.na_ontap_info:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
