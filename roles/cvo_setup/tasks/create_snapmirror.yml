@@ -125,6 +125,7 @@
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
+        use_rest: never
         gather_subset:
           - net_interface_info
       register: ontap_info
