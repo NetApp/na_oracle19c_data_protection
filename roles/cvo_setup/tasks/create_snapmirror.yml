@@ -126,6 +126,7 @@
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         use_rest: never
+        https: true
         validate_certs: false
         gather_subset:
           - net_interface_info
