@@ -139,7 +139,7 @@
       register: info
     - debug: var=info.ontap_info.net_interface_info
     - set_fact:
-        myvar: "{{ info | json_query('info.ontap_info.net_interface_info') }}"
+        myvar: "{{ info | json_query('info.ontap_info.net_interface_info[*]') }}"
     - debug: myvar=msg
 
 ################### Create Snapmirror ###################
