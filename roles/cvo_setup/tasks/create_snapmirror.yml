@@ -80,7 +80,7 @@
 #      register: connector_accesstoken
 #      when: connector_access == "refresh_token"
 #    - debug: var=connector_accesstoken
-    
+
     
 ################## Get InterCluster Lif IP for Destination ###################
     - name: Get LIF info
@@ -128,6 +128,24 @@
     - set_fact:
         my_vars: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
     - debug: var=my_vars[0]
+    
+    
+############ Cluster Peer #############
+
+- name: Create cluster peer
+  netapp.ontap.na_ontap_cluster_peer:
+    state: present
+    source_intercluster_lifs: "{{ my_vars[0] }}"
+    dest_intercluster_lifs:  "{{ my_var[0] }}"
+    passphrase: "{{ passphrase }}"
+    hostname: "{{ src_cluster_ip }}"
+    username: "{{ src_cluster_username }}"
+    password: "{{ src_cluster_password }}"
+    dest_hostname: "{{ dst_cluster_ip }}"
+    https: true
+    validate_certs: false
+  register: cluster_peer
+    
 #################################################################
 #################################################################
 
