@@ -146,32 +146,50 @@
         dest_username: admin
         dest_password: NetApp123
       register: cluster_peer
+
+########## Vserver Peer ##############
+    - name: Create vserver peer
+      na_ontap_vserver_peer:
+        state: present
+        peer_vserver: "{{ dst_vserver }}"
+        peer_cluster: "{{ dst_cluster_name }}"
+        vserver: "{{ src_vserver }}"
+        applications: snapmirror
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        dest_hostname: "{{ dst_cluster_ip }}"
+        https: true
+        validate_certs: false
+        dest_username: admin
+        dest_password: NetApp123
+      register: vserver_peer
     
 #################################################################
 #################################################################
 
-#    - name: Create ONTAP/ONTAP SnapMirror
-#      netapp.ontap.na_ontap_snapmirror:
-#        hostname: "{{ dst_cluster_ip }}"
-#        username: "{{ dst_cluster_username }}"
-#        password: "{{ dst_cluster_password }}"
-#        state: present
-#        source_endpoint:
-#          cluster: "{{ src_cluster_name }}"
-#          path: "{{ src_vserver + ':' + item }}"
-#        destination_endpoint:
-#          cluster: "{{ dst_cluster_name }}"
-#          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
-#        initialize: true
-#        create_destination:
-#          enabled: true
-#        policy: "{{ snapmirror_policy }}"
-#        relationship_type: extended_data_protection
-#        https: true
-#        validate_certs: false
-#        use_rest: always
-#      with_items:
-#        - "{{ src_cg_vols }}"
+    - name: Create ONTAP/ONTAP SnapMirror
+      netapp.ontap.na_ontap_snapmirror:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        state: present
+        source_endpoint:
+          cluster: "{{ src_cluster_name }}"
+          path: "{{ src_vserver + ':' + item }}"
+        destination_endpoint:
+          cluster: "{{ dst_cluster_name }}"
+          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
+        initialize: true
+        create_destination:
+          enabled: true
+        policy: "{{ snapmirror_policy }}"
+        relationship_type: extended_data_protection
+        https: true
+        validate_certs: false
+        use_rest: always
+      with_items:
+        - "{{ src_cg_vols }}"
 #  tags:
 #    - ontap_snapmirror_create
 #    - ontap_snapmirror_policy
