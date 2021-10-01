@@ -139,8 +139,8 @@
       register: info
     - debug: var=info.ontap_info.net_interface_info
     - set_fact:
-        myvar: "{{ info.ontap_info.net_interface_info | json_query('adrress[*]') }}"
-    - debug: var=msg
+        myvar: "{{ info | json_query('info.ontap_info.net_interface_info') }}"
+    - debug: myvar=msg
 
 ################### Create Snapmirror ###################
 #    - name: Create Snapmirror from On-Prem to CVO
