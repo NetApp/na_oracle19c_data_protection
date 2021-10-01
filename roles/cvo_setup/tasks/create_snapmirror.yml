@@ -149,7 +149,7 @@
 
 ########## Vserver Peer ##############
     - name: Create vserver peer
-      na_ontap_vserver_peer:
+      netapp.ontap.na_ontap_vserver_peer:
         state: present
         peer_vserver: "{{ dst_vserver }}"
         peer_cluster: "{{ dst_cluster_name }}"
@@ -158,11 +158,12 @@
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
-        dest_hostname: "{{ dst_cluster_ip }}"
         https: true
         validate_certs: false
-        dest_username: admin
-        dest_password: NetApp123
+        peer_options:
+          hostname: "{{ dst_cluster_ip }}"
+          username: "{{ dst_cluster_username }}"
+          password: "{{ dst_cluster_password }}"
       register: vserver_peer
     
 #################################################################
