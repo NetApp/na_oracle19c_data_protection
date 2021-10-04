@@ -41,10 +41,10 @@
     instance_type: m5.xlarge
     instance_profile_name: "{{ aws_role_name }}"
     security_group_id: "{{ security_group }}"
-    cluster_floating_ip: 172.30.0.124
-    data_floating_ip: 172.30.0.125
-    data_floating_ip2: 172.30.0.126
-    route_table_ids: rtb-075d2e62
+#    cluster_floating_ip: 172.30.0.124
+#    data_floating_ip: 172.30.0.125
+#    data_floating_ip2: 172.30.0.126
+#    route_table_ids: rtb-075d2e62
     failover_mode: PrivateIP
     mediator_key_pair_name: sufi-key-virginia
   tags:
