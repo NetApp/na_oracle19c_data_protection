@@ -1,6 +1,20 @@
 #################################################################
 #################################################################
 - block:
+########## Get Cluster Management IP ##############
+    - name: Get Cloud Manager IP
+      uri:
+        url: "http://{{ msg[0].private_ip_address }}/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId={{ msgs.workspacePublicId }}"
+        method: GET
+        return_content: yes
+        headers:
+          Content-Type: application/json
+          Authorization: "{{ connector_accesstoken.json.access_token }}"
+      register: ip
+    - debug: var=ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip
+     
+     
+########## Create Snapmirror Policy ##############
     - name: Create Snapmiror Policy
       netapp.ontap.na_ontap_snapmirror_policy:
         hostname: "{{ dst_cluster_ip }}"
@@ -85,7 +99,7 @@
 ################## Get InterCluster Lif IP for Destination ###################
     - name: Get LIF info
       netapp.ontap.na_ontap_info:
-        hostname: "{{ dst_cluster_ip }}"
+        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         use_rest: never
@@ -161,17 +175,19 @@
         https: true
         validate_certs: false
         peer_options:
-          hostname: "{{ dst_cluster_ip }}"
+          hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
           username: "{{ dst_cluster_username }}"
           password: "{{ dst_cluster_password }}"
       register: vserver_peer
-    
+
+
+
 #################################################################
 #################################################################
 
     - name: Create ONTAP/ONTAP SnapMirror
       netapp.ontap.na_ontap_snapmirror:
-        hostname: "{{ dst_cluster_ip }}"
+        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
