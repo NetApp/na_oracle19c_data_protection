@@ -49,3 +49,11 @@
     mediator_key_pair_name: sufi-key-virginia
   tags:
     - aws_cvo_ha
+    
+########################################################
+
+- name: Pause for 2 minutes to Create CVO
+  pause:
+    minutes: 2
+  tags:
+    - aws_cvo_ha
