@@ -254,6 +254,5 @@
 #        - ' "202" not in result.msg '
   tags:
     - ontap_snapmirror_create
-    - ontap_snapmirror_policy
-    - ontap_snapmirror        
+      
  
