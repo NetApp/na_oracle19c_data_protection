@@ -1,4 +1,19 @@
 ---  
+
+- name: Get Cloud Manager IP
+  uri:
+    url: "http://172.30.0.186/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId=workspace-TtPXVvC8"
+    method: GET
+    return_content: yes
+    headers:
+      Content-Type: application/json
+      Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5rSXlPVFUzUWpZek1ESkRPVGd5TlRJMU1EUkZNVFpFUTBFd1JEUkJRVGxFT1VFMU5UUkNOZyJ9.eyJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9mdWxsX25hbWUiOiJBaG1hZCBTdWZpYW4iLCJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9lbWFpbF92ZXJpZmllZCI6ZmFsc2UsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2Nvbm5lY3Rpb25faWQiOiJjb25fdk5DdjdsdjBKa2t5OWxMZCIsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2lzX2ZlZGVyYXRlZCI6dHJ1ZSwiaHR0cDovL2Nsb3VkLm5ldGFwcC5jb20vaW50ZXJuYWwiOiJOZXRBcHAiLCJpc3MiOiJodHRwczovL25ldGFwcC1jbG91ZC1hY2NvdW50LmF1dGgwLmNvbS8iLCJzdWIiOiJ3YWFkfEg0dTFtY3c0OGppaEc3RVJ5MHY0SlFJLUdlQ2FkY2htb0NUdWlpeVZSTXMiLCJhdWQiOiJodHRwczovL2FwaS5jbG91ZC5uZXRhcHAuY29tIiwiaWF0IjoxNjMzMzYxMDk1LCJleHAiOjE2MzM0NDc0OTUsImF6cCI6Ik11MFYxeXdnWXRlSTZ3MU1iRDE1ZktmVklVck5YR1dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.tXY4QeIXOmbPX0IC7mn7WqyjUM7-JkNwot42BW5mj9nfhNV35fw9tTcp4T7WXUm1pJnEHJ3bAAc5Ga3VNEcSP-cQlHLdQNIgfgG1smxtJZnkAXU2cY-WoxXBY4bqKlmSUbREKsBufCdSZ3KyMgYvTGDn8QEXS6TZ9CjmwkvyN_dM8bEhhBcjq2lW1cgMReF6TSaApQyhfbw4xiwh7jRK_P6Yl7G3Tbu2yPgixq9P9YWEzNlvfHYNE42vQaR8VRKPjFmzM0WNaqPsyH_l7WHVhZDYuOePBQmza1Syuw1FVhmZ0TAFcboTqILBTNEuQLW3W8tNNb4qCHtlNwir64as_A
+      #"Bearer {{ connector_accesstoken.json.access_token }}"
+  register: json
+- debug: var=json
+  tags:
+    - pre_check
+
 ##### Check some pre-checks for Centos8 #####
 - name: Install the pre-reqs for connector
   become: yes
@@ -48,18 +63,6 @@
   pause:
     minutes: 2
     
-- name: Get Cloud Manager IP
-  uri:
-    url: "http://172.30.0.186/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId=workspace-TtPXVvC8"
-    method: GET
-    return_content: yes
-    headers:
-      Content-Type: application/json
-      Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5rSXlPVFUzUWpZek1ESkRPVGd5TlRJMU1EUkZNVFpFUTBFd1JEUkJRVGxFT1VFMU5UUkNOZyJ9.eyJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9mdWxsX25hbWUiOiJBaG1hZCBTdWZpYW4iLCJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9lbWFpbF92ZXJpZmllZCI6ZmFsc2UsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2Nvbm5lY3Rpb25faWQiOiJjb25fdk5DdjdsdjBKa2t5OWxMZCIsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2lzX2ZlZGVyYXRlZCI6dHJ1ZSwiaHR0cDovL2Nsb3VkLm5ldGFwcC5jb20vaW50ZXJuYWwiOiJOZXRBcHAiLCJpc3MiOiJodHRwczovL25ldGFwcC1jbG91ZC1hY2NvdW50LmF1dGgwLmNvbS8iLCJzdWIiOiJ3YWFkfEg0dTFtY3c0OGppaEc3RVJ5MHY0SlFJLUdlQ2FkY2htb0NUdWlpeVZSTXMiLCJhdWQiOiJodHRwczovL2FwaS5jbG91ZC5uZXRhcHAuY29tIiwiaWF0IjoxNjMzMzYxMDk1LCJleHAiOjE2MzM0NDc0OTUsImF6cCI6Ik11MFYxeXdnWXRlSTZ3MU1iRDE1ZktmVklVck5YR1dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.tXY4QeIXOmbPX0IC7mn7WqyjUM7-JkNwot42BW5mj9nfhNV35fw9tTcp4T7WXUm1pJnEHJ3bAAc5Ga3VNEcSP-cQlHLdQNIgfgG1smxtJZnkAXU2cY-WoxXBY4bqKlmSUbREKsBufCdSZ3KyMgYvTGDn8QEXS6TZ9CjmwkvyN_dM8bEhhBcjq2lW1cgMReF6TSaApQyhfbw4xiwh7jRK_P6Yl7G3Tbu2yPgixq9P9YWEzNlvfHYNE42vQaR8VRKPjFmzM0WNaqPsyH_l7WHVhZDYuOePBQmza1Syuw1FVhmZ0TAFcboTqILBTNEuQLW3W8tNNb4qCHtlNwir64as_A
-      #"Bearer {{ connector_accesstoken.json.access_token }}"
-  register: json[0]
-- debug: var=json[0]
-  tags:
-    - pre_check
+
 
 
