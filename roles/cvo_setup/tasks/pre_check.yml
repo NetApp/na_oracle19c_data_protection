@@ -12,7 +12,7 @@
   register: ip
   tags:
     - pre_check
-- debug: var=ip.json[0].ontapClusterProperties.nodes[0].lifs[1]
+- debug: var=ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip
   tags:
     - pre_check
 
