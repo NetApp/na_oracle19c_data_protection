@@ -17,7 +17,7 @@
 ########## Create Snapmirror Policy ##############
     - name: Create Snapmiror Policy
       netapp.ontap.na_ontap_snapmirror_policy:
-        hostname: "{{ dst_cluster_ip }}"
+        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
@@ -154,7 +154,7 @@
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
-        dest_hostname: "{{ dst_cluster_ip }}"
+        dest_hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
         https: true
         validate_certs: false
         dest_username: admin
