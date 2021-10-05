@@ -12,9 +12,9 @@
   register: ip
   tags:
     - pre_check
-- debug: var=ip.json[0].ontapClusterProperties
-  tags:
-    - pre_check
+#- debug: var=ip.json[0].ontapClusterProperties
+#  tags:
+#    - pre_check
 
 ##### Check some pre-checks for Centos8 #####
 - name: Install the pre-reqs for connector
