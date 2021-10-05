@@ -157,8 +157,8 @@
         dest_hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
         https: true
         validate_certs: false
-        dest_username: admin
-        dest_password: NetApp123
+        dest_username: "{{ src_cluster_username }}"
+        dest_password: "{{ src_cluster_password }}"
       register: cluster_peer
 
 ########## Vserver Peer ##############
