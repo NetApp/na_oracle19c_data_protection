@@ -36,7 +36,7 @@
     state: present
     validate_certs: false
     managed_policies:
-      - arn:aws:iam::210811600188:policy/OCCM
+      - "{{ aws_policy }}"
     state: present
   tags:
     - pre_check
