@@ -14,7 +14,8 @@
     company: NetApp
     associate_public_ip_address: false
   register: connector
-- debug: var=connector
+#- debug:
+#    msg: "my connector {{ connector }}"
 
 #    proxy_url: abc.com
 #    proxy_user_name: xyz
@@ -29,8 +30,8 @@
 
 ######## Delay to build connector ###############
 
-- name: Pause for 5 minutes to build connector
+- name: Pause for 2 minutes to build connector
   pause:
-    minutes: 5
+    minutes: 2
   tags:
     - aws_connector

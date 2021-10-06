@@ -1,13 +1,15 @@
 - block:
+######## Get Connector IP #############
     - name: Gather Connector IP Address
-      community.aws.ec2_instance_info:
+      ec2_instance_info:
         instance_ids:
-          - i-0190aee3a5a8fa1c6
+          - "{{ connector.msg.instance_id }}"
       register: connector_info
     - set_fact:
-        msg: "{{ connector_info | json_query('instances[*].private_ip_address') }}"
-    - debug: var=msg
-
+        msg: "{{ connector_info | json_query('instances[*]') }}"
+    - debug: var=msg[0].private_ip_address
+    
+######## Create Access Token with username/password #############
     - name: Create access token with username/password
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -19,11 +21,13 @@
           password: "{{ password }}"
           audience: "https://api.cloud.netapp.com"
           scope: profile
-          client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
+          client_id: "{{ regular_id }}"
         headers:
           Content-Type: application/json
       register: connector_accesstoken
       when: connector_access == "password"
+      
+######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
       uri:
         url: "https://netapp-cloud-account.auth0.com/oauth/token"
@@ -31,31 +35,36 @@
         body_format: json
         body:
           grant_type: refresh_token
-          refresh_token: "{{ refresh_token }}"
-          client_id: Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC
+          refresh_token: "{{ token }}"
+          client_id: "{{ sso_id }}"
         headers:
           Content-Type: application/json
       register: connector_accesstoken
       when: connector_access == "refresh_token"
     - debug: var=connector_accesstoken
-  rescue:
-    - name: Failure 
-      fail:
-        msg: 
-        - Create access token failed!
-        - Possible troubleshooting steps:
-        - 1. Check if API endpoint [https://netapp-cloud-account.auth0.com/oauth/token] is reachable 
-        - 2. Check if provided username/password or refresh_token are correct
-        - 3. Check if variables defined adhere to the guidelines
-
-- block:
+    
+################## Get Workspace ID ###################
+    - name: Get Workspace ID
+      uri:
+        url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
+        method: GET
+        return_content: yes
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
+      register: result
+    - set_fact:
+        msgs: "{{ result | json_query('json[0]') }}"
+    - debug: var=msgs.workspacePublicId
+      
+################## Create on Prem Connection ###################
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
-        url: "http://{{ connector_ip }}/occm/api/onprem/working-environments"
+        url: "http://{{ msg[0].private_ip_address }}/occm/api/onprem/working-environments"
         method: POST
         body_format: json
         body:
-          tenantId: "{{ workspace_id }}"
+          tenantId: "{{ msgs.workspacePublicId }}"
           name: "{{ src_cluster_name }}"
           clusterAddress: "{{ src_cluster_ip }}"
           clusterUserName: "{{ src_cluster_username }}"
@@ -64,6 +73,8 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ connector_accesstoken.json.access_token }}"
+  tags:
+    - on_prem_connect
   rescue:
     - name: Failure 
       fail:
