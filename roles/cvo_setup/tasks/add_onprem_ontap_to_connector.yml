@@ -21,7 +21,7 @@
           password: "{{ password }}"
           audience: "https://api.cloud.netapp.com"
           scope: profile
-          client_id: QC3AgHk6qdbmC7Yyr82ApBwaaJLwRrNO
+          client_id: "{{ regular_id }}"
         headers:
           Content-Type: application/json
       register: connector_accesstoken
@@ -36,7 +36,7 @@
         body:
           grant_type: refresh_token
           refresh_token: "{{ token }}"
-          client_id: Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC
+          client_id: "{{ sso_id }}"
         headers:
           Content-Type: application/json
       register: connector_accesstoken
