@@ -5,66 +5,66 @@ access_key:
 
 secret_key: 
 
+region_deploy: 
 
-####### Connector Deployment and CVO deployment Variables #######
+########### CVO and Connector Vars ########
 
-connector:
+aws_policy: 
+
+aws_role_name: 
 
 token: 
 
-cvo_name:
-
-cvo_svm_password:
-
-region_deploy: 
+connector_name: 
 
 key_pair: 
 
-subnet: 
-
-vpc:
-
-svm_password:
+subnet:
 
 security_group: 
 
-connector_name:
-
 account: 
 
-aws_role_name:
+cvo_name: 
 
-####### On-Prem Add to Cloud Manager ########
+cvo_svm_password: 
 
-connector_access:
+vpc: 
 
-connector_ip:
+############ Add on prem to Connector #####
 
-refresh_token:
+connector_access: 
 
-####### On-Prem to CVO Snapmirror Vars #############
+src_cluster_name: 
 
-connector_ips: 
+src_cluster_username: 
 
-on_prem_id: 
+src_cluster_password: 
 
-dest_cvo_id: 
+src_cluster_ip: 
 
-source_ic_lifs:
- - ""
- - ""
 
-dest_ic_lifs:
- - ""
+######## Create SnapMirror #######
 
-cvo_snap_policy: 
+src_vserver: 
 
-source_svm: 
+dst_cluster_name: 
 
-source_vol:  
+passphrase:
 
-dest_vol: 
+dst_cluster_username: 
 
-dest_aggrg: 
+dst_cluster_password: 
 
-connector_info:
+dst_vserver: 
+
+snapmirror_policy: 
+
+src_orabinary_vols:
+- 
+
+src_db_vols:
+- 
+
+src_archivelog_vols:
+- 
