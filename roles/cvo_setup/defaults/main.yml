@@ -19,7 +19,7 @@ connector_name:
 
 key_pair: 
 
-subnet:
+subnet: 
 
 security_group: 
 
@@ -32,6 +32,14 @@ cvo_svm_password:
 vpc: 
 
 ############ Add on prem to Connector #####
+
+regular_id: 
+
+email_id: 
+          
+password: 
+
+sso_id: 
 
 connector_access: 
 
@@ -50,7 +58,7 @@ src_vserver:
 
 dst_cluster_name: 
 
-passphrase:
+passphrase: 
 
 dst_cluster_username: 
 
@@ -61,10 +69,10 @@ dst_vserver:
 snapmirror_policy: 
 
 src_orabinary_vols:
-- 
+
 
 src_db_vols:
-- 
+
 
 src_archivelog_vols:
-- 
+
