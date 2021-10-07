@@ -45,7 +45,7 @@
     - debug: var=connector_accesstoken_refresh
     
 ################## Get Workspace ID Via Pass ###################
-    - name: Get Workspace ID
+    - name: Get Workspace ID Via Password
       uri:
         url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
         method: GET
