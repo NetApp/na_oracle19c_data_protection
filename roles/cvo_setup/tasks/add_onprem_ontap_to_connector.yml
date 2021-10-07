@@ -48,6 +48,8 @@
     - set_fact:
         msgs: "{{ result | json_query('json[0]') }}"
     - debug: var=msgs.workspacePublicId
+  tags:
+    - on_prem_connect
   rescue:
     - name: Failure 
       fail:
