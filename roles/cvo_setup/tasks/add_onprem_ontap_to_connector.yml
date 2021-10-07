@@ -27,7 +27,6 @@
       register: connector_accesstoken
     - set_fact: access="{{ connector_accesstoken.json.access_token }}"
       when: connector_access == "pass"
-    - debug: var=access
       
 ######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
@@ -43,8 +42,7 @@
           Content-Type: application/json
       register: connector_accesstoken
     - set_fact: access="{{ connector_accesstoken.json.access_token }}"
-      when: connector_access == "refresh_token"
-    - debug: var=access  
+      when: connector_access == "refresh_token"  
     
 ################## Get Workspace ID ###################
     - name: Get Workspace ID
