@@ -24,9 +24,8 @@
           client_id: "{{ regular_id }}"
         headers:
           Content-Type: application/json
-      register: connector_accesstoken_pass
+      register: connector_accesstoken
       when: connector_access == "pass"
-    - debug: var=connector_accesstoken_pass
       
 ######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
@@ -40,41 +39,24 @@
           client_id: "{{ sso_id }}"
         headers:
           Content-Type: application/json
-      register: connector_accesstoken_refresh
+      register: connector_accesstoken
       when: connector_access == "refresh_token"
-    - debug: var=connector_accesstoken_refresh
+    - debug: var=connector_accesstoken
     
-################## Get Workspace ID Via Pass ###################
-    - name: Get Workspace ID Via Password
+################## Get Workspace ID ###################
+    - name: Get Workspace ID
       uri:
         url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
         method: GET
         return_content: yes
         headers:
           Content-Type: application/json
-          Authorization: "Bearer {{ connector_accesstoken_pass.json.access_token }}"
+          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
       register: result
-      when: connector_access == "pass"
-    - set_fact:
-        msgs: "{{ result | json_query('json[0]') }}"
-    - debug: var=msgs.workspacePublicId
-    
-################## Get Workspace ID Via Refresh Token ###################
-    - name: Get Workspace ID Via Refresh Token
-      uri:
-        url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
-        method: GET
-        return_content: yes
-        headers:
-          Content-Type: application/json
-          Authorization: "Bearer {{ connector_accesstoken_refresh.json.access_token }}"
-      register: result
-      when: connector_access == "refresh_token"
     - set_fact:
         msgs: "{{ result | json_query('json[0]') }}"
     - debug: var=msgs.workspacePublicId
       
-
 ################## Create on Prem Connection ###################
     - name: Add on-prem ONTAP cluster to connector in Cloud Manager
       uri:
