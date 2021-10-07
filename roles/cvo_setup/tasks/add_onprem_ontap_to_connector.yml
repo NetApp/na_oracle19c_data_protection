@@ -26,7 +26,7 @@
           Content-Type: application/json
       register: connector_accesstoken
       when: connector_access == "pass"
-      
+    - debug: var=connector_accesstoken  
 ######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
       uri:
