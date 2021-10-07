@@ -1,5 +1,4 @@
 - block:
-
 ######## Create Access Token with username/password #############
     - name: Create access token with username/password
       uri:
@@ -20,20 +19,20 @@
     - debug: var=connector_accesstoke
       
 ######## Create Access Token with Refresh Token #############      
-    - name: Create access token with refresh token
-      uri:
-        url: "https://netapp-cloud-account.auth0.com/oauth/token"
-        method: POST
-        body_format: json
-        body:
-          grant_type: refresh_token
-          refresh_token: "{{ token }}"
-          client_id: "{{ sso_id }}"
-        headers:
-          Content-Type: application/json
-      register: connector_accesstoken
-      when: connector_access == "refresh_token"
-    - debug: var=connector_accesstoken
+#    - name: Create access token with refresh token
+#      uri:
+#        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+#        method: POST
+#        body_format: json
+#        body:
+#          grant_type: refresh_token
+#          refresh_token: "{{ token }}"
+#          client_id: "{{ sso_id }}"
+#        headers:
+#          Content-Type: application/json
+#      register: connector_accesstoken
+#      when: connector_access == "refresh_token"
+#    - debug: var=connector_accesstoken
     
 ################## Get Workspace ID ###################
     - name: Get Workspace ID
