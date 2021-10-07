@@ -60,7 +60,7 @@
     - debug: var=msgs.workspacePublicId
     
 ################## Get Workspace ID Via Refresh Token ###################
-    - name: Get Workspace ID
+    - name: Get Workspace ID Via Refresh Token
       uri:
         url: "https://cloudmanager.cloud.netapp.com/tenancy/account/{{ account }}/workspace"
         method: GET
