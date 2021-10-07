@@ -75,7 +75,7 @@
           location: ON_PREM
         headers:
           Content-Type: application/json
-          Authorization: "{{ connector_accesstoken.json.access_token }}"
+          Authorization: "{{ access }}"
   tags:
     - on_prem_connect
   rescue:
