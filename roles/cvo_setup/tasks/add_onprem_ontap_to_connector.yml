@@ -1,13 +1,13 @@
 - block:
 ######## Get Connector IP #############
-#    - name: Gather Connector IP Address
-#      ec2_instance_info:
-#        instance_ids:
-#          - "{{ connector.msg.instance_id }}"
-#      register: connector_info
-#    - set_fact:
-#        msg: "{{ connector_info | json_query('instances[*]') }}"
-#    - debug: var=msg[0].private_ip_address
+    - name: Gather Connector IP Address
+      ec2_instance_info:
+        instance_ids:
+          - "{{ connector.msg.instance_id }}"
+      register: connector_info
+    - set_fact:
+        msg: "{{ connector_info | json_query('instances[*]') }}"
+    - debug: var=msg[0].private_ip_address
     
 ######## Create Access Token with username/password #############
     - name: Create access token with username/password
