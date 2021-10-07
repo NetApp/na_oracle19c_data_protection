@@ -25,6 +25,7 @@
         headers:
           Content-Type: application/json
       register: connector_accesstoken
+      when: connector_access == "pass" 
     - set_fact: access="{{ connector_accesstoken.json.access_token }}"
       when: connector_access == "pass"
       
@@ -41,6 +42,7 @@
         headers:
           Content-Type: application/json
       register: connector_accesstoken
+      when: connector_access == "refresh_token" 
     - set_fact: access="{{ connector_accesstoken.json.access_token }}"
       when: connector_access == "refresh_token"  
     
