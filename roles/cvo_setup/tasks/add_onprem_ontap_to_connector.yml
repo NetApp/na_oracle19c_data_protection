@@ -25,8 +25,10 @@
         headers:
           Content-Type: application/json
       register: connector_accesstoken
+    - set_fact: access="{{ connector_accesstoken.json.access_token }}"
       when: connector_access == "pass"
-    - debug: var=connector_accesstoken  
+    - debug: var=access
+      
 ######## Create Access Token with Refresh Token #############      
     - name: Create access token with refresh token
       uri:
@@ -40,8 +42,9 @@
         headers:
           Content-Type: application/json
       register: connector_accesstoken
+    - set_fact: access="{{ connector_accesstoken.json.access_token }}"
       when: connector_access == "refresh_token"
-    - debug: var=connector_accesstoken
+    - debug: var=access  
     
 ################## Get Workspace ID ###################
     - name: Get Workspace ID
@@ -51,7 +54,7 @@
         return_content: yes
         headers:
           Content-Type: application/json
-          Authorization: "Bearer {{ connector_accesstoken.json.access_token }}"
+          Authorization: "Bearer {{ access }}"
       register: result
     - set_fact:
         msgs: "{{ result | json_query('json[0]') }}"
