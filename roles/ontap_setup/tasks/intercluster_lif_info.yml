@@ -1,0 +1,86 @@
+##############################################################################
+##############################################################################
+- block:
+################## Get InterCluster Lif IP for Destination ###################
+    - name: Get LIF info
+      netapp.ontap.na_ontap_info:
+        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        use_rest: never
+        https: true
+        validate_certs: false
+        gather_subset:
+          - net_interface_info
+        query:
+           net-interface-info:
+             role: intercluster
+        desired_attributes:
+           net-interface-info:
+             address:
+      register: info
+    - debug: var=info.ontap_info.net_interface_info
+    - set_fact:
+        my_var: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
+    - debug: var=my_var[0]
+
+
+################## Get InterCluster Lif IP for Source ###################
+    - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
+      netapp.ontap.na_ontap_info:
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        use_rest: never
+        https: true
+        validate_certs: false
+        gather_subset:
+          - net_interface_info
+        query:
+           net-interface-info:
+             role: intercluster
+        desired_attributes:
+           net-interface-info:
+             address:
+      register: info
+    - debug: var=info.ontap_info.net_interface_info
+    - set_fact:
+        my_vars: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
+    - debug: var=my_vars[0]
+    
+    
+############ Cluster Peer #############
+    - name: Create cluster peer
+      netapp.ontap.na_ontap_cluster_peer:
+        state: present
+        source_intercluster_lifs: "{{ my_vars[0] }}"
+        dest_intercluster_lifs:  "{{ my_var[0] }}"
+        passphrase: "{{ passphrase }}"
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        dest_hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+        https: true
+        validate_certs: false
+        dest_username: "{{ src_cluster_username }}"
+        dest_password: "{{ src_cluster_password }}"
+      register: cluster_peer
+
+########## Vserver Peer ##############
+    - name: Create vserver peer
+      netapp.ontap.na_ontap_vserver_peer:
+        state: present
+        peer_vserver: "{{ dst_vserver }}"
+        peer_cluster: "{{ dst_cluster_name }}"
+        vserver: "{{ src_vserver }}"
+        applications: snapmirror
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        https: true
+        validate_certs: false
+        peer_options:
+          hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+          username: "{{ dst_cluster_username }}"
+          password: "{{ dst_cluster_password }}"
+      register: vserver_peer
