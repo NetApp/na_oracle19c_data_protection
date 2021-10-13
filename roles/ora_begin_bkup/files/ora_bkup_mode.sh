@@ -22,8 +22,8 @@ case "$1" in
      export PATH=$PATH:$ORACLE_HOME/bin
      $ORACLE_HOME/bin/sqlplus -s "/ as sysdba" <<EOF>> $1_$log
      whenever sqlerror exit SQL.SQLCODE
-     alter system archive log current;
      alter database begin backup;
+     alter system archive log current;
      exit;
 EOF
    done

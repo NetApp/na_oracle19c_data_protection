@@ -20,11 +20,22 @@ case "$1" in
      export ORACLE_SID
      export ORACLE_HOME
      export PATH=$PATH:$ORACLE_HOME/bin
+     export SCRIPT_DIR=/tmp
      $ORACLE_HOME/bin/sqlplus -s "/ as sysdba" <<EOF>> $1_$log
      whenever sqlerror exit SQL.SQLCODE
      shutdown abort;
      startup mount;
-     recover database until change $2 using backup controlfile;
+     set pagesize 0
+     set head off
+     set feed off
+     set echo off
+     set verify off
+     spool $SCRIPT_DIR/$ORACLE_SID.last_scn
+     select max(next_change#)-1 from v\$archived_log;
+     spool off
+     !LAST_SCN=`cat $SCRIPT_DIR/$ORACLE_SID.last_scn`
+     !export LAST_SCN
+     recover automatic database until change $LAST_SCN using backup controlfile;
      alter database open resetlogs;
      exit;
 EOF
