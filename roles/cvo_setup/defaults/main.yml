@@ -76,3 +76,5 @@ src_db_vols:
 
 src_archivelog_vols:
 
+#Please Enter Source Volume Name to be protected
+src_cg_vols: []

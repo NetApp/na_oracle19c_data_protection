@@ -5,5 +5,9 @@
     - name: Recover all Oracle DBs on a host after snapshot restore
       include_tasks: ora_reco.yml
       tags: 
+        - sync_control_file
+        - cp_relink_script
+        - exe_relink_script
         - cp_reco_script
         - exe_reco_script
+        - ora_recovery
