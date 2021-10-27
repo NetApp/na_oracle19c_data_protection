@@ -11,8 +11,7 @@
        - requests
        - awscli
        - pexpect
-  tags:
-    - pre_check
+
 
 ##### Running Credentials ########
 - name: Run aws configure
@@ -25,8 +24,7 @@
       Default output format: ""
   no_log: true
 
-  tags:
-    - pre_check
+
 
 
 ########## Create Role ########
@@ -39,8 +37,7 @@
     managed_policies:
       - "{{ aws_policy }}"
     state: present
-  tags:
-    - pre_check
+
 
 
 ########################################################
@@ -48,8 +45,7 @@
 - name: Pause for 2 minutes to Create Iam Instance Profile
   pause:
     minutes: 2
-  tags:
-    - pre_check
+
 
 
 
