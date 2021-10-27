@@ -146,7 +146,6 @@
         use_rest: always
       with_items:
         - "{{ src_cg_vols }}"
-  tags:
-    - ontap_snapmirror_create
+
       
  
