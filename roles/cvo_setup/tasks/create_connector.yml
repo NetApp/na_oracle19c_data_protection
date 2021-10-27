@@ -24,8 +24,6 @@
 #    aws_tag: [
 #        {tag_key: abc,
 #        tag_value: a123}]
-  tags:
-    - aws_connector
 
 
 ######## Delay to build connector ###############
@@ -33,5 +31,3 @@
 - name: Pause for 2 minutes to build connector
   pause:
     minutes: 2
-  tags:
-    - aws_connector
