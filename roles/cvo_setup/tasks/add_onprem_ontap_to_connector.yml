@@ -76,8 +76,6 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ access }}"
-  tags:
-    - on_prem_connect
   rescue:
     - name: Failure 
       fail:
