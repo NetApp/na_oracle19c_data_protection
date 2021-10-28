@@ -22,11 +22,11 @@
       tags:
         - on_prem_connect
 
-    - name: Create Intercluster LIFs on source cluster
-      include_tasks: create_source_intercluster_lifs.yml
-      when: create_source_intercluster_lifs|bool
-      tags: 
-        - ontap_src_intercluster_lifs
+#    - name: Create Intercluster LIFs on source cluster
+#      include_tasks: create_source_intercluster_lifs.yml
+#      when: create_source_intercluster_lifs|bool
+#      tags: 
+#        - ontap_src_intercluster_lifs
 
     - name: snap-mirror
       include_tasks: create_snapmirror.yml
