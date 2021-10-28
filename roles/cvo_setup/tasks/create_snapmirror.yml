@@ -94,7 +94,7 @@
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
         password: "{{ src_cluster_password }}"
-        dest_hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+        dest_hostname: "{{ ipd[0] }}"
         https: true
         validate_certs: false
         dest_username: "{{ src_cluster_username }}"
@@ -115,7 +115,7 @@
         https: true
         validate_certs: false
         peer_options:
-          hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+          hostname: "{{ ipd[0] }}"
           username: "{{ dst_cluster_username }}"
           password: "{{ dst_cluster_password }}"
       register: vserver_peer
