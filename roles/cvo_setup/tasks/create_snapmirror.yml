@@ -22,7 +22,7 @@
 ########## Create Snapmirror Policy ##############
     - name: Create Snapmiror Policy
       netapp.ontap.na_ontap_snapmirror_policy:
-        hostname: "{{ ip.json[0].ontapClusterProperties.systemManagerUrl }}"
+        hostname: "{{ ipd }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         state: present
@@ -43,7 +43,7 @@
 ################## Get InterCluster Lif IP for Destination ###################
     - name: Get LIF info
       netapp.ontap.na_ontap_info:
-        hostname: "{{ ip.json[0].ontapClusterProperties.systemManagerUrl }}"
+        hostname: "{{ ipd }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         use_rest: never
