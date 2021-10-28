@@ -13,7 +13,8 @@
           Authorization: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5rSXlPVFUzUWpZek1ESkRPVGd5TlRJMU1EUkZNVFpFUTBFd1JEUkJRVGxFT1VFMU5UUkNOZyJ9.eyJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9mdWxsX25hbWUiOiJBaG1hZCBTdWZpYW4iLCJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9lbWFpbF92ZXJpZmllZCI6ZmFsc2UsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2Nvbm5lY3Rpb25faWQiOiJjb25fdk5DdjdsdjBKa2t5OWxMZCIsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2lzX2ZlZGVyYXRlZCI6dHJ1ZSwiaHR0cDovL2Nsb3VkLm5ldGFwcC5jb20vaW50ZXJuYWwiOiJOZXRBcHAiLCJpc3MiOiJodHRwczovL25ldGFwcC1jbG91ZC1hY2NvdW50LmF1dGgwLmNvbS8iLCJzdWIiOiJ3YWFkfEg0dTFtY3c0OGppaEc3RVJ5MHY0SlFJLUdlQ2FkY2htb0NUdWlpeVZSTXMiLCJhdWQiOiJodHRwczovL2FwaS5jbG91ZC5uZXRhcHAuY29tIiwiaWF0IjoxNjM1NDM3NDE5LCJleHAiOjE2MzU1MjM4MTksImF6cCI6Ik11MFYxeXdnWXRlSTZ3MU1iRDE1ZktmVklVck5YR1dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.7qQyw19xw-kAjEe_Yu6jKmKUy8h46jEggzEwvZUS5J3UbbMKk_rNIEyixL82MMVmZ7navIP7aGZw4zoRkKZJbepHDfn0WzevBFN-fNvzJzuW_as-4BKTfLtjwTpgTDSwAWm1ekrP7vpz65CGxDPva1ZT3-uOysBOSG5sb58QXHFGr6kFOkdPsR_roHqJJ4HUG-d0QOhyloMBscc8v9t_lqMvctNj8r2eWSfzOLHOEHj7hXDFDUqyUvDjWD07gyvQzj5uF5nFC95jZ0fvXM_e2wR9ICh8xnVAmx5n0wjo9nKRVYnmnESNwLnY20ND2KnLuQBoRUc2G0hBwaYMO1Jsew"
           #"{{ connector_accesstoken.json.access_token }}"
       register: ip
-    - debug: var=ip.json[0].ontapClusterProperties.nodes[0].lifs[2].ip
+    - debug: var=ip.json[0].ontapClusterProperties.systemManagerUrl
+    #var=ip.json[0].ontapClusterProperties.nodes[0].lifs[2].ip
      
      
 ########## Create Snapmirror Policy ##############
