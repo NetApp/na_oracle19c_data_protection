@@ -14,6 +14,8 @@
           #"{{ connector_accesstoken.json.access_token }}"
       register: ip
     - debug: var=ip.json[0].ontapClusterProperties.systemManagerUrl
+    - set_fact:
+      ipd: {{ ip.json[0].ontapClusterProperties.systemManagerUrl | regex_findall('\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b') }}
     #var=ip.json[0].ontapClusterProperties.nodes[0].lifs[2].ip
      
      
