@@ -53,5 +53,5 @@
 
 - name: Pause for 2 minutes to Create CVO
   pause:
-    minutes: 2
+    minutes: 5
 
