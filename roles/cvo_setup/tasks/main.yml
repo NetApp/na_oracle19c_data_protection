@@ -2,31 +2,31 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 - block:
-#    - name: pre-check
-#      include_tasks: pre_check.yml
-#      tags:
-#        - pre_check
+    - name: pre-check
+      include_tasks: pre_check.yml
+      tags:
+        - pre_check
 
-#    - name: create aws connector
-#      include_tasks: create_connector.yml
-#      tags:
-#        - aws_connector
+    - name: create aws connector
+      include_tasks: create_connector.yml
+      tags:
+        - aws_connector
 
-#    - name: create AWS CVO
-#      include_tasks: create_cvo.yml
-#      tags:
-#        - aws_cvo_ha
+    - name: create AWS CVO
+      include_tasks: create_cvo.yml
+      tags:
+        - aws_cvo_ha
 
-#    - name: Add on-prem ONTAP to connector
-#      include_tasks: add_onprem_ontap_to_connector.yml
-#      tags:
-#        - on_prem_connect
+    - name: Add on-prem ONTAP to connector
+      include_tasks: add_onprem_ontap_to_connector.yml
+      tags:
+        - on_prem_connect
 
-#    - name: Create Intercluster LIFs on source cluster
-#      include_tasks: create_source_intercluster_lifs.yml
-#      when: create_source_intercluster_lifs|bool
-#      tags: 
-#        - ontap_src_intercluster_lifs
+    - name: Create Intercluster LIFs on source cluster
+      include_tasks: create_source_intercluster_lifs.yml
+      when: create_source_intercluster_lifs|bool
+      tags: 
+        - ontap_src_intercluster_lifs
 
     - name: snap-mirror
       include_tasks: create_snapmirror.yml
