@@ -4,12 +4,14 @@
 ########## Get Cluster Management IP ##############
     - name: Get Cloud Manager IP
       uri:
-        url: "http://{{ msg[0].private_ip_address }}/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId={{ msgs.workspacePublicId }}"
+        url: "http://172.30.0.55/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId=workspace-TtPXVvC8"      
+        #url: "http://{{ msg[0].private_ip_address }}/occm/api/vsa/working-environments?fields=status,ontapClusterProperties,interClusterLifs&tenantId={{ msgs.workspacePublicId }}"
         method: GET
         return_content: yes
         headers:
           Content-Type: application/json
-          Authorization: "{{ connector_accesstoken.json.access_token }}"
+          Authorization: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5rSXlPVFUzUWpZek1ESkRPVGd5TlRJMU1EUkZNVFpFUTBFd1JEUkJRVGxFT1VFMU5UUkNOZyJ9.eyJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9mdWxsX25hbWUiOiJBaG1hZCBTdWZpYW4iLCJodHRwOi8vY2xvdWQubmV0YXBwLmNvbS9lbWFpbF92ZXJpZmllZCI6ZmFsc2UsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2Nvbm5lY3Rpb25faWQiOiJjb25fdk5DdjdsdjBKa2t5OWxMZCIsImh0dHA6Ly9jbG91ZC5uZXRhcHAuY29tL2lzX2ZlZGVyYXRlZCI6dHJ1ZSwiaHR0cDovL2Nsb3VkLm5ldGFwcC5jb20vaW50ZXJuYWwiOiJOZXRBcHAiLCJpc3MiOiJodHRwczovL25ldGFwcC1jbG91ZC1hY2NvdW50LmF1dGgwLmNvbS8iLCJzdWIiOiJ3YWFkfEg0dTFtY3c0OGppaEc3RVJ5MHY0SlFJLUdlQ2FkY2htb0NUdWlpeVZSTXMiLCJhdWQiOiJodHRwczovL2FwaS5jbG91ZC5uZXRhcHAuY29tIiwiaWF0IjoxNjM1NDM3NDE5LCJleHAiOjE2MzU1MjM4MTksImF6cCI6Ik11MFYxeXdnWXRlSTZ3MU1iRDE1ZktmVklVck5YR1dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.7qQyw19xw-kAjEe_Yu6jKmKUy8h46jEggzEwvZUS5J3UbbMKk_rNIEyixL82MMVmZ7navIP7aGZw4zoRkKZJbepHDfn0WzevBFN-fNvzJzuW_as-4BKTfLtjwTpgTDSwAWm1ekrP7vpz65CGxDPva1ZT3-uOysBOSG5sb58QXHFGr6kFOkdPsR_roHqJJ4HUG-d0QOhyloMBscc8v9t_lqMvctNj8r2eWSfzOLHOEHj7hXDFDUqyUvDjWD07gyvQzj5uF5nFC95jZ0fvXM_e2wR9ICh8xnVAmx5n0wjo9nKRVYnmnESNwLnY20ND2KnLuQBoRUc2G0hBwaYMO1Jsew"
+          #"{{ connector_accesstoken.json.access_token }}"
       register: ip
     - debug: var=ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip
      
@@ -58,94 +60,6 @@
         my_var: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
     - debug: var=my_var[0]
 
-
-################## Get InterCluster Lif IP for Source ###################
-    - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
-      netapp.ontap.na_ontap_info:
-        hostname: "{{ src_cluster_ip }}"
-        username: "{{ src_cluster_username }}"
-        password: "{{ src_cluster_password }}"
-        use_rest: never
-        https: true
-        validate_certs: false
-        gather_subset:
-          - net_interface_info
-        query:
-           net-interface-info:
-             role: intercluster
-        desired_attributes:
-           net-interface-info:
-             address:
-      register: info
-    - debug: var=info.ontap_info.net_interface_info
-    - set_fact:
-        my_vars: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
-    - debug: var=my_vars[0]
-    
-    
-############ Cluster Peer #############
-    - name: Create cluster peer
-      netapp.ontap.na_ontap_cluster_peer:
-        state: present
-        source_intercluster_lifs: "{{ my_vars[0] }}"
-        dest_intercluster_lifs:  "{{ my_var[0] }}"
-        passphrase: "{{ passphrase }}"
-        hostname: "{{ src_cluster_ip }}"
-        username: "{{ src_cluster_username }}"
-        password: "{{ src_cluster_password }}"
-        dest_hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
-        https: true
-        validate_certs: false
-        dest_username: "{{ src_cluster_username }}"
-        dest_password: "{{ src_cluster_password }}"
-      register: cluster_peer
-
-########## Vserver Peer ##############
-    - name: Create vserver peer
-      netapp.ontap.na_ontap_vserver_peer:
-        state: present
-        peer_vserver: "{{ dst_vserver }}"
-        peer_cluster: "{{ dst_cluster_name }}"
-        vserver: "{{ src_vserver }}"
-        applications: snapmirror
-        hostname: "{{ src_cluster_ip }}"
-        username: "{{ src_cluster_username }}"
-        password: "{{ src_cluster_password }}"
-        https: true
-        validate_certs: false
-        peer_options:
-          hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
-          username: "{{ dst_cluster_username }}"
-          password: "{{ dst_cluster_password }}"
-      register: vserver_peer
-
-
-
-#################################################################
-#################################################################
-
-    - name: Create ONTAP/ONTAP SnapMirror
-      netapp.ontap.na_ontap_snapmirror:
-        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
-        username: "{{ dst_cluster_username }}"
-        password: "{{ dst_cluster_password }}"
-        state: present
-        source_endpoint:
-          cluster: "{{ src_cluster_name }}"
-          path: "{{ src_vserver + ':' + item }}"
-        destination_endpoint:
-          cluster: "{{ dst_cluster_name }}"
-          path: "{{ dst_vserver + ':' + 'dr_' + item }}"
-        initialize: true
-        create_destination:
-          enabled: true
-        policy: "{{ snapmirror_policy }}"
-        relationship_type: extended_data_protection
-        https: true
-        validate_certs: false
-        use_rest: always
-      with_items:
-        - "{{ src_cg_vols }}"
 
       
  
