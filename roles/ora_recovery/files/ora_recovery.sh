@@ -33,7 +33,7 @@ case "$1" in
      spool $SCRIPT_DIR/$ORACLE_SID.last_scn
      select max(next_change#)-1 from v\$archived_log;
      spool off
-     !sleep3
+     !sleep 3
      !export LAST_SCN=`cat $SCRIPT_DIR/$ORACLE_SID.last_scn | tr -d ' '`    
      recover automatic database until change $LAST_SCN using backup controlfile;
      alter database open resetlogs;
