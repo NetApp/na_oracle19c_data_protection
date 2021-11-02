@@ -1,0 +1,6 @@
+yum:
+  - python3
+  - sshpass
+
+pip3:
+  - ansible
