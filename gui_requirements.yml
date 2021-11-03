@@ -4,3 +4,6 @@ yum:
 
 pip3:
   - ansible
+  - netapp-lib
+  - xmltodict
+  - jmespath
