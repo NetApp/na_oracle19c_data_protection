@@ -42,8 +42,6 @@
         use_rest: always
       with_items:
         - "{{ src_cg_vols }}"
-      loop_control:
-        pause: 3
   tags:
     - ontap_snapmirror_create
     - ontap_snapmirror_policy
