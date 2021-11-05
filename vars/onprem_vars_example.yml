@@ -1,0 +1,182 @@
+
+#######################################################################
+###### Oracle Data Protection global user configuration variables ######
+######  Consolidate all variables from ontap, aws, and oracle   ######
+#######################################################################
+
+###########################################
+### Ontap env specific config variables ###
+###########################################
+
+#Inventory group name
+#Default inventory group name - 'ontap'
+#Change only if you are changing the group name either in inventory/hosts file or in inventory groups in case of AWX/Tower
+hosts_group: ontap
+
+#CA_signed_certificates (ONLY CHANGE to 'true' IF YOU ARE USING CA SIGNED CERTIFICATES)
+ca_signed_certs: false
+
+#####################################################
+# Inter-cluster LIF details
+#####################################################
+#Names of the Nodes in the Source ONTAP Cluster
+src_nodes:
+ - AFF-01
+ - AFF-02
+
+ #Names of the Nodes in the Destination ONTAP Cluster
+ dst_nodes:
+  - DR-AFF-01
+  - DR-AFF-02
+
+#Define whether or not to create intercluster lifs on source cluster (ONLY CHANGE to 'No' IF YOU HAVE ALREADY CREATED THE INTERCLUSTER LIFS)
+create_source_intercluster_lifs:  yes
+
+source_intercluster_network_port_details:
+  using_dedicated_ports: yes
+  using_ifgrp: yes
+  using_vlans: yes
+  failover_for_shared_individual_ports: yes
+  ifgrp_name: a0a
+  vlan_id: 10
+  ports:
+    - e0b
+    - e0g
+  broadcast_domain: NFS
+  ipspace: Default
+  failover_group_name: iclifs
+
+source_intercluster_lif_details:
+  - name: icl_1
+    address: 10.0.0.1
+    netmask: 255.255.255.0
+    home_port: a0a-10
+    node: AFF-01
+  - name: icl_2
+    address: 10.0.0.2
+    netmask: 255.255.255.0
+    home_port: a0a-10
+    node: AFF-02
+
+#Define whether or not to create intercluster lifs on destination cluster (ONLY CHANGE to 'No' IF YOU HAVE ALREADY CREATED THE INTERCLUSTER LIFS)
+create_destination_intercluster_lifs:  yes
+
+destination_intercluster_network_port_details:
+  using_dedicated_ports: yes
+  using_ifgrp: yes
+  using_vlans: yes
+  failover_for_shared_individual_ports: yes
+  ifgrp_name: a0a
+  vlan_id: 10
+  ports:
+    - e0b
+    - e0g
+  broadcast_domain: NFS
+  ipspace: Default
+  failover_group_name: iclifs
+
+destination_intercluster_lif_details:
+  - name: icl_1
+    address: 10.0.0.3
+    netmask: 255.255.255.0
+    home_port: a0a-10
+    node: DR-AFF-01
+  - name: icl_2
+    address: 10.0.0.4
+    netmask: 255.255.255.0
+    home_port: a0a-10
+    node: DR-AFF-02
+
+####################################################################################################
+# Variables for SnapMirror Peering
+####################################################################################################
+#src_lif: #Will be retrieve through Ansible Task
+#dst_lif: #Will be retrieve through Ansible Task
+passphrase: your-passphrase
+
+#####################################################################################################
+# Source & Destination List
+#####################################################################################################
+#Please Enter Destination Cluster Name
+dst_cluster_name: dst-cluster-name
+
+#Please Enter Destination Cluster
+dst_cluster_ip: dst-cluster-ip
+
+#Please Enter Destination SVM to create mirror relationship
+dst_vserver: dst-vserver
+
+#Please Enter NFS Lif for dst vserver
+dst_nfs_lif: dst-nfs-lif
+
+#Please Enter Source Cluster Name
+src_cluster_name: src-cluster-name
+
+#Please Enter Source Cluster
+src_cluster_ip: src-cluster-ip
+
+#Please Enter Source SVM
+src_vserver: src-vserver
+
+#####################################################################################################
+# Variable for Oracle Volumes and SnapMirror Details
+#####################################################################################################
+#Please Enter Source Snapshot Prefix Name
+cg_snapshot_name_prefix: oracle
+
+#Please Enter Source Oracle Binary Volume(s)
+src_orabinary_vols:
+  - binary_vol
+
+#Please Enter Source Database Volume(s)
+src_db_vols:
+  - db_vol
+
+#Please Enter Source Archive Volume(s)
+src_archivelog_vols:
+  - log_vol
+
+#Please Enter Destination Snapmirror Policy
+snapmirror_policy: async_policy_oracle
+
+#####################################################################################################
+# Export Policy Details
+#####################################################################################################
+#Enter the destination export policy details
+export_policy_details:
+  name: nfs_export_policy
+  client_match: 0.0.0.0/0
+  ro_rule: sys
+  rw_rule: sys
+
+
+###########################################
+### Linux env specific config variables ###
+###########################################
+
+#NFS Mount points for Oracle DB volumes
+mount_points:
+  - /u01
+  - /u02
+  - /u03
+
+# Up to 75% of node memory size divided by 2mb. Consider how many databases to be hosted on the node and how much ram to be allocated to each DB.
+# Leave it blank if hugepage is not configured on the host.
+hugepages_nr: 1234
+
+# RedHat subscription username and password
+redhat_sub_username: xxx
+redhat_sub_password: xxx
+
+####################################################
+### DB env specific install and config variables ###
+####################################################
+#Recovery Type (leave as scn)
+recovery_type: scn
+
+#Oracle Control Files
+control_files:
+  - /u02/oradata/CDB2/control01.ctl
+  - /u03/orareco/CDB2/control02.ctl
+
+

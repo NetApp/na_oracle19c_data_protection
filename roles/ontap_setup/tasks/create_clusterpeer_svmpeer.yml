@@ -1,10 +1,60 @@
-# Tasl for creating cluster peer
+##############################################################################
+##############################################################################
 - block:
+################## Get InterCluster Lif IP for Destination ###################
+    - name: Get LIF info
+      netapp.ontap.na_ontap_info:
+        hostname: "{{ dst_cluster_ip }}"
+        username: "{{ dst_cluster_username }}"
+        password: "{{ dst_cluster_password }}"
+        use_rest: never
+        https: true
+        validate_certs: false
+        gather_subset:
+          - net_interface_info
+        query:
+           net-interface-info:
+             role: intercluster
+        desired_attributes:
+           net-interface-info:
+             address:
+      register: info
+    - debug: var=info.ontap_info.net_interface_info
+    - set_fact:
+        my_var: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
+    - debug: var=my_var[0]
+
+#########################################################################
+################## Get InterCluster Lif IP for Source ###################
+    - name: Limit Info Gathering to Volume and Lun Information as Cluster Admin
+      netapp.ontap.na_ontap_info:
+        hostname: "{{ src_cluster_ip }}"
+        username: "{{ src_cluster_username }}"
+        password: "{{ src_cluster_password }}"
+        use_rest: never
+        https: true
+        validate_certs: false
+        gather_subset:
+          - net_interface_info
+        query:
+           net-interface-info:
+             role: intercluster
+        desired_attributes:
+           net-interface-info:
+             address:
+      register: info
+    - debug: var=info.ontap_info.net_interface_info
+    - set_fact:
+        my_vars: "{{ info | json_query('ontap_info.net_interface_info.*.address') }}"
+    - debug: var=my_vars[0]
+
+###############################################################################
+################### Task for creating cluster peer ############################
     - name: Create cluster peer
       na_ontap_cluster_peer:
         state: present
-        source_intercluster_lifs: "{{ src_lif }}"
-        dest_intercluster_lifs: "{{ dst_lif }}"
+        source_intercluster_lifs: "{{ my_vars[0] }}"
+        dest_intercluster_lifs: "{{ my_var[0] }}"
         passphrase: "{{ passphrase }}"
         hostname: "{{ src_cluster_ip }}"
         username: "{{ src_cluster_username }}"
@@ -13,19 +63,9 @@
         https: true
         validate_certs: false
       register: cluster_peer  
-  rescue:
-    - name: Failure
-      fail:
-        msg:
-        - Create cluster peer failed with error - "{{ cluster_peer.stderr }}"
-        - Possible troubleshooting steps:
-        - 1. Check if ONTAP API is reachable
-        - 2. Check credentials
-        - 3. Check source cluster IP
-        - 4. Check destination cluster IP
 
-# Tasks for create vserver peer
-- block:
+###############################################################################
+################### Tasks for create vserver peer #############################
     - name: Create vserver peer
       na_ontap_vserver_peer:
         state: present
@@ -44,7 +84,7 @@
     - name: Failure
       fail:
         msg:
-        - Create cluster peer failed with error - "{{ vserver_peer.stderr }}"
+        - Create cluster/vserver peer failed
         - Possible troubleshooting steps:
         - 1. Check if ONTAP API is reachable
         - 2. Check credentials

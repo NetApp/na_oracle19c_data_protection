@@ -1,20 +1,20 @@
 ---
 ###########   Create CVO Instace in AWS  #############
-- name: Create NetApp Cloud Manager CVO for AWS single
-  netapp.cloudmanager.na_cloudmanager_cvo_aws:
-    state: present
-    refresh_token: "{{ token }}"
-    name: "{{ cvo_name }}"
-    region: "{{ region_deploy }}"
-    subnet_id: "{{ subnet }}"
-    vpc_id: "{{ vpc }}"
-    svm_password: "{{ cvo_svm_password }}"
-    client_id: "{{ connector.msg.client_id }}"
-    writing_speed_state: NORMAL
-    is_ha: false
-    associate_public_ip_address: false
-  tags:
-    - aws_cvo_single
+#- name: Create NetApp Cloud Manager CVO for AWS single
+#  netapp.cloudmanager.na_cloudmanager_cvo_aws:
+#    state: present
+#    refresh_token: "{{ token }}"
+#    name: "{{ cvo_name }}"
+#    region: "{{ region_deploy }}"
+#    subnet_id: "{{ subnet }}"
+#    vpc_id: "{{ vpc }}"
+#    svm_password: "{{ cvo_svm_password }}"
+#    client_id: "{{ connector.msg.client_id }}"
+#    writing_speed_state: NORMAL
+#    is_ha: false
+#    associate_public_ip_address: false
+#  tags:
+#    - aws_cvo_single
 
 ################# Create HA Instance #########################
 
@@ -47,13 +47,11 @@
 #    route_table_ids: rtb-075d2e62
     failover_mode: PrivateIP
     mediator_key_pair_name: sufi-key-virginia
-  tags:
-    - aws_cvo_ha
+
     
 ########################################################
 
 - name: Pause for 2 minutes to Create CVO
   pause:
     minutes: 2
-  tags:
-    - aws_cvo_ha
+

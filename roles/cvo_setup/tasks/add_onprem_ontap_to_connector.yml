@@ -18,7 +18,7 @@
         body:
           grant_type: password
           username: "{{ email_id }}"
-          password: "{{ password }}"
+          password: "{{ cm_password }}"
           audience: "https://api.cloud.netapp.com"
           scope: profile
           client_id: "{{ regular_id }}"
@@ -76,8 +76,6 @@
         headers:
           Content-Type: application/json
           Authorization: "{{ access }}"
-  tags:
-    - on_prem_connect
   rescue:
     - name: Failure 
       fail:
