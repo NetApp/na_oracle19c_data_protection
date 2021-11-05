@@ -4,7 +4,7 @@
 ################## Get InterCluster Lif IP for Destination ###################
     - name: Get LIF info
       netapp.ontap.na_ontap_info:
-        hostname: "{{ ip.json[0].ontapClusterProperties.nodes[0].lifs[1].ip }}"
+        hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
         use_rest: never
