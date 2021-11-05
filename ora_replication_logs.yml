@@ -18,6 +18,5 @@
   vars_files:
     - roles/ontap_setup/defaults/main.yml    
     - roles/ora_replication_logs/defaults/main.yml    
-    - vars/vars.yml
   roles:
     - role: ora_replication_logs

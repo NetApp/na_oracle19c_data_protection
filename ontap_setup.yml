@@ -7,7 +7,7 @@
   gather_facts: False
   vars_files:
     - roles/ontap_setup/defaults/main.yml    
-    - vars/vars.yml
   roles:
     - role: ontap_setup
-      #  tags:
+  tags:
+    -  ontap_setup  
