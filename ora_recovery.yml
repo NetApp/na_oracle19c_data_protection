@@ -42,7 +42,6 @@
   vars_files:
     - roles/dr_ora_host/defaults/main.yml
     - roles/dr_ora_vols/defaults/main.yml
-    - vars/vars.yml
   roles:
     - role: dr_ora_vols
   tags:
@@ -54,7 +53,6 @@
   vars_files:
     - roles/ora_recovery/defaults/main.yml
     - roles/ora_restore/defaults/main.yml
-    - vars/vars.yml
   roles:
     - role: ora_recovery
   tags:
