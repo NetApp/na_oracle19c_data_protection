@@ -4,7 +4,6 @@
   gather_facts: True
   vars_files:
     - roles/dr_ora_host/defaults/main.yml
-    - vars/vars.yml
   roles:
     - role: dr_ora_host
   tags:
@@ -18,7 +17,6 @@
   gather_facts: False
   vars_files:
     - roles/dst_vol_info/defaults/main.yml
-    - vars/vars.yml
   roles:
     - role: dst_vol_info
   tags:
@@ -33,7 +31,6 @@
   vars_files:
     - roles/ora_restore/defaults/main.yml
     - roles/ontap_setup/defaults/main.yml
-    - vars/vars.yml
   roles:
     - role: ora_restore
   tags:
