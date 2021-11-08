@@ -32,6 +32,8 @@
     - ora_resume_db
 
 - name: Pause before next role
+  hosts: oracle
+  gather_facts: False
   roles:
     - pause
 
