@@ -1,3 +1,0 @@
-- name: pause
-  pause:
-    seconds: 240
