@@ -23,7 +23,6 @@ case "$1" in
      $ORACLE_HOME/bin/sqlplus -s "/ as sysdba" <<EOF>> $1_$log
      whenever sqlerror exit SQL.SQLCODE
      alter database begin backup;
-     alter system archive log current;
      exit;
 EOF
    done
