@@ -31,6 +31,10 @@
   tags:
     - ora_resume_db
 
+- name: Pause before next role
+  roles:
+    - pause
+
 - name: Oracle Switch Log
   hosts: oracle
   gather_facts: False
