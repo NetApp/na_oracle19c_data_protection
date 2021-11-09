@@ -35,7 +35,7 @@
         - ontap_logs_snapshot
 
     - name: Snapmirror Update for Oracle Archive Logs
-      na_ontap_command:
+      netapp.ontap.na_ontap_command:
         hostname: "{{ dst_cluster_ip }}"
         username: "{{ dst_cluster_username }}"
         password: "{{ dst_cluster_password }}"
