@@ -45,7 +45,7 @@
         - "{{ src_cg_vols }}"
       async: 600
       poll: 0
-      
+
     - name: Wait for Snapmirrors to complete
       async_status:
         jid: "{{ item.ansible_job_id }}"
