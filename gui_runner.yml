@@ -1,0 +1,28 @@
+ansible:
+#  - playbook: ontap_setup_playbook.yml
+#    include_tags: 
+#    skip_tags:
+#    output: ontap_run.log
+#    register_status: requirements_run
+#    type: run
+  - playbook: ora_replication_cg.yml
+#    include_tags: 
+#    skip_tags:
+    output: ora_replication_cg_run.log
+#    register_status: ontap_run
+    type: run
+#    inventory_file: hosts
+  - playbook: ora_replication_logs.yml
+#    include_tags: linux_config
+#    skip_tags: register_subscription_el7
+    output: ora_replication_logs_run.log
+#    register_status: linux_run
+    type: run
+#    inventory_file: hosts
+#  - playbook: ora_recovery.yml
+#    include_tags: 
+#    skip_tags:
+#    output: oracle_run.log
+#    register_status: oracle_run
+#    type: run
+#    inventory_file: hosts
